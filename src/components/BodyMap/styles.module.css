@@ -1,0 +1,239 @@
+/* CSS Variables */
+:root {
+  --hover-color: #f04141;
+  --dark-color: #222428;
+  --light-color: #f4f5f8;
+  --medium-color: #92949c;
+}
+
+/* Main container */
+.bodyMapContainer {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: white;
+  border-bottom: 1px solid var(--light-color);
+  z-index: 10;
+}
+
+.toggleButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--dark-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggleButton:hover {
+  background: var(--hover-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.selectedMuscleHeader {
+  padding: 0.5rem 1rem;
+  background: rgba(240, 65, 65, 0.1);
+  color: var(--hover-color);
+  font-weight: 600;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+  max-width: 200px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* SVG Container */
+.svgContainer {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Body Map Navigation Focused Styles */
+
+/* SVG Styles */
+.svgContainer svg {
+  display: block;
+  width: auto;
+  max-height: 100%;
+  object-fit: contain;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* SVG Element Styles */
+.svgContainer :global(.st0) {
+  fill: var(--medium-color);
+  stroke: var(--dark-color);
+  stroke-width: 0.5;
+}
+
+.svgContainer :global(#surround) {
+  fill: transparent;
+  cursor: pointer;
+}
+
+.svgContainer :global(.st1) {
+  fill: var(--dark-color);
+}
+
+.svgContainer :global(.st2) {
+  fill: var(--medium-color);
+}
+
+.svgContainer :global(.st3) {
+  fill: var(--hover-color);
+}
+
+.svgContainer :global(.st4) {
+  fill: var(--light-color);
+}
+
+.svgContainer :global(.st5) {
+  fill: var(--light-color);
+  opacity: 0.7;
+}
+
+/* Muscle section styles */
+.svgContainer :global(.muscleSection) {
+  transition: all 0.2s ease;
+}
+
+.svgContainer :global(.muscleSection:hover) {
+  filter: drop-shadow(0 2px 4px rgba(240, 65, 65, 0.3));
+}
+
+.svgContainer :global(.muscleSection g:not(#surround)) {
+  fill: var(--medium-color);
+  stroke: var(--dark-color);
+  stroke-width: 0.3;
+  transition: all 0.2s ease;
+}
+
+.svgContainer :global(.muscleSection:hover g:not(#surround)) {
+  fill: var(--hover-color);
+  stroke: var(--dark-color);
+  stroke-width: 0.5;
+}
+
+.svgContainer :global(#arteries) {
+  fill: var(--light-color);
+  opacity: 0.6;
+}
+
+.svgContainer :global(#Heart) {
+  fill: var(--hover-color);
+}
+
+/* No scroll utility */
+.noScroll {
+  overflow: hidden;
+}
+
+/* Zoom States */
+.svgContainer.zoomed {
+  cursor: grab;
+}
+
+.svgContainer.zoomed svg {
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Hide non-selected muscles when zoomed */
+.svgContainer.zoomed :global(.muscleSection) {
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.svgContainer.zoomed :global(.muscleSection.selected) {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.svgContainer.zoomed :global(.muscleSection.selected g:not(#surround)) {
+  fill: var(--hover-color);
+  stroke: var(--dark-color);
+  stroke-width: 0.5;
+}
+
+/* Back button */
+.backButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--hover-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(240, 65, 65, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.backButton:hover {
+  background: #d93434;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(240, 65, 65, 0.3);
+}
+
+.backButton::before {
+  content: '←';
+  font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .controls {
+    padding: 0.5rem;
+  }
+  
+  .toggleButton {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+  
+  .selectedMuscleHeader {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    max-width: 150px;
+  }
+  
+  .backButton {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
