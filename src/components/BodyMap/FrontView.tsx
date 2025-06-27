@@ -18,7 +18,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
       xmlSpace="preserve"
     >
       {/* Chest */}
-      <g className={`muscleSection ${selectedMuscleId === 1 ? 'selected' : ''}`} id="1">
+      <g className={`muscleSection ${selectedMuscleId === 160 ? 'selected' : ''}`} id="160">
         <g id="Chest">
          	<g id="sternal">
          		<path d="M586.7,485.8c-0.1-0.4-0.1-0.7-0.2-1.1c-3.4-12.5-21.9-54-23.8-62.1c-5.9-24.7,2.7-46.6,20-50.5
@@ -36,14 +36,14 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
           <path 
             id="surround" 
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(1)}
+            onClick={() => onMuscleClick(160)}
             d="M548.1,371.8c16.8,7.2,78.2-55.7,109.4-30.2c31.1,25.5,121.5,128,95.9,138.4s-102.7,69.8-122.3,62.1c-39.2-15.4-52.4-129.3-79.8-129.4c-37.3-0.1-50.8,108.2-80.7,125.4c-26,15-127.8-58.2-126.5-85.2C352.5,433.3,463.1,250.8,548.1,371.8z"
           />
         </g>
       </g>
 
       {/* Shoulders */}
-      <g className={`muscleSection ${selectedMuscleId === 3 ? 'selected' : ''}`} id="3">
+      <g className={`muscleSection ${selectedMuscleId === 110 ? 'selected' : ''}`} id="110">
         <g id="Shoulders">
           <g>
             <path d="M714.3,346.8c27.6-3.2,49.1,28.6,63.2,46.7c7.3,9.5,53.8,77.5,44.4,88.2c-17.9,20.4-77.7-45.3-84.8-55.9C724.9,408.1,676.4,346.8,714.3,346.8z"/>
@@ -56,7 +56,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
           <g 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(3)}
+            onClick={() => onMuscleClick(110)}
           >
             <path d="M786.3,331.9c8.7,0.9,17.6,2.6,24.9,7.4c7.2,4.6,12.2,11.8,17.2,18.8c6.2,8.9,12.5,17.8,18.7,26.7c3.3,4.7,6.7,9.5,8.4,15c1.8,5.7,1.8,11.8,1.7,17.9c-0.3,15.9-1.1,31.7-2.4,47.5c-0.7,8.3-1.7,17.1-6.8,23.7c-5.2,6.7-14,9.9-22.5,10.1s-16.8-2.3-24.8-5.3c-7-2.6-14-5.6-20.2-9.7c-9.1-6.1-16.2-14.7-23-23.3c-23.7-30.4-43.7-63.5-59.7-98.6c-1.7-3.8-3.5-8.2-1.8-12.1c1.8-4.3,6.9-6.1,11.5-7.2C733.3,336.2,759.6,329,786.3,331.9z"/>
             <path d="M307.3,331.9c-8.7,0.9-17.6,2.6-24.9,7.4c-7.2,4.6-12.2,11.8-17.2,18.8c-6.2,8.9-12.5,17.8-18.7,26.7c-3.3,4.7-6.7,9.5-8.4,15c-1.8,5.7-1.8,11.8-1.7,17.9c0.3,15.9,1.1,31.7,2.4,47.5c0.7,8.3,1.7,17.1,6.8,23.7c5.2,6.7,14,9.9,22.5,10.1s16.8-2.3,24.8-5.3c7-2.6,14-5.6,20.2-9.7c9.1-6.1,16.2-14.7,23-23.3c23.7-30.3,43.8-63.5,59.7-98.6c1.7-3.8,3.5-8.2,1.8-12.1c-1.8-4.3-6.9-6.1-11.5-7.2C360.3,336.2,334,329,307.3,331.9z"/>
@@ -65,7 +65,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
       </g>
 
       {/* Upper Traps */}
-      <g className={`muscleSection ${selectedMuscleId === 5 ? 'selected' : ''}`} id="5">
+      <g className={`muscleSection ${selectedMuscleId === 143 ? 'selected' : ''}`} id="143">
         <g id="Upper Traps">
           <path d="M614.1,285.9c17.3-15.2,36,5.4,51.5,13.2c15.2,7.7,36.2,11.5,47.4,25.3c-19.7,5.8-47.4,8.8-70,4.8c-12.6-3.5-38.1,9.6-44.3-1.7C594.3,319.5,612.7,295,614.1,285.9z"/>
           <path d="M486.8,327.5c-6.2,11.4-31.7-1.7-44.3,1.7c-22.6,4-50.3,1-70-4.8c11.2-13.8,32.2-17.6,47.4-25.3c15.5-7.8,34.2-28.4,51.5-13.2C472.8,295,491.2,319.5,486.8,327.5z"/>
@@ -135,17 +135,17 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
         <path 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(5)}
+            onClick={() => onMuscleClick(143)}
             d="M713,218.7c-10.5-10.3-293.2-6.8-304.9,0c-11.7,6.8-84.1,101.9-48.7,112.5c35.3,10.6,332.5,20.9,378-8.2S713,218.7,713,218.7z"
           />
       </g>
 
       {/* Heart */}
-      <g id="Heart" className={`muscleSection ${selectedMuscleId === 50 ? 'selected' : ''}`} onClick={() => onMuscleClick(50)}>
+      <g id="Heart" className={`muscleSection ${selectedMuscleId === 210 ? 'selected' : ''}`} onClick={() => onMuscleClick(210)}>
         <path
           id="surround"
           style={{ fill: 'transparent', cursor: 'pointer' }}
-          onClick={() => onMuscleClick(50)}
+          onClick={() => onMuscleClick(210)}
           d="M578.9,467.8c-34.2-0.6,1.3,28.8-17.3,44.2c-6.2,5-36.1,1.3-36.7,0c2,3.3,5,5,9.2,5.2c-0.2,0.1-0.4,0.3-0.4,0.3c1.2,0-13.4-0.8-13.4,1.6c-1,3.8,14.7,1.5,15.7,1.4c-1.2,2.2-4.1,6.5-2.6,8.9c-3.7-5.6,18.5-12,23.8-12.2c-2.5,3.4-17.7,18.6-16.6,23.2c0.2-0.4,0.3-0.6,0.6-0.9h0.1c-2.5,5.3-4.4,10.7-3.9,16.7c-23.7-12.4-37.7-37.8-26.5-61.3C515.6,484.5,577.3,438.9,578.9,467.8z"
         /><path  d="M578.9,467.8c-34.2-0.6,1.3,28.8-17.3,44.2c-6.2,5-36.1,1.3-36.7,0c2,3.3,5,5,9.2,5.2
             c-0.2,0.1-0.4,0.3-0.4,0.3c1.2,0-13.4-0.8-13.4,1.6c-1,3.8,14.7,1.5,15.7,1.4c-1.2,2.2-4.1,6.5-2.6,8.9c-3.7-5.6,18.5-12,23.8-12.2
@@ -162,7 +162,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
          </g>
 
       {/* Biceps */}
-      <g className={`muscleSection ${selectedMuscleId === 7 ? 'selected' : ''}`} id="7">
+      <g className={`muscleSection ${selectedMuscleId === 122 ? 'selected' : ''}`} id="122">
         <g id="Biceps">
    
           <g id="Short_Head">
@@ -176,7 +176,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
           <g 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(7)}
+            onClick={() => onMuscleClick(122)}
           >
             <path d="M270.1,487.1c-5.6,1.3-11.2,2.9-16.2,5.8c-14,8.1-20.6,24.4-26.2,39.6c-6.3,17-12.6,34.2-14.8,52.2s0,37.1,9.8,52.4c4.2,6.6,9.8,12.4,13.8,19.1c8.1,13.5,9.6,29.7,14.2,44.7c1.2,4,2.8,8.1,6,10.7c6.9,5.7,17.3,2.2,25-2.4c12.1-7.3,22.8-16.8,33.5-26.2c6.7-6,13.6-12.1,18.2-19.8c5.2-8.6,7.3-18.7,9.2-28.5c7.6-38.1,14.5-76.3,20.6-114.6C371.8,466.9,302.8,479.4,270.1,487.1z"/>
             <path d="M866.1,533.7c-0.7-4.6-1.5-9.4-4-13.4c-4.6-7.5-13.6-10.6-21.9-13.3c-27.6-8.8-55.6-17.6-84.6-19.5c-4.3-0.3-8.9-0.4-12.7,1.7c-6.3,3.5-8.2,11.5-8.9,18.7c-5.3,54.8,22.4,107.1,30.3,161.7c1.5,10.2,3,21.8,11.3,28c4.5,3.3,10.1,4.4,15.6,5.4c9.6,1.7,19.2,3.5,28.8,5.2c7.7,1.4,16,2.7,23.1-0.7c10.7-5.1,14.1-18.5,15.4-30.2c1.2-10.8,3.7-19.2,7.6-29.1c4.2-10.6,4.3-22,4.7-33.7C871.8,587.4,870.2,560.4,866.1,533.7z"/>
@@ -185,7 +185,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
       </g>
 
       {/* Forearms */}
-      <g className={`muscleSection ${selectedMuscleId === 10 ? 'selected' : ''}`} id="10">
+      <g className={`muscleSection ${selectedMuscleId === 130 ? 'selected' : ''}`} id="130">
         <g id="Forearms">
           
      	<g id="Brachioradialis">
@@ -228,7 +228,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
       <g 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(10)}
+            onClick={() => onMuscleClick(130)}
           >
             <path   d="M861.2,666c-8.3,3.8-15.4,11.4-16.4,20.5c-0.5,4.2,0,9.2-3.4,11.8c-1.4,1.1-3.2,1.5-5,1.8
      			c-7.6,1.2-15.3,1.4-23,0.4c-7.8-1-15.7-3.1-23.4-1.6c-12.9,2.6-21.8,15.7-22.9,28.8s4.3,26,11.4,37c7.1,11.1,16.1,20.8,23.4,31.7
@@ -244,7 +244,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
       </g>
 
       {/* Core/Abs */}
-      <g className={`muscleSection ${selectedMuscleId === 12 ? 'selected' : ''}`} id="12">
+      <g className={`muscleSection ${selectedMuscleId === 171 ? 'selected' : ''}`} id="171">
         <g id="Core">
             <g id="UpperAbs">
         		<path d="M454.6,683c10.5,16.4,23.7,3.7,43.1,2.3c32.1-2.3,32.5,8.1,32.4-30.7C530,573.7,433.7,650.6,454.6,683z"/>
@@ -267,7 +267,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
           <path 
             id="surround" 
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(12)}
+            onClick={() => onMuscleClick(171)}
              d="M551,571.7c0,0,78.7-16.4,84.6,3.2c5.9,19.5,4.4,304.6,0,325.8s-5.7,76.3-84.3,76.3s-90.5-27.9-90.5-76.4
         		c0-48.4-32.3-305.6-6.1-326.1C502.6,530.8,535.4,571.7,551,571.7z"/>
         </g>
@@ -322,7 +322,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
       		C133.7,1070.7,134.9,1073.2,137.4,1072.7z"/>
       </g>
       {/* Serratus Anterior */}
-      <g className={`muscleSection ${selectedMuscleId === 14 ? 'selected' : ''}`} id="14">
+      <g className={`muscleSection ${selectedMuscleId === 164 ? 'selected' : ''}`} id="164">
         <g id="Serratus Anterior">
           
         	<path d="M404,708.3c-9.7-5-17-14-22.9-23c-12.5-19.1-20.5-43.3-22.2-66c-0.2-3-1.8-18.5-0.1-20.2c4.1-4.3,5.9,0.5,7.4,3.2
@@ -347,7 +347,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
         <g 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(13)}
+            onClick={() => onMuscleClick(164)}
           >
             <path   d="M669.1,715.4c4.2,10.4,82.4-51,73.6-114.5s-8.9-98.5-15.9-98.5s-88,32.5-88.2,40.5
         			C638.3,550.9,665.4,706.2,669.1,715.4z"/>
@@ -358,7 +358,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
       </g>
 
       {/* Obliques */}
-      <g className={`muscleSection ${selectedMuscleId === 14 ? 'selected' : ''}`} id="14">
+      <g className={`muscleSection ${selectedMuscleId === 173 ? 'selected' : ''}`} id="173">
         <g id="Obliques">
           <path id="Obliques_3_" d="M371.5,738.4c0.2-7.3,1-15.6,6.9-19.9c6.4-4.7,16-1.8,21.3,4.1c7,7.9,10.9,22.3,13,32.5
         		c2.7,13.1,3,26.5,2.8,39.8c-0.4,22.2,1.9,45.5,5.2,67.4c1.8,12,24.5,62.4,17.6,67.5c-6.1,4.6-54.1-53.6-59.1-79.1
@@ -369,14 +369,14 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
             <g 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(14)}
+            onClick={() => onMuscleClick(173)}
           >
             <path d="M371.5,738.4c0.2-7.3,1-15.6,6.9-19.9c6.4-4.7,16-1.8,21.3,4.1c7,7.9,10.9,22.3,13,32.5c2.7,13.1,3,26.5,2.8,39.8c-0.4,22.2,1.9,45.5,5.2,67.4c1.8,12,24.5,62.4,17.6,67.5c-6.1,4.6-54.1-53.6-59.1-79.1c-6.2-31.6-9.6-63.8-8.4-92.3C371,751.7,371.2,745.1,371.5,738.4z"/>
             <path d="M718.8,758.4c1.2,28.4-2.2,60.6-8.4,92.3c-5,25.5-53,83.6-59.1,79.1c-6.9-5.1,15.8-55.5,17.6-67.5c3.3-22.1,5.5-45.2,5.2-67.4c-0.2-13.3,0.1-26.7,2.8-39.8c2.1-10.2,6-24.6,13-32.5c5.3-5.9,14.9-8.7,21.3-4.1c5.9,4.3,6.6,12.7,6.9,19.9C718.2,745.1,718.5,751.7,718.8,758.4z"/>
           </g>
         </g>
       </g>
-      <g className={`muscleSection ${selectedMuscleId === 15 ? 'selected' : ''}`} id="15" onClick={() => onMuscleClick(15)}>
+      <g className={`muscleSection ${selectedMuscleId === 193 ? 'selected' : ''}`} id="193" onClick={() => onMuscleClick(193)}>
      <g id="Hip Adductors" >
 
         	<path d="M536.2,1009.7c8-1.5,1,111.6-2.9,127.5c-18.4,73.2-37.8-11.3-37.5-43.3C494.1,1085,533.2,1010.2,536.2,1009.7z"/>
@@ -395,7 +395,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
         		C660.8,943.1,660.7,954.1,657,968.4z"/>
         	</g>
           </g>
- <g id="Knee">
+		<g id="Knee">
 
         	<path  d="M567.1,1477.1c-2.5-12.3,3.5-23.6,2-35.4c-0.1-0.7,0.1-1.7,0.5-2c2.6-1.8,1.3-6.9,2.7-6.6
         		c3.3,0.6,1.1,4,1.6,6.3c4.4,21.7,8.5,43.5,17.3,64.1c5.5,12.9,22.6,17.1,30.1,29.3c5.1,8.1,10.5,14,11.7,23.5
@@ -421,7 +421,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
         		c-2.7-1.7-4.3-4.8-6.7-7.1c-9.6-9.1-7.7-29.3,10.2-32.8c4.2-0.8,8-3.4,12.3-2C465.5,1452.3,470.3,1454.7,475.5,1456.4z"/>
         </g>
       {/* Quads */}
-      <g className={`muscleSection ${selectedMuscleId === 17 ? 'selected' : ''}`} id="17">
+      <g className={`muscleSection ${selectedMuscleId === 191 ? 'selected' : ''}`} id="191">
         <g id="Quads">
                   	<g>
         		<path d="M704.1,1109.4c0,84.6-35.5,162.8-46.6,245.7c-2.2,16.1-10.8,119.2-31.5,68.4c-7.6-18.6-2.1-58.6-3.8-100.6
@@ -464,14 +464,14 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
           <path 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(17)}
+            onClick={() => onMuscleClick(191)}
             d="M748,923.8c-3.2-11.3-14.4-21-26-18.8c-6.2,1.2-11.3,5.5-15.8,9.9c-33.2,32.3-50.9,77.3-63.8,121.8c-12.9,44.5-22.4,90.5-43.4,131.9c-4.8,9.4-10.3,18.8-18.4,25.5c-11,9.1-26.5,12.4-40.3,8.7c-6.5-1.7-12.5-4.9-17.8-9c-16.5-12.7-25-33.1-32.3-52.6c-18.3-49.1-33.5-99.4-45.5-150.5c-5.9-25.3-11.4-51.5-25.4-73.3c-5.8-9-13.4-17.4-23.4-21.3c-10-3.8-22.7-2-29.3,6.5c-3.9,5-5.1,11.5-6.2,17.8c-11.4,65.8-16.2,132.7-14.5,199.4c0.8,30.6,3,61.2,8.6,91.3c3.9,21,9.4,41.7,12.9,62.8c4.9,28.8,6.1,58.3,14.2,86.4c8.1,28,24.6,55.5,51,68c8.2,3.9,17.2,6.2,25.1,10.8c5.9,3.4,11.2,8.1,17.7,10c7,2,14.4,0.5,21.6-0.5c23.7-3.2,47.7-0.9,71.6-0.3c31.5,0.7,63.1-1.8,94.1-7.4c3.5-0.6,7.1-1.3,10.2-3.2c3-1.8,5.2-4.6,7.3-7.4c32-42.6,46-95.7,59.3-147.3c4.5-17.3,8.9-34.5,13.4-51.8c3.6-14.1,7.3-28.2,9-42.7c2.1-17.7,1.2-35.7,0.5-53.5c-1.4-37.4-1.7-74.8-5.1-112.1c-1.7-18.3-3.8-36.8-7.8-54.8C746.1,953.1,752.1,938.4,748,923.8z"
           />
         </g>
       </g>
 
       {/* Calves */}
-      <g className={`muscleSection ${selectedMuscleId === 22 ? 'selected' : ''}`} id="22">
+      <g className={`muscleSection ${selectedMuscleId === 201 ? 'selected' : ''}`} id="201">
         <g id="Calves">
           
           <path d="M629.2,1945.9c1.2-5.1-0.6-10.2-1.8-15.4c-1.3-6.3-0.3-10.8,1.5-16.8c3.7-12.3,5.9-24.9,7.6-37.6
@@ -499,7 +499,7 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
         <rect 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(22)}
+            onClick={() => onMuscleClick(201)}
             x="367.8" y="1525.4" width="395.4" height="421.7"
           />
         </g>

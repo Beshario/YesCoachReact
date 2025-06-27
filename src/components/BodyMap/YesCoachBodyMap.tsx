@@ -39,30 +39,25 @@ export const YesCoachBodyMap: React.FC<YesCoachBodyMapProps> = ({
   const calculateZoomTransform = (muscleId: number) => {
     // Define zoom areas for each muscle group
     const muscleZoomAreas: Record<number, { scale: number; x: number; y: number }> = {
-      1: { scale: 1, x: 0, y: 0 },    // Chest
-      3: { scale: 1, x: 0, y: 0 },    // Shoulders
-      5: { scale: 1, x: 0, y: 0 },      // Upper Traps
-      7: { scale: 1, x: 0, y: 0 },   // Biceps
-      10: { scale: 1, x: 0, y: 0 },  // Forearms
-      12: { scale: 1, x: 0, y: 0 },   // Core
-      13: { scale: 1, x: 0, y: 0 },   // Serratus Anterior
-      14: { scale: 1, x: 0, y: 0 },   // Obliques
-      15: { scale: 1, x: 0, y: 0 },   // Hip Adductors
-      17: { scale: 1, x: 0, y: 0 },  // Quads
-      22: { scale: 1, x: 0, y: 0 },  // Calves
-      31: { scale: 1, x: 0, y: 0 },     // Trapezius
-      32: { scale: 1, x: 0, y: 0 },   // Lower Traps
-      33: { scale: 1, x: 0, y: 0 },   // Teres
-      34: { scale: 1, x: 0, y: 0 },   // Posterior Deltoid
-      36: { scale: 1, x: 0, y: 0 },  // Triceps
-      38: { scale: 1, x: 0, y: 0 },  // Forearms (back)
-      39: { scale: 1, x: 0, y: 0 },   // Latissimus Dorsi
-      40: { scale: 1, x: 0, y: 0 },   // Lower Back
-      42: { scale: 1, x: 0, y: 0 },   // Glutes
-      43: { scale: 1, x: 0, y: 0 },   // External Obliques
-      44: { scale: 1, x: 0, y: 0 },  // Hamstrings
-      47: { scale: 1, x: 0, y: 0 },  // Calves (back)
-      50: { scale: 1, x: 0, y: 0 },   // Heart
+      160: { scale: 1, x: 0, y: 0 },   // Chest
+      110: { scale: 1, x: 0, y: 0 },   // Shoulders
+      143: { scale: 1, x: 0, y: 0 },   // Upper Traps
+      122: { scale: 1, x: 0, y: 0 },   // Biceps
+      130: { scale: 1, x: 0, y: 0 },   // Forearms
+      171: { scale: 1, x: 0, y: 0 },   // Core/Abs
+      164: { scale: 1, x: 0, y: 0 },   // Serratus Anterior
+      173: { scale: 1, x: 0, y: 0 },   // Obliques
+      193: { scale: 1, x: 0, y: 0 },   // Hip Adductors
+      191: { scale: 1, x: 0, y: 0 },   // Quads
+      201: { scale: 1, x: 0, y: 0 },   // Calves
+      121: { scale: 1, x: 0, y: 0 },   // Triceps
+      142: { scale: 1, x: 0, y: 0 },   // Teres Major
+      113: { scale: 1, x: 0, y: 0 },   // Posterior Deltoid
+      141: { scale: 1, x: 0, y: 0 },   // Latissimus Dorsi
+      175: { scale: 1, x: 0, y: 0 },   // Lower Back
+      181: { scale: 1, x: 0, y: 0 },   // Glutes
+      192: { scale: 1, x: 0, y: 0 },   // Hamstrings
+      210: { scale: 1, x: 0, y: 0 },   // Heart
     };
 
     const zoomArea = muscleZoomAreas[muscleId] || { scale: 2, x: -50, y: -50 };

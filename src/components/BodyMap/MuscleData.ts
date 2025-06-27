@@ -1,47 +1,1006 @@
+// Professional muscle database interface - complete ExRx.net muscle directory
 export interface MuscleInfo {
   id: number;
   name: string;
-  templateRef?: string;
+  templateRef: string;
+  exrxName: string;                    // Exact ExRx terminology
+  category: string;                    // Anatomical region grouping
+  subCategory?: string;                // Sub-region (e.g., "Upper", "Lower", "Anterior")
+  commonNames: string[];               // Alternative names users might search
+  anatomicalLocation: 'front' | 'back' | 'both';
+  isClickableOnBodyMap: boolean;       // Whether it appears in main SVG
+  parentId?: number;                   // For muscle hierarchies
+  children?: number[];                 // Child muscle IDs
+  searchTags: string[];                // Keywords for exercise filtering
+  fiberType: 'fast' | 'slow' | 'mixed';
+  trainingFocus: 'strength' | 'hypertrophy' | 'endurance' | 'power' | 'stability';
+  exrxUrl?: string;                    // Direct link to ExRx muscle page
+  isDeepMuscle: boolean;               // Hidden/stabilizer vs. visible muscles
 }
 
+// Complete ExRx muscle database - 55 muscles for professional precision
 export const muscleData: Record<number, MuscleInfo> = {
-  1: { id: 1, name: "Chest", templateRef: "muscle1" },
-  3: { id: 3, name: "Shoulders", templateRef: "muscle3" },
-  5: { id: 5, name: "Upper Traps", templateRef: "muscle5" },
-  7: { id: 7, name: "Biceps", templateRef: "muscle7" },
-  10: { id: 10, name: "Forearms", templateRef: "muscle10" },
-  12: { id: 12, name: "Core", templateRef: "muscle12" },
-  13: { id: 13, name: "Serratus Anterior", templateRef: "muscle13" },
-  14: { id: 14, name: "Obliques", templateRef: "muscle14" },
-  15: { id: 15, name: "Hip Adductors", templateRef: "muscle15" },
-  17: { id: 17, name: "Quads", templateRef: "muscle17" },
-  22: { id: 22, name: "Calves", templateRef: "muscle22" },
-  31: { id: 31, name: "Trapezius", templateRef: "muscle31" },
-  32: { id: 32, name: "Lower Traps", templateRef: "muscle32" },
-  33: { id: 33, name: "Teres", templateRef: "muscle33" },
-  34: { id: 34, name: "Posterior Deltoid", templateRef: "muscle34" },
-  36: { id: 36, name: "Triceps", templateRef: "muscle36" },
-  38: { id: 38, name: "Forearms", templateRef: "muscle38" },
-  39: { id: 39, name: "Latissimus Dorsi", templateRef: "muscle39" },
-  40: { id: 40, name: "Lower Back", templateRef: "muscle40" },
-  42: { id: 42, name: "Glutes", templateRef: "muscle41_5" },
-  43: { id: 43, name: "External Obliques", templateRef: "muscle43" },
-  44: { id: 44, name: "Hamstrings", templateRef: "muscle44" },
-  47: { id: 47, name: "Calves", templateRef: "muscle47" },
-  50: { id: 50, name: "Heart", templateRef: "muscle50" },
+  
+  // === NECK REGION (100-109) ===
+  100: {
+    id: 100,
+    name: "Neck",
+    templateRef: "neck_group",
+    exrxName: "Neck",
+    category: "Neck",
+    commonNames: ["Neck", "Cervical"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: true,
+    children: [101, 102],
+    searchTags: ["neck", "cervical", "head"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: false
+  },
+  101: {
+    id: 101,
+    name: "Sternocleidomastoid",
+    templateRef: "sternocleidomastoid",
+    exrxName: "Sternocleidomastoid",
+    category: "Neck",
+    commonNames: ["SCM", "Neck Flexor"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 100,
+    searchTags: ["neck flexion", "head rotation"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  102: {
+    id: 102,
+    name: "Splenius",
+    templateRef: "splenius",
+    exrxName: "Splenius",
+    category: "Neck",
+    commonNames: ["Neck Extensor"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 100,
+    searchTags: ["neck extension", "head lifting"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  // === SHOULDER REGION (110-119) ===
+  110: {
+    id: 110,
+    name: "Shoulders",
+    templateRef: "shoulder_group",
+    exrxName: "Shoulders",
+    category: "Shoulders",
+    commonNames: ["Delts", "Deltoids", "Shoulders"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: true,
+    children: [111, 112, 113, 114],
+    searchTags: ["shoulders", "pressing", "overhead"],
+    fiberType: "mixed",
+    trainingFocus: "strength",
+    isDeepMuscle: false
+  },
+  111: {
+    id: 111,
+    name: "Anterior Deltoid",
+    templateRef: "deltoid_anterior",
+    exrxName: "Deltoid, Anterior",
+    category: "Shoulders",
+    subCategory: "Anterior",
+    commonNames: ["Front Delts", "Front Shoulders"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 110,
+    searchTags: ["front raise", "pressing", "overhead"],
+    fiberType: "mixed",
+    trainingFocus: "hypertrophy",
+    isDeepMuscle: false
+  },
+  112: {
+    id: 112,
+    name: "Lateral Deltoid",
+    templateRef: "deltoid_lateral",
+    exrxName: "Deltoid, Lateral",
+    category: "Shoulders",
+    subCategory: "Lateral",
+    commonNames: ["Side Delts", "Middle Delts"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 110,
+    searchTags: ["lateral raise", "side raise", "width"],
+    fiberType: "fast",
+    trainingFocus: "hypertrophy",
+    isDeepMuscle: false
+  },
+  113: {
+    id: 113,
+    name: "Posterior Deltoid",
+    templateRef: "deltoid_posterior",
+    exrxName: "Deltoid, Posterior",
+    category: "Shoulders",
+    subCategory: "Posterior",
+    commonNames: ["Rear Delts", "Back Shoulders"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 110,
+    searchTags: ["rear fly", "reverse fly", "posture"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  114: {
+    id: 114,
+    name: "Supraspinatus",
+    templateRef: "supraspinatus",
+    exrxName: "Supraspinatus",
+    category: "Shoulders",
+    commonNames: ["Rotator Cuff", "Supraspinatus"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    searchTags: ["rotator cuff", "shoulder stability", "abduction"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  // === UPPER ARM REGION (120-129) ===
+  120: {
+    id: 120,
+    name: "Upper Arms",
+    templateRef: "upper_arms_group",
+    exrxName: "Upper Arms",
+    category: "Arms",
+    commonNames: ["Arms", "Upper Arms"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: true,
+    children: [121, 122, 123, 124],
+    searchTags: ["arms", "biceps", "triceps"],
+    fiberType: "mixed",
+    trainingFocus: "hypertrophy",
+    isDeepMuscle: false
+  },
+  121: {
+    id: 121,
+    name: "Triceps Brachii",
+    templateRef: "triceps_brachii",
+    exrxName: "Triceps Brachii",
+    category: "Arms",
+    commonNames: ["Triceps", "Tris"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    parentId: 120,
+    searchTags: ["pressing", "dips", "extension"],
+    fiberType: "fast",
+    trainingFocus: "strength",
+    isDeepMuscle: false
+  },
+  122: {
+    id: 122,
+    name: "Biceps Brachii",
+    templateRef: "biceps_brachii",
+    exrxName: "Biceps Brachii",
+    category: "Arms",
+    commonNames: ["Biceps", "Guns"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: true,
+    parentId: 120,
+    searchTags: ["curls", "pulling", "flexion"],
+    fiberType: "fast",
+    trainingFocus: "hypertrophy",
+    isDeepMuscle: false
+  },
+  123: {
+    id: 123,
+    name: "Brachialis",
+    templateRef: "brachialis",
+    exrxName: "Brachialis",
+    category: "Arms",
+    commonNames: ["Deep Bicep"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 120,
+    searchTags: ["hammer curls", "neutral grip"],
+    fiberType: "slow",
+    trainingFocus: "strength",
+    isDeepMuscle: true
+  },
+  124: {
+    id: 124,
+    name: "Coracobrachialis",
+    templateRef: "coracobrachialis",
+    exrxName: "Coracobrachialis",
+    category: "Arms",
+    commonNames: ["Coracobrachialis"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    searchTags: ["shoulder stability", "adduction"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  // === FOREARM REGION (130-139) ===
+  130: {
+    id: 130,
+    name: "Forearms",
+    templateRef: "forearms_group",
+    exrxName: "Forearms",
+    category: "Forearms",
+    commonNames: ["Forearms", "Lower Arms"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: true,
+    children: [131, 132, 133, 134, 135],
+    searchTags: ["forearms", "grip", "wrists"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  131: {
+    id: 131,
+    name: "Brachioradialis",
+    templateRef: "brachioradialis",
+    exrxName: "Brachioradialis",
+    category: "Forearms",
+    commonNames: ["Forearm Bicep"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 130,
+    searchTags: ["hammer curls", "reverse curls"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  132: {
+    id: 132,
+    name: "Wrist Flexors",
+    templateRef: "wrist_flexors",
+    exrxName: "Wrist Flexors",
+    category: "Forearms",
+    commonNames: ["Wrist Flexors", "Forearm Flexors"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 130,
+    searchTags: ["wrist curls", "grip strength"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  133: {
+    id: 133,
+    name: "Wrist Extensors",
+    templateRef: "wrist_extensors",
+    exrxName: "Wrist Extensors",
+    category: "Forearms",
+    commonNames: ["Wrist Extensors", "Forearm Extensors"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 130,
+    searchTags: ["reverse wrist curls", "extension"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  134: {
+    id: 134,
+    name: "Pronators",
+    templateRef: "pronators",
+    exrxName: "Pronators",
+    category: "Forearms",
+    commonNames: ["Pronators"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 130,
+    searchTags: ["pronation", "forearm rotation"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+  135: {
+    id: 135,
+    name: "Supinators",
+    templateRef: "supinators",
+    exrxName: "Supinators",
+    category: "Forearms",
+    commonNames: ["Supinators"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 130,
+    searchTags: ["supination", "forearm rotation"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  // === BACK REGION (140-159) ===
+  140: {
+    id: 140,
+    name: "Back",
+    templateRef: "back_group",
+    exrxName: "Back",
+    category: "Back",
+    commonNames: ["Back", "Lats", "Traps"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    children: [141, 142, 143, 144, 145, 146, 147, 148, 149, 150],
+    searchTags: ["back", "pulling", "rows"],
+    fiberType: "mixed",
+    trainingFocus: "strength",
+    isDeepMuscle: false
+  },
+  141: {
+    id: 141,
+    name: "Latissimus Dorsi",
+    templateRef: "latissimus_dorsi",
+    exrxName: "Latissimus Dorsi",
+    category: "Back",
+    commonNames: ["Lats", "Wings"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    parentId: 140,
+    searchTags: ["pull ups", "rows", "width"],
+    fiberType: "mixed",
+    trainingFocus: "strength",
+    isDeepMuscle: false
+  },
+  142: {
+    id: 142,
+    name: "Teres Major",
+    templateRef: "teres_major",
+    exrxName: "Teres Major",
+    category: "Back",
+    commonNames: ["Little Lat", "Teres Major"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 140,
+    searchTags: ["pull ups", "adduction"],
+    fiberType: "mixed",
+    trainingFocus: "strength",
+    isDeepMuscle: false
+  },
+  143: {
+    id: 143,
+    name: "Upper Trapezius",
+    templateRef: "trapezius_upper",
+    exrxName: "Trapezius, Upper",
+    category: "Back",
+    subCategory: "Upper",
+    commonNames: ["Upper Traps", "Traps"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    parentId: 140,
+    searchTags: ["shrugs", "neck", "elevation"],
+    fiberType: "fast",
+    trainingFocus: "power",
+    isDeepMuscle: false
+  },
+  144: {
+    id: 144,
+    name: "Middle Trapezius",
+    templateRef: "trapezius_middle",
+    exrxName: "Trapezius, Middle",
+    category: "Back",
+    subCategory: "Middle",
+    commonNames: ["Middle Traps", "Mid Traps"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 140,
+    searchTags: ["rows", "retraction", "posture"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  145: {
+    id: 145,
+    name: "Lower Trapezius",
+    templateRef: "trapezius_lower",
+    exrxName: "Trapezius, Lower",
+    category: "Back",
+    subCategory: "Lower",
+    commonNames: ["Lower Traps"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 140,
+    searchTags: ["depression", "posture", "stability"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  146: {
+    id: 146,
+    name: "Levator Scapulae",
+    templateRef: "levator_scapulae",
+    exrxName: "Levator Scapulae",
+    category: "Back",
+    commonNames: ["Levator Scapulae"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    searchTags: ["shoulder elevation", "neck"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+  147: {
+    id: 147,
+    name: "Rhomboids",
+    templateRef: "rhomboids",
+    exrxName: "Rhomboids",
+    category: "Back",
+    commonNames: ["Rhombs", "Rhomboids"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 140,
+    searchTags: ["rows", "retraction", "posture"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  148: {
+    id: 148,
+    name: "Infraspinatus",
+    templateRef: "infraspinatus",
+    exrxName: "Infraspinatus",
+    category: "Back",
+    commonNames: ["Infraspinatus", "Rotator Cuff"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    searchTags: ["rotator cuff", "external rotation"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+  149: {
+    id: 149,
+    name: "Teres Minor",
+    templateRef: "teres_minor",
+    exrxName: "Teres Minor",
+    category: "Back",
+    commonNames: ["Teres Minor", "Rotator Cuff"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    searchTags: ["rotator cuff", "external rotation"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+  150: {
+    id: 150,
+    name: "Subscapularis",
+    templateRef: "subscapularis",
+    exrxName: "Subscapularis",
+    category: "Back",
+    commonNames: ["Subscapularis", "Rotator Cuff"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    searchTags: ["rotator cuff", "internal rotation"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  // === CHEST REGION (160-169) ===
+  160: {
+    id: 160,
+    name: "Chest",
+    templateRef: "chest_group",
+    exrxName: "Chest",
+    category: "Chest",
+    commonNames: ["Chest", "Pecs", "Pectorals"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: true,
+    children: [161, 162, 163, 164],
+    searchTags: ["chest", "pressing", "pecs"],
+    fiberType: "mixed",
+    trainingFocus: "hypertrophy",
+    isDeepMuscle: false
+  },
+  161: {
+    id: 161,
+    name: "Pectoralis Major (Sternal)",
+    templateRef: "pectoralis_sternal",
+    exrxName: "Pectoralis Major, Sternal Head",
+    category: "Chest",
+    subCategory: "Sternal",
+    commonNames: ["Lower Chest", "Lower Pecs"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 160,
+    searchTags: ["decline", "lower", "pressing"],
+    fiberType: "mixed",
+    trainingFocus: "hypertrophy",
+    isDeepMuscle: false
+  },
+  162: {
+    id: 162,
+    name: "Pectoralis Major (Clavicular)",
+    templateRef: "pectoralis_clavicular",
+    exrxName: "Pectoralis Major, Clavicular Head",
+    category: "Chest",
+    subCategory: "Clavicular",
+    commonNames: ["Upper Chest", "Upper Pecs"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 160,
+    searchTags: ["incline", "upper", "pressing"],
+    fiberType: "mixed",
+    trainingFocus: "hypertrophy",
+    isDeepMuscle: false
+  },
+  163: {
+    id: 163,
+    name: "Pectoralis Minor",
+    templateRef: "pectoralis_minor",
+    exrxName: "Pectoralis Minor",
+    category: "Chest",
+    commonNames: ["Pec Minor"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    searchTags: ["protraction", "stability"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+  164: {
+    id: 164,
+    name: "Serratus Anterior",
+    templateRef: "serratus_anterior",
+    exrxName: "Serratus Anterior",
+    category: "Chest",
+    commonNames: ["Serratus", "Boxer Muscle"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: true,
+    searchTags: ["protraction", "punching", "stability"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: false
+  },
+
+  // === WAIST/CORE REGION (170-179) ===
+  170: {
+    id: 170,
+    name: "Core",
+    templateRef: "core_group",
+    exrxName: "Waist",
+    category: "Core",
+    commonNames: ["Core", "Abs", "Waist"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: true,
+    children: [171, 172, 173, 174, 175],
+    searchTags: ["core", "abs", "stability"],
+    fiberType: "mixed",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  171: {
+    id: 171,
+    name: "Rectus Abdominis",
+    templateRef: "rectus_abdominis",
+    exrxName: "Rectus Abdominis",
+    category: "Core",
+    commonNames: ["Six Pack", "Abs"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: true,
+    parentId: 170,
+    searchTags: ["crunches", "sit ups", "flexion"],
+    fiberType: "fast",
+    trainingFocus: "hypertrophy",
+    isDeepMuscle: false
+  },
+  172: {
+    id: 172,
+    name: "Transverse Abdominis",
+    templateRef: "transverse_abdominis",
+    exrxName: "Transverse Abdominis",
+    category: "Core",
+    commonNames: ["TVA", "Deep Core"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 170,
+    searchTags: ["deep core", "stability", "breathing"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+  173: {
+    id: 173,
+    name: "Obliques",
+    templateRef: "obliques",
+    exrxName: "Obliques",
+    category: "Core",
+    commonNames: ["Side Abs", "External Obliques"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: true,
+    parentId: 170,
+    searchTags: ["side planks", "rotation", "twisting"],
+    fiberType: "mixed",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  174: {
+    id: 174,
+    name: "Quadratus Lumborum",
+    templateRef: "quadratus_lumborum",
+    exrxName: "Quadratus Lumborum",
+    category: "Core",
+    commonNames: ["QL", "Side Back"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    searchTags: ["side bending", "stability"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+  175: {
+    id: 175,
+    name: "Erector Spinae",
+    templateRef: "erector_spinae",
+    exrxName: "Erector Spinae",
+    category: "Core",
+    commonNames: ["Lower Back", "Spinal Erectors"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    searchTags: ["deadlift", "extension", "lower back"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  // === HIPS REGION (180-189) ===
+  180: {
+    id: 180,
+    name: "Hips",
+    templateRef: "hips_group",
+    exrxName: "Hips",
+    category: "Hips",
+    commonNames: ["Hips", "Glutes"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: true,
+    children: [181, 182, 183, 184],
+    searchTags: ["hips", "glutes", "power"],
+    fiberType: "mixed",
+    trainingFocus: "power",
+    isDeepMuscle: false
+  },
+  181: {
+    id: 181,
+    name: "Gluteus Maximus",
+    templateRef: "gluteus_maximus",
+    exrxName: "Gluteus Maximus",
+    category: "Hips",
+    commonNames: ["Glutes", "Butt"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    parentId: 180,
+    searchTags: ["squats", "deadlifts", "hip thrust"],
+    fiberType: "fast",
+    trainingFocus: "power",
+    isDeepMuscle: false
+  },
+  182: {
+    id: 182,
+    name: "Gluteus Medius",
+    templateRef: "gluteus_medius",
+    exrxName: "Gluteus Medius",
+    category: "Hips",
+    commonNames: ["Glute Med", "Side Glutes"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    searchTags: ["abduction", "stability", "lateral"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: false
+  },
+  183: {
+    id: 183,
+    name: "Gluteus Minimus",
+    templateRef: "gluteus_minimus",
+    exrxName: "Gluteus Minimus",
+    category: "Hips",
+    commonNames: ["Glute Min"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    searchTags: ["stability", "deep hip"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+  184: {
+    id: 184,
+    name: "Hip Flexors",
+    templateRef: "hip_flexors",
+    exrxName: "Hip Flexors",
+    category: "Hips",
+    commonNames: ["Iliopsoas", "Hip Flexors"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    searchTags: ["hip flexion", "sprinting"],
+    fiberType: "fast",
+    trainingFocus: "power",
+    isDeepMuscle: false
+  },
+  185: {
+    id: 185,
+    name: "Deep Hip External Rotators",
+    templateRef: "deep_hip_rotators",
+    exrxName: "Deep Hip External Rotators",
+    category: "Hips",
+    commonNames: ["Deep Hip Rotators", "Piriformis"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    searchTags: ["rotation", "stability", "piriformis"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  // === THIGH REGION (190-199) ===
+  190: {
+    id: 190,
+    name: "Thighs",
+    templateRef: "thighs_group",
+    exrxName: "Thighs",
+    category: "Thighs",
+    commonNames: ["Thighs", "Legs"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: true,
+    children: [191, 192, 193, 194, 195, 196],
+    searchTags: ["thighs", "legs", "quads", "hamstrings"],
+    fiberType: "mixed",
+    trainingFocus: "strength",
+    isDeepMuscle: false
+  },
+  191: {
+    id: 191,
+    name: "Quadriceps",
+    templateRef: "quadriceps",
+    exrxName: "Quadriceps",
+    category: "Thighs",
+    commonNames: ["Quads", "Front Thigh"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: true,
+    parentId: 190,
+    searchTags: ["squats", "lunges", "extension"],
+    fiberType: "mixed",
+    trainingFocus: "hypertrophy",
+    isDeepMuscle: false
+  },
+  192: {
+    id: 192,
+    name: "Hamstrings",
+    templateRef: "hamstrings",
+    exrxName: "Hamstrings",
+    category: "Thighs",
+    commonNames: ["Hams", "Back Thigh"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    parentId: 190,
+    searchTags: ["deadlifts", "curls", "flexion"],
+    fiberType: "fast",
+    trainingFocus: "power",
+    isDeepMuscle: false
+  },
+  193: {
+    id: 193,
+    name: "Hip Adductors",
+    templateRef: "hip_adductors",
+    exrxName: "Hip Adductors",
+    category: "Thighs",
+    commonNames: ["Adductors", "Inner Thigh", "Groin"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: true,
+    searchTags: ["inner thigh", "adduction", "groin"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  194: {
+    id: 194,
+    name: "Gracilis",
+    templateRef: "gracilis",
+    exrxName: "Gracilis",
+    category: "Thighs",
+    commonNames: ["Gracilis"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    searchTags: ["adduction", "inner thigh"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: true
+  },
+  195: {
+    id: 195,
+    name: "Sartorius",
+    templateRef: "sartorius",
+    exrxName: "Sartorius",
+    category: "Thighs",
+    commonNames: ["Sartorius", "Longest Muscle"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    searchTags: ["hip flexion", "longest muscle"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  196: {
+    id: 196,
+    name: "Pectineus",
+    templateRef: "pectineus",
+    exrxName: "Pectineus",
+    category: "Thighs",
+    commonNames: ["Pectineus"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    searchTags: ["hip flexion", "adduction"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  // === CALVES REGION (200-209) ===
+  200: {
+    id: 200,
+    name: "Calves",
+    templateRef: "calves_group",
+    exrxName: "Calves",
+    category: "Calves",
+    commonNames: ["Calves", "Lower Leg"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    children: [201, 202, 203, 204],
+    searchTags: ["calves", "jumping", "lower leg"],
+    fiberType: "mixed",
+    trainingFocus: "power",
+    isDeepMuscle: false
+  },
+  201: {
+    id: 201,
+    name: "Gastrocnemius",
+    templateRef: "gastrocnemius",
+    exrxName: "Gastrocnemius",
+    category: "Calves",
+    commonNames: ["Calves", "Gastroc"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    parentId: 200,
+    searchTags: ["calf raises", "jumping"],
+    fiberType: "fast",
+    trainingFocus: "power",
+    isDeepMuscle: false
+  },
+  202: {
+    id: 202,
+    name: "Soleus",
+    templateRef: "soleus",
+    exrxName: "Soleus",
+    category: "Calves",
+    commonNames: ["Deep Calf", "Soleus"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 200,
+    searchTags: ["seated calf raises", "endurance"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: true
+  },
+  203: {
+    id: 203,
+    name: "Tibialis Anterior",
+    templateRef: "tibialis_anterior",
+    exrxName: "Tibialis Anterior",
+    category: "Calves",
+    commonNames: ["Shins", "Tibialis"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    searchTags: ["shins", "dorsiflexion"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  204: {
+    id: 204,
+    name: "Popliteus",
+    templateRef: "popliteus",
+    exrxName: "Popliteus",
+    category: "Calves",
+    commonNames: ["Popliteus"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    searchTags: ["knee stability", "rotation"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  // === SPECIAL MUSCLES (210+) ===
+  210: {
+    id: 210,
+    name: "Heart",
+    templateRef: "heart_muscle",
+    exrxName: "Cardiovascular",
+    category: "Cardiovascular",
+    commonNames: ["Heart", "Cardio", "Cardiovascular"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: true,
+    searchTags: ["cardio", "endurance", "heart rate"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+  211: {
+    id: 211,
+    name: "Tensor Fasciae Latae",
+    templateRef: "tensor_fasciae_latae",
+    exrxName: "Tensor Fasciae Latae",
+    category: "Special",
+    commonNames: ["TFL", "IT Band"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    searchTags: ["IT band", "hip stability"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: false
+  }
 };
 
-export const muscleList = Object.values(muscleData);
-
+// Professional utility functions for muscle database
 export const getMuscleById = (id: number): MuscleInfo | undefined => {
   return muscleData[id];
 };
 
 export const searchMuscles = (query: string): MuscleInfo[] => {
-  if (!query.trim()) return [];
-  
-  const lowercaseQuery = query.toLowerCase();
-  return muscleList.filter(muscle => 
-    muscle.name.toLowerCase().includes(lowercaseQuery)
+  const lowerQuery = query.toLowerCase();
+  return Object.values(muscleData).filter(muscle => 
+    muscle.name.toLowerCase().includes(lowerQuery) ||
+    muscle.exrxName.toLowerCase().includes(lowerQuery) ||
+    muscle.commonNames.some(name => name.toLowerCase().includes(lowerQuery)) ||
+    muscle.searchTags.some(tag => tag.toLowerCase().includes(lowerQuery))
   );
+};
+
+export const getMusclesByCategory = (category: string): MuscleInfo[] => {
+  return Object.values(muscleData).filter(muscle => muscle.category === category);
+};
+
+export const getClickableMuscles = (): MuscleInfo[] => {
+  return Object.values(muscleData).filter(muscle => muscle.isClickableOnBodyMap);
+};
+
+export const getSearchableMuscles = (): MuscleInfo[] => {
+  return Object.values(muscleData).filter(muscle => !muscle.isDeepMuscle || muscle.isClickableOnBodyMap);
+};
+
+export const getDeepMuscles = (): MuscleInfo[] => {
+  return Object.values(muscleData).filter(muscle => muscle.isDeepMuscle);
+};
+
+export const getParentMuscles = (): MuscleInfo[] => {
+  return Object.values(muscleData).filter(muscle => muscle.children && muscle.children.length > 0);
+};
+
+export const getChildMuscles = (parentId: number): MuscleInfo[] => {
+  return Object.values(muscleData).filter(muscle => muscle.parentId === parentId);
+};
+
+export const getMusclesByTrainingFocus = (focus: string): MuscleInfo[] => {
+  return Object.values(muscleData).filter(muscle => muscle.trainingFocus === focus);
+};
+
+export const getCategories = (): string[] => {
+  return Array.from(new Set(Object.values(muscleData).map(muscle => muscle.category)));
+};
+
+// Get muscles appropriate for different UI contexts
+export const getBodyMapMuscles = (): MuscleInfo[] => {
+  return getClickableMuscles(); // ~20 major regions for SVG
+};
+
+export const getBrowseMuscles = (): MuscleInfo[] => {
+  return getSearchableMuscles(); // ~45 muscles for search/browse
+};
+
+export const getAdvancedMuscles = (): MuscleInfo[] => {
+  return Object.values(muscleData); // All 55+ muscles for pro users
 };

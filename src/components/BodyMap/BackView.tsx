@@ -64,7 +64,7 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
          	<path   d="M116.8,996.1c-4.1,4.8-27.5,43.7-12.7,43.9C113.9,1040.1,118.5,1003.5,116.8,996.1z"/>
          </g>
       {/* Triceps */}
-      <g className={`muscleSection ${selectedMuscleId === 38 ? 'selected' : ''}`} id="38">
+      <g className={`muscleSection ${selectedMuscleId === 121 ? 'selected' : ''}`} id="121">
         <g id="Triceps">
           
           <g id="Long_Head">
@@ -82,7 +82,7 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
           <g 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(36)}
+            onClick={() => onMuscleClick(121)}
           >
             <path d="M316.6,457.2c-12.5,6.7-112.1,57.8-120.3,123.5s31.7,121.1,54.6,123.4c22.9,2.4,64.1-41.9,70.5-77.2S316.6,457.2,316.6,457.2z"/>
             <path d="M770.2,457.2c12.5,6.7,92.6,57.3,100.8,123s-12.2,121.6-35,124s-76.4-33.1-82.9-68.5C746.7,600.3,770.2,457.2,770.2,457.2z"/>
@@ -91,7 +91,7 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
       </g>
 
       {/* Forearms */}
-      <g className={`muscleSection ${selectedMuscleId === 38 ? 'selected' : ''}`} id="38">
+      <g className={`muscleSection ${selectedMuscleId === 130 ? 'selected' : ''}`} id="130">
         <g id="Forearms">
           <g id="Brachioradialis">
      		<path d="M172.5,847.8c-12.5,19.8-24.8,39.7-37.5,59.4c-5.8,9.2-11,19.7-17.4,28.3c-1.9,2.5-9.4,9.1-13.2,7
@@ -134,7 +134,7 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
       <g 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(38)}
+            onClick={() => onMuscleClick(130)}
           >
             <path d="M286.5,720.1c-6.1-26-79.4-52.3-101.9-38c-43.5,27.7-78.6,92.4-85.6,147c-10.6,82.5,40.8,152.1,70.3,155c29.5,3,108.4-72.7,116.6-117C291.1,839.4,297.5,767.5,286.5,720.1z"/>
             <path d="M808.3,706c19.5-16.4,32.4-38.2,53.8-24.4c39.3,25.3,98.5,88.1,106,146.9c10.6,82.5-15.7,152.7-45.1,155.7c-55.5,5.7-98.9-44.3-106.8-86C789,848,756.1,750,808.3,706z"/>
@@ -143,7 +143,7 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
       </g>
 
       {/* Glutes */}
-      <g className={`muscleSection ${selectedMuscleId === 43 ? 'selected' : ''}`} id="43">
+      <g className={`muscleSection ${selectedMuscleId === 181 ? 'selected' : ''}`} id="181">
         <g id="Glutes">
     
           <g id="Gluteus_Maximus">
@@ -157,22 +157,22 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
           <path 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(42)}
+            onClick={() => onMuscleClick(181)}
             d="M356.8,838.8c20.8-8.7,44.7-9.6,66.1-2.4c5,1.7,10,3.9,14,7.3c5,4.2,8.3,9.9,11.8,15.3c12.3,18.5,28.6,34,44.7,49.4c3,2.8,6,5.7,9.8,7.2c3.6,1.5,7.6,1.6,11.6,1.6c21,0,42.3-2.5,61.7-10.7c19.3-8.2,36.6-22.6,45.1-41.9c1.6-3.6,2.9-7.5,5.3-10.6c3.1-4.2,7.8-6.9,12.5-9.1c32.1-15,41.4-18,75.4-8c25.4,7.5,31.2,15.1,48.5,35.2c21,24.5,20.7,73.1,22.7,105.3c3.1,50.3,11.8,84.8-10.1,130.2c-12,25.1-2.4,52.3-30.2,51.8c-16.5-0.3-25.3-2.9-39-12.1c-16.7-11.2-30.3-18.3-47-29.5c-30.3-20.3-65.1-41.5-100.7-33.6c-15.2,3.4-28.8,11.9-43.8,15.9c-28.2,7.4-58.6-1.7-87.2,4.3c-17.8,3.8-34.4,13.6-46.2,27.5c-7.4,8.7-13.2,19-22.5,25.5c-10.8,7.4-12.5-2.4-25.6-1.7c-15.5,0.9-7.7-9.7-21.5-16.8c-20.1-10.4-29.4-33.8-34.9-55.7c-14.3-57.6-22.2-98.9,5-151.7C304,889.2,321.6,870.6,356.8,838.8"
           />
         </g>
       </g>
 
       {/* Lower Back */}
-      <g id="Lower Back" className={`muscleSection ${selectedMuscleId === 40 ? 'selected' : ''}`}>
-         <g id="40" onClick={() => onMuscleClick(40)  }>
+      <g id="Lower Back" className={`muscleSection ${selectedMuscleId === 175 ? 'selected' : ''}`}>
+         <g id="175" onClick={() => onMuscleClick(175)  }>
           <path id="Erector_Spinae" d="M544,702.5c-1.2-4.7-7.9-4.7-9.1,0c-10,38.3-34.8,197.1-31.2,202.8c4.6,7.2,8.3,12,28.3,12h10.8
           	c19.9,0,23.7-4.8,28.3-12C574.6,899.7,553.9,740.8,544,702.5z"/>
            </g>
       </g>
 
       {/* Latissimus Dorsi */}
-      <g className={`muscleSection ${selectedMuscleId === 39 ? 'selected' : ''}`} id="39">
+      <g className={`muscleSection ${selectedMuscleId === 141 ? 'selected' : ''}`} id="141">
       <g id="Latissimus Dorsi">
        
         <g id="Latissim">
@@ -182,15 +182,15 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
          <path 
           id="surround"
           style={{ fill: 'transparent', cursor: 'pointer' }}
-          onClick={() => onMuscleClick(39)}
+          onClick={() => onMuscleClick(141)}
           d="M765.9,505.1c8.7,15,1.2,33.8-5.6,49.8c-10.1,23.9-18.4,48.5-24.8,73.5c-3.8,14.7-6.9,29.6-11.8,43.9c-5.5,16.1-13.1,31.3-20.6,46.5c-5.1,10.2-10.1,20.3-15.2,30.5c-26.3,52.8-53.3,106.7-95,148.5c-18.2-27.5-23-62.7-28.5-95.2c-3.5-20.4-9.8-134-27.1-145.4c-9.8,14.7-19,120.9-21,138.5c-3.4,30.5-8.7,66.3-25.7,91.8c-15.9,2-28.4-12.7-37.6-25.9c-15.4-22.1-30.9-44.4-41.9-68.9c-6.6-14.6-11.6-29.8-18.8-44.1c-9.4-18.5-22.6-35.5-27.2-55.7c-3.9-17.2-1.2-35.3-3.5-52.8c-1.4-10.5-4.5-20.7-7.7-30.8c-4-12.8-8.2-25.9-16.6-36.3c-5.1-6.2-11.5-11.3-16.2-17.9c-9.7-13.6-10.1-31.5-10.1-48.3c0-3.6,0-7.2,1.5-10.5c4.3-9.5,17.6-9.9,27.9-7.9c39.4,7.8,74.6,28.8,111.1,45.7c36.4,16.9,77.3,30,116.3,20.6c12-2.9,23.4-7.8,34.7-12.7c12.7,0,33.8-14.7,45.6-19.8c16-6.9,31.9-13.8,47.9-20.8c12.4-5.4,31.1-18.2,44.5-18.6C751.6,482.6,760.8,496.3,765.9,505.1z"
         />
       </g>
       </g>
 
       {/* Posterior Deltoid */}
-      <g className={`muscleSection ${selectedMuscleId === 34 ? 'selected' : ''}`} id="34">
-        <g id="Posterior Deltoid" onClick={() => onMuscleClick(34)}>
+      <g className={`muscleSection ${selectedMuscleId === 113 ? 'selected' : ''}`} id="113">
+        <g id="Posterior Deltoid" onClick={() => onMuscleClick(113)}>
    
          	<path d="M832.6,448.2c-0.4-4.1-4.9,53.1-11,44.7c-17-24.2-41.2-44-59.6-67.4c-5.6-7.1-48.2-50.5-47.2-55.9
          		c3.9-20.1,60.2-16.4,72-11.4C818.7,371.6,835.9,415.5,832.6,448.2z"/>
@@ -199,7 +199,7 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
       </g>
 
       {/* Trapezius */}
-      <g className={`muscleSection ${selectedMuscleId === 31 ? 'selected' : ''}`} id="31">
+      <g className={`muscleSection ${selectedMuscleId === 143 ? 'selected' : ''}`} id="143">
         <g id="Trapezius">
           
           <g id="Upper_Traps">
@@ -213,15 +213,15 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
           <path 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(31)}
+            onClick={() => onMuscleClick(143)}
             d="M659.6,174.2c-1.5-9.9-59-17.1-63.3-26.1S584.6,131,575,128.4c-7-1.9-14.4-0.8-21.5,0.4c-20.2,3.3-40.2,7.2-60.2,11.6c-25.9,5.7-52.8,13.1-71.9,31.5c-15.1,14.5-23.7,34.5-30.1,54.5c-7.7,24.2-120.6,74.5-119.3,99.8c0.9,17.6,126.2,46.5,131.6,63.2c14.3,44.1,35.2,104.3,68.2,136.9c26.4,26.1,39.4,25.1,75.8,31.8s66-57,90.3-85c13.6-15.7,35.4-66.3,42-86c20.2-60.4,112.8-15.2,102.5-78c-2.3-14.2-83.3-76.7-92.2-88C680,207.8,668,188.6,659.6,174.2"
           />
         </g>
       </g>
 
       {/* Teres */}
-      <g className={`muscleSection ${selectedMuscleId === 33 ? 'selected' : ''}`} id="33">
-      <g id="Teres" className={`muscleSection ${selectedMuscleId === 33 ? 'selected' : ''}`} onClick={() => onMuscleClick(33)}>
+      <g className={`muscleSection ${selectedMuscleId === 142 ? 'selected' : ''}`} id="142">
+      <g id="Teres" className={`muscleSection ${selectedMuscleId === 142 ? 'selected' : ''}`} onClick={() => onMuscleClick(142)}>
         <path d="M661.9,491.3c-4.5,1.1-8.9,0.7-13.1-1.2c-4.5-6.2,24.8-68.3,29.1-74.9c24.6-37.2,43.1-17.7,63.5,15.6
          		c8.1,13.2,22.6,33,10.9,45.1C743.2,485.2,673.3,490.8,661.9,491.3z"/>
          	<path d="M411.7,489.3c4.5,1.1,8.9,0.7,13.1-1.2c4.5-6.2-24.8-68.3-29.1-74.9c-24.6-37.2-43.1-17.7-63.5,15.6
@@ -236,7 +236,7 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
       </g>
 
       {/* Calves */}
-      <g className={`muscleSection ${selectedMuscleId === 47 ? 'selected' : ''}`} id="47">
+      <g className={`muscleSection ${selectedMuscleId === 201 ? 'selected' : ''}`} id="201">
         <g id="Calves">
          
           <g id="Gastrocnemius">
@@ -255,14 +255,14 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
          <rect 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(47)}
+            onClick={() => onMuscleClick(201)}
             x="314" y="1491" width="437" height="558.5"
           />
           </g>
       </g>
 
       {/* Hamstrings */}
-      <g className={`muscleSection ${selectedMuscleId === 44 ? 'selected' : ''}`} id="44">
+      <g className={`muscleSection ${selectedMuscleId === 192 ? 'selected' : ''}`} id="192">
         <g id="Hamstrings">
           <g id="Sartorius">
       		<path d="M580.8,1308.1c11.6,20.8,17.6,38.6,18.8,74.6c0.8,23.3-12.6,108.6-12.6,135.6c-13.6-31.6,4.8-98.4-2.9-137.7
@@ -295,7 +295,7 @@ export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscl
           <path 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(44)}
+            onClick={() => onMuscleClick(192)}
             d="M348.6,1138.2c0,0-31.4,373.6,40,341.8c207.4-92.6,284.8-21.9,336.6,32c12.2,12.8,56.5-361.6-14.1-379C583.9,1043.8,347.8,1091.5,348.6,1138.2z"
           />
           <g id="Sartorius">
