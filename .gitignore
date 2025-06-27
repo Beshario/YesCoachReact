@@ -5,6 +5,7 @@ node_modules/
 dist/
 build/
 scraper/
+/exrx-offline
 # Log files
 logs/
 *.log
