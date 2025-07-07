@@ -1,136 +1,135 @@
 // src/services/exerciseData.ts
+// Backward compatibility layer for existing Exercise interface
 import { Exercise, MuscleGroup } from '../types/models';
+import { exerciseService } from './exerciseService';
+import { ExerciseInfo } from '../types/ExerciseTypes';
 
-// Sample exercises based on ExRx patterns
-export const exerciseDatabase: Exercise[] = [
-  // Chest exercises
-  {
-    id: 'bench-press',
-    name: 'Barbell Bench Press',
-    type: 'strength',
-    equipment: ['barbell', 'bench'],
-    primaryMuscles: ['chest'],
-    secondaryMuscles: ['front_delts', 'triceps'],
-    stabilizers: ['abs', 'lats'],
-    mechanics: 'compound',
-    force: 'push',
-    fiberBias: 'mixed',
-    recommendedGoals: ['strength', 'hypertrophy', 'power'],
-    instagramDemo: 'bench press form'
-  },
-  {
-    id: 'incline-db-press',
-    name: 'Incline Dumbbell Press',
-    type: 'strength',
-    equipment: ['dumbbells', 'bench'],
-    primaryMuscles: ['chest'],
-    secondaryMuscles: ['front_delts', 'triceps'],
-    mechanics: 'compound',
-    force: 'push',
-    fiberBias: 'mixed',
-    recommendedGoals: ['hypertrophy'],
-    instagramDemo: 'incline dumbbell press'
-  },
+// Muscle ID mapping from new system to old system
+const muscleIdToMuscleGroup: Record<number, MuscleGroup> = {
+  // Upper body - push
+  161: 'chest',      // Pectoralis Major (Sternal)
+  162: 'chest',      // Pectoralis Major (Clavicular)
+  111: 'front_delts', // Anterior Deltoid
+  112: 'side_delts',  // Lateral Deltoid
+  113: 'rear_delts',  // Posterior Deltoid
+  121: 'triceps',     // Triceps Brachii
   
-  // Back exercises
-  {
-    id: 'deadlift',
-    name: 'Conventional Deadlift',
-    type: 'strength',
-    equipment: ['barbell'],
-    primaryMuscles: ['lower_back', 'glutes', 'hamstrings'],
-    secondaryMuscles: ['traps', 'lats', 'quads'],
-    stabilizers: ['abs', 'forearms'],
-    mechanics: 'compound',
-    force: 'pull',
-    fiberBias: 'fast',
-    recommendedGoals: ['strength', 'power'],
-    instagramDemo: 'deadlift form technique'
-  },
-  {
-    id: 'pull-up',
-    name: 'Pull-up',
-    type: 'strength',
-    equipment: ['pull-up bar'],
-    primaryMuscles: ['lats'],
-    secondaryMuscles: ['biceps', 'mid_back', 'rear_delts'],
-    stabilizers: ['abs'],
-    mechanics: 'compound',
-    force: 'pull',
-    fiberBias: 'mixed',
-    recommendedGoals: ['strength', 'hypertrophy'],
-    instagramDemo: 'pull up progression'
-  },
+  // Upper body - pull
+  141: 'lats',        // Latissimus Dorsi
+  143: 'traps',       // Upper Trapezius
+  144: 'traps',       // Middle Trapezius
+  145: 'traps',       // Lower Trapezius
+  147: 'rhomboids',   // Rhomboids
+  122: 'biceps',      // Biceps Brachii
+  131: 'forearms',    // Brachioradialis
   
-  // Legs
-  {
-    id: 'squat',
-    name: 'Barbell Back Squat',
-    type: 'strength',
-    equipment: ['barbell', 'squat rack'],
-    primaryMuscles: ['quads', 'glutes'],
-    secondaryMuscles: ['hamstrings', 'calves'],
-    stabilizers: ['abs', 'lower_back'],
-    mechanics: 'compound',
-    force: 'push',
-    fiberBias: 'mixed',
-    recommendedGoals: ['strength', 'hypertrophy', 'power'],
-    instagramDemo: 'squat depth form'
-  },
+  // Core
+  171: 'abs',         // Rectus Abdominis
+  173: 'obliques',    // Obliques
+  172: 'transverse',  // Transverse Abdominis
+  175: 'lower_back', // Erector Spinae
   
-  // Cardio
-  {
-    id: 'running',
-    name: 'Running',
-    type: 'cardio',
-    equipment: [],
-    primaryMuscles: ['calves', 'quads', 'hamstrings'],
-    secondaryMuscles: ['glutes', 'hip_flexors'],
-    mechanics: 'compound',
-    force: 'push',
-    fiberBias: 'slow',
-    recommendedGoals: ['endurance'],
-    instagramDemo: 'running form tips'
-  },
-  
-  // Stretches
-  {
-    id: 'chest-doorway-stretch',
-    name: 'Chest Doorway Stretch',
-    type: 'stretch',
-    equipment: ['doorway'],
-    primaryMuscles: ['chest'],
-    secondaryMuscles: ['front_delts'],
-    mechanics: 'isolation',
-    force: 'static',
-    fiberBias: 'slow',
-    recommendedGoals: ['endurance'],
-    instagramDemo: 'chest stretch flexibility'
-  },
-  {
-    id: 'hamstring-stretch',
-    name: 'Standing Hamstring Stretch',
-    type: 'stretch',
-    equipment: [],
-    primaryMuscles: ['hamstrings'],
-    secondaryMuscles: ['calves'],
-    mechanics: 'isolation',
-    force: 'static',
-    fiberBias: 'slow',
-    recommendedGoals: ['endurance'],
-    instagramDemo: 'hamstring stretch routine'
+  // Lower body
+  191: 'quads',       // Quadriceps
+  192: 'hamstrings',  // Hamstrings
+  181: 'glutes',      // Gluteus Maximus
+  201: 'calves',      // Gastrocnemius
+  // Add more mappings as needed
+};
+
+/**
+ * Convert ExerciseInfo to legacy Exercise format
+ */
+function convertToLegacyExercise(exerciseInfo: ExerciseInfo): Exercise {
+  // Map muscle IDs to muscle groups
+  const primaryMuscles = exerciseInfo.muscleActivation.target
+    .map(id => muscleIdToMuscleGroup[id])
+    .filter(muscle => muscle !== undefined);
+
+  const secondaryMuscles = exerciseInfo.muscleActivation.synergists
+    .map(id => muscleIdToMuscleGroup[id])
+    .filter(muscle => muscle !== undefined);
+
+  const stabilizers = exerciseInfo.muscleActivation.stabilizers
+    .map(id => muscleIdToMuscleGroup[id])
+    .filter(muscle => muscle !== undefined);
+
+  // Map training types to legacy goals
+  const goalMapping: Record<string, any> = {
+    'strength': 'strength',
+    'hypertrophy': 'hypertrophy',
+    'power': 'power',
+    'endurance': 'endurance'
+  };
+
+  const recommendedGoals = exerciseInfo.trainingTypes
+    .map(type => goalMapping[type])
+    .filter(goal => goal !== undefined);
+
+  // Map fiber bias
+  const fiberBiasMapping: Record<number, any> = {
+    1: 'fast',
+    2: 'mixed',
+    3: 'slow'
+  };
+
+  return {
+    id: exerciseInfo.id.toString(),
+    name: exerciseInfo.name,
+    type: 'strength', // Default to strength for now
+    equipment: exerciseInfo.equipment,
+    primaryMuscles,
+    secondaryMuscles,
+    stabilizers,
+    mechanics: exerciseInfo.mechanics === 'isolated' ? 'isolation' : 'compound',
+    force: exerciseInfo.force === 'pull' ? 'pull' : exerciseInfo.force === 'push' ? 'push' : 'static',
+    fiberBias: fiberBiasMapping[exerciseInfo.fiberBias] || 'mixed',
+    recommendedGoals,
+    preparation: exerciseInfo.preparation,
+    execution: exerciseInfo.execution,
+    instagramDemo: exerciseInfo.instagramQuery
+  };
+}
+
+// Cache for converted exercises
+let cachedExercises: Exercise[] | null = null;
+
+/**
+ * Get all exercises in legacy format
+ */
+export async function getExerciseDatabase(): Promise<Exercise[]> {
+  if (cachedExercises) return cachedExercises;
+
+  try {
+    await exerciseService.initialize();
+    const exerciseInfos = await exerciseService.getStats();
+    
+    // For now, get a subset of exercises for compatibility
+    const allExerciseInfos = await exerciseService.quickSearch('', 100); // Limit to 100 for performance
+    
+    cachedExercises = allExerciseInfos.map(convertToLegacyExercise);
+    return cachedExercises;
+  } catch (error) {
+    console.error('Failed to load exercise database:', error);
+    // Return empty array as fallback
+    return [];
   }
-];
+}
 
-// Helper functions
-export function getExercisesByMuscle(muscle: MuscleGroup): Exercise[] {
-  return exerciseDatabase.filter(
+// Backward compatible helper functions
+export async function getExercisesByMuscle(muscle: MuscleGroup): Promise<Exercise[]> {
+  const exercises = await getExerciseDatabase();
+  return exercises.filter(
     ex => ex.primaryMuscles.includes(muscle) || ex.secondaryMuscles.includes(muscle)
   );
 }
 
-export function getExercisesByEquipment(equipment: string[]): Exercise[] {
-  return exerciseDatabase.filter(
+export async function getExercisesByEquipment(equipment: string[]): Promise<Exercise[]> {
+  const exercises = await getExerciseDatabase();
+  return exercises.filter(
     ex => ex.equipment.every(eq => equipment.includes(eq)) || ex.equipment.length === 0
   );
 }
+
+// Legacy export for backward compatibility
+export const exerciseDatabase: Exercise[] = [];

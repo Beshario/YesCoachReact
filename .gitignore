@@ -6,6 +6,7 @@ dist/
 build/
 scraper/
 /exrx-offline
+/ExrUnxipped
 # Log files
 logs/
 *.log

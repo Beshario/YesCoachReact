@@ -79,11 +79,25 @@ export interface TrainingEffect {
   estimatedRecoveryTime: number; // hours
 }
 
-// User preferences
+// User preferences and settings
+export type SortType = 'relevance' | 'type' | 'alphabetical';
+export type ExerciseListView = 'compact' | 'detailed';
+
+export interface UserPreferences {
+  defaultSortBy: SortType;
+  showSynergistExercises: boolean;
+  showStabilizerExercises: boolean;
+  exerciseListView: ExerciseListView;
+  autoExpandChildMuscles: boolean;
+}
+
 export interface UserProfile {
   id: string;
   availableEquipment: string[];
   goals: TrainingGoal[];
   experienceLevel: 'beginner' | 'intermediate' | 'advanced';
   injuries?: MuscleGroup[];
+  preferences: UserPreferences;
+  createdAt: Date;
+  lastUpdated: Date;
 }

@@ -188,7 +188,7 @@ export interface ActivationBasedSelection {
   experienceLevel: 'beginner' | 'intermediate' | 'advanced';
   
   // Current state constraints
-  fatigued Muscles: number[];              // Muscles needing recovery
+  fatiguedMuscles: number[];               // Muscles needing recovery
   injuredMuscles: number[];                // Muscles to avoid
   timeConstraint: number;                  // Minutes available
   

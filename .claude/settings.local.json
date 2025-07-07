@@ -9,7 +9,15 @@
       "Bash(mv:*)",
       "Bash(awk:*)",
       "Bash(grep:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(npm run build:*)",
+      "Bash(ls:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(find:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(jq:*)",
+      "Bash(node:*)"
     ],
     "deny": []
   }

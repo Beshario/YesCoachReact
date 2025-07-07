@@ -942,6 +942,397 @@ export const muscleData: Record<number, MuscleInfo> = {
     fiberType: "slow",
     trainingFocus: "stability",
     isDeepMuscle: false
+  },
+
+  // === NEW MUSCLE ADDITIONS ===
+  // === THIGHS ADDITIONS ===
+  197: {
+    id: 197,
+    name: "Adductor Brevis",
+    templateRef: "adductor_brevis",
+    exrxName: "Adductor Brevis",
+    category: "Thighs",
+    subCategory: "Adductors",
+    commonNames: ["Adductor Brevis","Short Adductor"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 193,
+    searchTags: ["adduction","inner thigh","hip adduction"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  198: {
+    id: 198,
+    name: "Adductor Longus",
+    templateRef: "adductor_longus",
+    exrxName: "Adductor Longus",
+    category: "Thighs",
+    subCategory: "Adductors",
+    commonNames: ["Adductor Longus","Long Adductor"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 193,
+    searchTags: ["adduction","inner thigh","hip adduction"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  199: {
+    id: 199,
+    name: "Adductor Magnus",
+    templateRef: "adductor_magnus",
+    exrxName: "Adductor Magnus",
+    category: "Thighs",
+    subCategory: "Adductors",
+    commonNames: ["Adductor Magnus","Great Adductor"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 193,
+    searchTags: ["adduction","inner thigh","hip adduction","hip extension"],
+    fiberType: "mixed",
+    trainingFocus: "strength",
+    isDeepMuscle: false
+  },
+
+  302: {
+    id: 302,
+    name: "Rectus Femoris",
+    templateRef: "rectus_femoris",
+    exrxName: "Rectus Femoris",
+    category: "Thighs",
+    subCategory: "Quadriceps",
+    commonNames: ["Straight Muscle of Thigh"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 191,
+    searchTags: ["knee extension","hip flexion","quadriceps","straight head"],
+    fiberType: "fast",
+    trainingFocus: "power",
+    isDeepMuscle: false
+  },
+
+  // === HIPS ADDITIONS ===
+  186: {
+    id: 186,
+    name: "Piriformis",
+    templateRef: "piriformis",
+    exrxName: "Piriformis",
+    category: "Hips",
+    subCategory: "Deep Rotators",
+    commonNames: ["Piriformis"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 185,
+    searchTags: ["hip rotation","external rotation","deep hip","piriformis syndrome"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  187: {
+    id: 187,
+    name: "Gemellus Superior",
+    templateRef: "gemellus_superior",
+    exrxName: "Gemellus Superior",
+    category: "Hips",
+    subCategory: "Deep Rotators",
+    commonNames: ["Superior Gemellus","Upper Gemellus"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 185,
+    searchTags: ["hip rotation","external rotation","deep hip"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  188: {
+    id: 188,
+    name: "Gemellus Inferior",
+    templateRef: "gemellus_inferior",
+    exrxName: "Gemellus Inferior",
+    category: "Hips",
+    subCategory: "Deep Rotators",
+    commonNames: ["Inferior Gemellus","Lower Gemellus"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 185,
+    searchTags: ["hip rotation","external rotation","deep hip"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  189: {
+    id: 189,
+    name: "Obturator Externus",
+    templateRef: "obturator_externus",
+    exrxName: "Obturator Externus",
+    category: "Hips",
+    subCategory: "Deep Rotators",
+    commonNames: ["External Obturator"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 185,
+    searchTags: ["hip rotation","external rotation","deep hip"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  301: {
+    id: 301,
+    name: "Psoas Major",
+    templateRef: "psoas_major",
+    exrxName: "Psoas Major",
+    category: "Hips",
+    subCategory: "Hip Flexors",
+    commonNames: ["Psoas","Great Psoas"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 184,
+    searchTags: ["hip flexion","core stability","psoas","iliopsoas"],
+    fiberType: "fast",
+    trainingFocus: "power",
+    isDeepMuscle: true
+  },
+
+  305: {
+    id: 305,
+    name: "Obturator Internus",
+    templateRef: "obturator_internus",
+    exrxName: "Obturator Internus",
+    category: "Hips",
+    subCategory: "Deep Rotators",
+    commonNames: ["Internal Obturator"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 185,
+    searchTags: ["hip rotation","external rotation","deep hip"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  306: {
+    id: 306,
+    name: "Quadratus Femoris",
+    templateRef: "quadratus_femoris",
+    exrxName: "Quadratus Femoris",
+    category: "Hips",
+    subCategory: "Deep Rotators",
+    commonNames: ["Square Muscle of Thigh"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 185,
+    searchTags: ["hip rotation","external rotation","deep hip"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: true
+  },
+
+  // === FOREARMS ADDITIONS ===
+  136: {
+    id: 136,
+    name: "Flexor Carpi Radialis",
+    templateRef: "flexor_carpi_radialis",
+    exrxName: "Flexor Carpi Radialis",
+    category: "Forearms",
+    subCategory: "Wrist Flexors",
+    commonNames: ["Radial Wrist Flexor"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 132,
+    searchTags: ["wrist flexion","radial deviation","grip"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  137: {
+    id: 137,
+    name: "Flexor Carpi Ulnaris",
+    templateRef: "flexor_carpi_ulnaris",
+    exrxName: "Flexor Carpi Ulnaris",
+    category: "Forearms",
+    subCategory: "Wrist Flexors",
+    commonNames: ["Ulnar Wrist Flexor"],
+    anatomicalLocation: "front",
+    isClickableOnBodyMap: false,
+    parentId: 132,
+    searchTags: ["wrist flexion","ulnar deviation","grip"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  138: {
+    id: 138,
+    name: "Extensor Carpi Radialis",
+    templateRef: "extensor_carpi_radialis",
+    exrxName: "Extensor Carpi Radialis",
+    category: "Forearms",
+    subCategory: "Wrist Extensors",
+    commonNames: ["Radial Wrist Extensor"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 133,
+    searchTags: ["wrist extension","radial deviation","grip"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  139: {
+    id: 139,
+    name: "Extensor Carpi Ulnaris",
+    templateRef: "extensor_carpi_ulnaris",
+    exrxName: "Extensor Carpi Ulnaris",
+    category: "Forearms",
+    subCategory: "Wrist Extensors",
+    commonNames: ["Ulnar Wrist Extensor"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 133,
+    searchTags: ["wrist extension","ulnar deviation","grip"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  // === NECK ADDITIONS ===
+  103: {
+    id: 103,
+    name: "Sternocleidomastoid (Posterior Fibers)",
+    templateRef: "sternocleidomastoid_posterior",
+    exrxName: "Sternocleidomastoid, Posterior Fibers",
+    category: "Neck",
+    subCategory: "Posterior",
+    commonNames: ["Posterior SCM","Back SCM Fibers"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 101,
+    searchTags: ["neck extension","head rotation","neck stabilization"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  // === CORE ADDITIONS ===
+  176: {
+    id: 176,
+    name: "Erector Spinae (Cervical)",
+    templateRef: "erector_spinae_cervical",
+    exrxName: "Erector Spinae, Cervicis & Capitis Fibers",
+    category: "Core",
+    subCategory: "Cervical",
+    commonNames: ["Cervical Erectors","Neck Erectors"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 175,
+    searchTags: ["neck extension","cervical extension","neck stability"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  177: {
+    id: 177,
+    name: "Iliocostalis Lumborum",
+    templateRef: "iliocostalis_lumborum",
+    exrxName: "Iliocostalis Lumborum",
+    category: "Core",
+    subCategory: "Erector Spinae",
+    commonNames: ["Lumbar Iliocostalis"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 175,
+    searchTags: ["spinal extension","lateral flexion","back extension"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  178: {
+    id: 178,
+    name: "Iliocostalis Thoracis",
+    templateRef: "iliocostalis_thoracis",
+    exrxName: "Iliocostalis Thoracis",
+    category: "Core",
+    subCategory: "Erector Spinae",
+    commonNames: ["Thoracic Iliocostalis"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: false,
+    parentId: 175,
+    searchTags: ["spinal extension","lateral flexion","thoracic extension"],
+    fiberType: "slow",
+    trainingFocus: "endurance",
+    isDeepMuscle: false
+  },
+
+  // === MUSCLE GROUPS ===
+  212: {
+    id: 212,
+    name: "Full Body",
+    templateRef: "full_body",
+    exrxName: "Full Body",
+    category: "Muscle Groups",
+    commonNames: ["Full Body", "Compound", "Multi-Joint", "Functional"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: true,
+    searchTags: ["full body", "compound", "functional", "multi-joint", "olympic", "clean", "snatch", "burpee"],
+    fiberType: "mixed",
+    trainingFocus: "power",
+    isDeepMuscle: false
+  },
+
+  // === FUNCTIONAL ROLES ADDITIONS ===
+  401: {
+    id: 401,
+    name: "Generic Stabilizer",
+    templateRef: "generic_stabilizer",
+    exrxName: "Stabilizer",
+    category: "Functional Roles",
+    commonNames: ["Stabilizer","Stabilizing Muscles"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: false,
+    searchTags: ["stabilization","stability","support","control"],
+    fiberType: "mixed",
+    trainingFocus: "stability",
+    isDeepMuscle: false
+  },
+
+  402: {
+    id: 402,
+    name: "Dynamic Stabilizer",
+    templateRef: "dynamic_stabilizer",
+    exrxName: "Dynamic Stabilizer",
+    category: "Functional Roles",
+    commonNames: ["Dynamic Stabilizer","Moving Stabilizer"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: false,
+    searchTags: ["dynamic stability","movement control","active stabilization"],
+    fiberType: "mixed",
+    trainingFocus: "stability",
+    isDeepMuscle: false
+  },
+
+  403: {
+    id: 403,
+    name: "Antagonist Stabilizer",
+    templateRef: "antagonist_stabilizer",
+    exrxName: "Antagonist Stabilizer",
+    category: "Functional Roles",
+    commonNames: ["Antagonist Stabilizer","Opposing Stabilizer"],
+    anatomicalLocation: "both",
+    isClickableOnBodyMap: false,
+    searchTags: ["antagonist","opposing muscle","counter balance"],
+    fiberType: "mixed",
+    trainingFocus: "stability",
+    isDeepMuscle: false
   }
 };
 

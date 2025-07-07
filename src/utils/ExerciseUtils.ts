@@ -362,9 +362,9 @@ export class ExerciseIndexing {
    */
   static createExerciseIndexes(exerciseDatabase: Record<number, ExerciseInfo>): ExerciseIndexes {
     const byMuscle: Record<number, number[]> = {};
-    const byEquipment: Record<EquipmentType, number[]> = {};
-    const byMovementPattern: Record<MovementPattern, number[]> = {};
-    const byDifficulty: Record<DifficultyLevel, number[]> = {};
+    const byEquipment: Partial<Record<EquipmentType, number[]>> = {};
+    const byMovementPattern: Partial<Record<MovementPattern, number[]>> = {};
+    const byDifficulty: Partial<Record<DifficultyLevel, number[]>> = {};
     
     // Initialize indexes
     Object.values(muscleData).forEach(muscle => {
@@ -386,20 +386,20 @@ export class ExerciseIndexing {
       // Index by equipment
       exercise.equipment.forEach(equipment => {
         if (!byEquipment[equipment]) byEquipment[equipment] = [];
-        byEquipment[equipment].push(exercise.id);
+        byEquipment[equipment]!.push(exercise.id);
       });
       
       // Index by movement pattern
       if (!byMovementPattern[exercise.movementPattern]) {
         byMovementPattern[exercise.movementPattern] = [];
       }
-      byMovementPattern[exercise.movementPattern].push(exercise.id);
+      byMovementPattern[exercise.movementPattern]!.push(exercise.id);
       
       // Index by difficulty
       if (!byDifficulty[exercise.difficulty]) {
         byDifficulty[exercise.difficulty] = [];
       }
-      byDifficulty[exercise.difficulty].push(exercise.id);
+      byDifficulty[exercise.difficulty]!.push(exercise.id);
     });
     
     return {

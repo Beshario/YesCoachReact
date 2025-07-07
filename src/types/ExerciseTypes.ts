@@ -154,9 +154,9 @@ export interface ExerciseSearchResult {
 // Performance optimization indexes
 export interface ExerciseIndexes {
   byMuscle: Record<number, number[]>;      // muscle ID → exercise IDs
-  byEquipment: Record<EquipmentType, number[]>;  // equipment → exercise IDs
-  byMovementPattern: Record<MovementPattern, number[]>;  // pattern → exercise IDs
-  byDifficulty: Record<DifficultyLevel, number[]>;  // difficulty → exercise IDs
+  byEquipment: Partial<Record<EquipmentType, number[]>>;  // equipment → exercise IDs
+  byMovementPattern: Partial<Record<MovementPattern, number[]>>;  // pattern → exercise IDs
+  byDifficulty: Partial<Record<DifficultyLevel, number[]>>;  // difficulty → exercise IDs
 }
 
 // Utility types for relationship discovery algorithms
