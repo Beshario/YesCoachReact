@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { DifficultyLevel, EquipmentType } from '../../types/ExerciseTypes';
+import { DifficultyLevel, EquipmentType } from '../../types/SimpleExerciseTypes';
 import styles from './FilterPanel.module.css';
 
 interface FilterPanelProps {
   difficultyFilter: DifficultyLevel[];
-  equipmentFilter: EquipmentType[];
+  equipmentFilter: string[];
   onDifficultyChange: (difficulties: DifficultyLevel[]) => void;
-  onEquipmentChange: (equipment: EquipmentType[]) => void;
+  onEquipmentChange: (equipment: string[]) => void;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({

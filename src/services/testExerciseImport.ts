@@ -17,7 +17,7 @@ async function testExerciseImport() {
 
     // Test muscle-based queries
     console.log('\n💪 Testing muscle-based queries...');
-    const chestExercises = await exerciseService.getExercisesForMuscle(161, 'target', { limit: 5 });
+    const chestExercises = await exerciseService.getExercisesForMuscle(161, 'high', { limit: 5 });
     console.log(`Found ${chestExercises.length} chest exercises:`, chestExercises.map(ex => ex.name));
 
     // Test equipment filtering

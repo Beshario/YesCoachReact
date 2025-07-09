@@ -1,4 +1,8 @@
 // src/types/models.ts
+import { SortType } from './SimpleExerciseTypes';
+
+// Re-export for convenience
+export type { SortType };
 
 // Muscle groups based on ExRx classification
 export type MuscleGroup = 
@@ -80,7 +84,7 @@ export interface TrainingEffect {
 }
 
 // User preferences and settings
-export type SortType = 'relevance' | 'type' | 'alphabetical';
+// SortType moved to SimpleExerciseTypes.ts
 export type ExerciseListView = 'compact' | 'detailed';
 
 export interface UserPreferences {

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { ExerciseInfo } from '../../types/ExerciseTypes';
+import { SimpleExercise } from '../../types/SimpleExerciseTypes';
 import { MuscleInfo } from '../BodyMap/MuscleData';
 import styles from './ExerciseCard.module.css';
 
 interface ExerciseCardProps {
-  exercise: ExerciseInfo;
+  exercise: SimpleExercise;
   selectedMuscle?: MuscleInfo;
   onSelect?: () => void;
   onAddToWorkout?: () => void;
@@ -34,16 +34,21 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
   const getMuscleActivation = () => {
     if (!selectedMuscle) return null;
     
-    const targetMuscles = exercise.muscleActivation.target;
-    const synergistMuscles = exercise.muscleActivation.synergists;
-    const stabilizerMuscles = exercise.muscleActivation.stabilizers;
+    const primaryMuscles = exercise.primaryMuscles;
+    const secondaryMuscles = exercise.secondaryMuscles;
+    const activationLevel = exercise.activationLevels[selectedMuscle.id];
     
-    if (targetMuscles.includes(selectedMuscle.id)) {
+    if (primaryMuscles.includes(selectedMuscle.id)) {
       return { level: 'Primary', percentage: '85-100%', color: '#4CAF50' };
-    } else if (synergistMuscles.includes(selectedMuscle.id)) {
+    } else if (secondaryMuscles.includes(selectedMuscle.id)) {
       return { level: 'Secondary', percentage: '40-70%', color: '#FF9800' };
-    } else if (stabilizerMuscles.includes(selectedMuscle.id)) {
-      return { level: 'Stabilizer', percentage: '15-30%', color: '#2196F3' };
+    } else if (activationLevel) {
+      const levelInfo = {
+        high: { level: 'High', percentage: '70-100%', color: '#4CAF50' },
+        medium: { level: 'Medium', percentage: '40-70%', color: '#FF9800' },
+        low: { level: 'Low', percentage: '15-30%', color: '#2196F3' }
+      };
+      return levelInfo[activationLevel];
     }
     
     return null;
@@ -61,7 +66,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
 
   // Open Instagram for exercise demo
   const openInstagramDemo = () => {
-    const query = exercise.instagramQuery || exercise.name.replace(/\s+/g, '_').toLowerCase();
+    const query = exercise.name.replace(/\s+/g, '_').toLowerCase();
     const instagramUrl = `instagram://search?q=${encodeURIComponent(query)}_form`;
     const webFallback = `https://www.instagram.com/explore/tags/${encodeURIComponent(query.replace(/\s+/g, ''))}/`;
     
@@ -122,26 +127,33 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
           {/* Exercise classification */}
           <div className={styles.classification}>
             <div className={styles.tag}>
-              <strong>Type:</strong> {exercise.mechanics} • {exercise.force}
+              <strong>Category:</strong> {exercise.category}
             </div>
             <div className={styles.tag}>
-              <strong>Pattern:</strong> {exercise.movementPattern}
-            </div>
-            <div className={styles.tag}>
-              <strong>Training:</strong> {exercise.trainingTypes.join(', ')}
+              <strong>Tags:</strong> {exercise.tags.join(', ')}
             </div>
           </div>
 
           {/* Instructions */}
           <div className={styles.instructions}>
             <div className={styles.instructionSection}>
-              <h4>Setup</h4>
-              <p>{exercise.preparation}</p>
+              <h4>Instructions</h4>
+              <ol>
+                {exercise.instructions.map((instruction, index) => (
+                  <li key={index}>{instruction}</li>
+                ))}
+              </ol>
             </div>
-            <div className={styles.instructionSection}>
-              <h4>Execution</h4>
-              <p>{exercise.execution}</p>
-            </div>
+            {exercise.tips && exercise.tips.length > 0 && (
+              <div className={styles.instructionSection}>
+                <h4>Tips</h4>
+                <ul>
+                  {exercise.tips.map((tip, index) => (
+                    <li key={index}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Action buttons */}
@@ -172,13 +184,13 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
             <h4>Muscle Activation</h4>
             <div className={styles.muscleList}>
               <div className={styles.muscleGroup}>
-                <strong>Primary:</strong> {exercise.muscleActivation.target.length} muscles
+                <strong>Primary:</strong> {exercise.primaryMuscles.length} muscles
               </div>
               <div className={styles.muscleGroup}>
-                <strong>Secondary:</strong> {exercise.muscleActivation.synergists.length} muscles  
+                <strong>Secondary:</strong> {exercise.secondaryMuscles.length} muscles  
               </div>
               <div className={styles.muscleGroup}>
-                <strong>Stabilizers:</strong> {exercise.muscleActivation.stabilizers.length} muscles
+                <strong>Total:</strong> {Object.keys(exercise.activationLevels).length} muscles
               </div>
             </div>
           </div>

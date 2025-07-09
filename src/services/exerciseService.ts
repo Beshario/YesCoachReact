@@ -2,10 +2,10 @@
 // High-level API for exercise database operations optimized for mobile performance
 
 import { db } from './database';
-import { exerciseDataImporter } from './ExerciseDataImporter';
+import { simpleExerciseImporter } from './SimpleExerciseImporter';
 import { preferencesService } from './preferencesService';
-import { ExerciseInfo, ExerciseSearchQuery, ExerciseSearchResult, ExerciseRelationships, DifficultyLevel, EquipmentType, MovementPattern, TrainingType } from '../types/ExerciseTypes';
-import { SortType } from '../types/models';
+import { SimpleExercise } from '../types/SimpleExerciseTypes';
+import { SortType, DifficultyLevel, ActivationLevel, EquipmentType } from '../types/SimpleExerciseTypes';
 import { getMuscleById, getChildMuscles } from '../components/BodyMap/MuscleData';
 
 export class ExerciseService {
@@ -21,7 +21,7 @@ export class ExerciseService {
     
     if (existingExercises.length === 0) {
       console.log('📚 No exercises found in database, importing...');
-      await exerciseDataImporter.importFromJsonFile('/data/exercises.json');
+      await simpleExerciseImporter.importFromConverterOutput();
       console.log('✅ Exercise database initialized');
     } else {
       console.log(`📚 Exercise database already loaded with ${existingExercises.length} exercises`);
@@ -33,7 +33,7 @@ export class ExerciseService {
   /**
    * Get exercise by ID
    */
-  async getExercise(id: number): Promise<ExerciseInfo | null> {
+  async getExercise(id: string): Promise<SimpleExercise | null> {
     await this.initialize();
     const exercise = await db.getExercise(id);
     return exercise || null;
@@ -45,14 +45,14 @@ export class ExerciseService {
    */
   async getExercisesForMuscle(
     muscleId: number, 
-    activationType: 'target' | 'synergist' | 'stabilizer' = 'target',
+    activationType: ActivationLevel = 'high',
     options?: {
       difficulty?: DifficultyLevel[];
-      equipment?: EquipmentType[];
+      equipment?: string[];
       limit?: number;
       sortBy?: SortType;
     }
-  ): Promise<ExerciseInfo[]> {
+  ): Promise<SimpleExercise[]> {
     await this.initialize();
     
     // Get user preferences
@@ -70,7 +70,7 @@ export class ExerciseService {
     }
     
     // Get exercises for all relevant muscles
-    const allExercises = new Map<number, ExerciseInfo>();
+    const allExercises = new Map<string, SimpleExercise>();
     
     for (const id of muscleIds) {
       const muscleExercises = await db.getExercisesByMuscle(id, activationType);
@@ -110,18 +110,18 @@ export class ExerciseService {
    * Get alternative exercises for equipment substitution
    */
   async getAlternatives(
-    exerciseId: number, 
+    exerciseId: string, 
     context?: 'equipment' | 'difficulty' | 'injury'
-  ): Promise<ExerciseInfo[]> {
+  ): Promise<SimpleExercise[]> {
     await this.initialize();
     
     const relationships = await db.getExerciseRelationships(exerciseId);
     if (!relationships) return [];
 
-    const alternativeIds = (relationships.alternatives || []).map(link => link.exerciseId);
+    const alternativeIds = relationships.similar || [];
 
     // Get exercise details
-    const alternatives: ExerciseInfo[] = [];
+    const alternatives: SimpleExercise[] = [];
     for (const id of alternativeIds) {
       const exercise = await db.getExercise(id);
       if (exercise) alternatives.push(exercise);
@@ -133,15 +133,15 @@ export class ExerciseService {
   /**
    * Get exercise progressions for strength building
    */
-  async getProgressions(exerciseId: number): Promise<ExerciseInfo[]> {
+  async getProgressions(exerciseId: string): Promise<SimpleExercise[]> {
     await this.initialize();
     
     const relationships = await db.getExerciseRelationships(exerciseId);
     if (!relationships) return [];
 
-    const progressionIds = (relationships.progressions || []).map(link => link.exerciseId);
+    const progressionIds = relationships.progressions || [];
     
-    const progressions: ExerciseInfo[] = [];
+    const progressions: SimpleExercise[] = [];
     for (const id of progressionIds) {
       const exercise = await db.getExercise(id);
       if (exercise) progressions.push(exercise);
@@ -153,15 +153,15 @@ export class ExerciseService {
   /**
    * Get exercise regressions for easier variations
    */
-  async getRegressions(exerciseId: number): Promise<ExerciseInfo[]> {
+  async getRegressions(exerciseId: string): Promise<SimpleExercise[]> {
     await this.initialize();
     
     const relationships = await db.getExerciseRelationships(exerciseId);
     if (!relationships) return [];
 
-    const regressionIds = (relationships.regressions || []).map(link => link.exerciseId);
+    const regressionIds = relationships.regressions || [];
     
-    const regressions: ExerciseInfo[] = [];
+    const regressions: SimpleExercise[] = [];
     for (const id of regressionIds) {
       const exercise = await db.getExercise(id);
       if (exercise) regressions.push(exercise);
@@ -171,19 +171,19 @@ export class ExerciseService {
   }
 
   /**
-   * Smart exercise search with scoring
+   * Simple exercise search (MVP version)
    */
-  async searchExercises(query: ExerciseSearchQuery): Promise<ExerciseSearchResult[]> {
+  async searchExercises(searchTerm?: string, muscleIds?: number[], difficulty?: DifficultyLevel[], equipment?: string[]): Promise<SimpleExercise[]> {
     await this.initialize();
     
-    let candidates: ExerciseInfo[] = [];
+    let candidates: SimpleExercise[] = [];
 
     // Start with muscle-based search if specified
-    if (query.muscleIds && query.muscleIds.length > 0) {
-      const muscleResults = new Set<ExerciseInfo>();
+    if (muscleIds && muscleIds.length > 0) {
+      const muscleResults = new Set<SimpleExercise>();
       
-      for (const muscleId of query.muscleIds) {
-        const exercises = await this.getExercisesForMuscle(muscleId, 'target');
+      for (const muscleId of muscleIds) {
+        const exercises = await this.getExercisesForMuscle(muscleId, 'high');
         exercises.forEach(ex => muscleResults.add(ex));
       }
       
@@ -194,70 +194,34 @@ export class ExerciseService {
     }
 
     // Apply filters
-    if (query.equipment) {
+    if (equipment) {
       candidates = candidates.filter(ex => 
-        ex.equipment.some(eq => query.equipment!.includes(eq))
+        ex.equipment.some(eq => equipment.includes(eq))
       );
     }
 
-    if (query.difficulty) {
+    if (difficulty) {
       candidates = candidates.filter(ex => 
-        query.difficulty!.includes(ex.difficulty)
+        difficulty.includes(ex.difficulty)
       );
     }
 
-    if (query.trainingTypes) {
+    // Apply text search if provided
+    if (searchTerm) {
+      const searchTermLower = searchTerm.toLowerCase();
       candidates = candidates.filter(ex => 
-        ex.trainingTypes.some(type => query.trainingTypes!.includes(type))
+        ex.name.toLowerCase().includes(searchTermLower) ||
+        ex.tags.some(tag => tag.toLowerCase().includes(searchTermLower))
       );
     }
 
-    if (query.movementPatterns) {
-      candidates = candidates.filter(ex => 
-        query.movementPatterns!.includes(ex.movementPattern)
-      );
-    }
-
-    if (query.excludeExerciseIds) {
-      candidates = candidates.filter(ex => 
-        !query.excludeExerciseIds!.includes(ex.id)
-      );
-    }
-
-    // Text search
-    if (query.name) {
-      const searchTerm = query.name.toLowerCase();
-      candidates = candidates.filter(ex => 
-        ex.name.toLowerCase().includes(searchTerm) ||
-        ex.searchTags.some(tag => tag.toLowerCase().includes(searchTerm))
-      );
-    }
-
-    // Calculate relevance scores
-    const results: ExerciseSearchResult[] = candidates.map(exercise => {
-      const relevanceScore = this.calculateRelevanceScore(exercise, query);
-      const muscleMatchCount = query.muscleIds ? 
-        this.countMuscleMatches(exercise, query.muscleIds) : 0;
-      const missingEquipment = this.findMissingEquipment(exercise, query.equipment || []);
-
-      return {
-        exercise,
-        relevanceScore,
-        muscleMatchCount,
-        missingEquipment
-      };
-    });
-
-    // Sort by relevance and return
-    return results
-      .sort((a, b) => b.relevanceScore - a.relevanceScore)
-      .slice(0, 50); // Limit for mobile performance
+    return candidates.slice(0, 50); // Limit for performance
   }
 
   /**
    * Get exercises by equipment availability
    */
-  async getExercisesByEquipment(availableEquipment: EquipmentType[]): Promise<ExerciseInfo[]> {
+  async getExercisesByEquipment(availableEquipment: EquipmentType[]): Promise<SimpleExercise[]> {
     await this.initialize();
     return await db.getExercisesByEquipment(availableEquipment);
   }
@@ -265,7 +229,7 @@ export class ExerciseService {
   /**
    * Get exercises by difficulty level
    */
-  async getExercisesByDifficulty(difficulty: DifficultyLevel): Promise<ExerciseInfo[]> {
+  async getExercisesByDifficulty(difficulty: DifficultyLevel): Promise<SimpleExercise[]> {
     await this.initialize();
     return await db.getExercisesByDifficulty(difficulty);
   }
@@ -273,7 +237,7 @@ export class ExerciseService {
   /**
    * Quick text search across exercise names and tags
    */
-  async quickSearch(searchTerm: string, limit: number = 20): Promise<ExerciseInfo[]> {
+  async quickSearch(searchTerm: string, limit: number = 20): Promise<SimpleExercise[]> {
     await this.initialize();
     const results = await db.searchExercises(searchTerm);
     return results.slice(0, limit);
@@ -282,15 +246,16 @@ export class ExerciseService {
   /**
    * Get antagonist exercises for balanced training
    */
-  async getAntagonists(exerciseId: number): Promise<ExerciseInfo[]> {
+  async getAntagonists(exerciseId: string): Promise<SimpleExercise[]> {
     await this.initialize();
     
     const relationships = await db.getExerciseRelationships(exerciseId);
     if (!relationships) return [];
 
-    const antagonistIds = (relationships.antagonists || []).map(link => link.exerciseId);
+    // SimpleExerciseRelations doesn't have antagonists, use alternatives for now
+    const antagonistIds = relationships.alternatives || [];
     
-    const antagonists: ExerciseInfo[] = [];
+    const antagonists: SimpleExercise[] = [];
     for (const id of antagonistIds) {
       const exercise = await db.getExercise(id);
       if (exercise) antagonists.push(exercise);
@@ -306,21 +271,21 @@ export class ExerciseService {
     targetMuscles: number[],
     availableEquipment: EquipmentType[],
     userLevel: DifficultyLevel,
-    excludeExercises: number[] = []
+    excludeExercises: string[] = []
   ): Promise<{
-    primary: ExerciseInfo[];
-    alternatives: ExerciseInfo[];
-    antagonists: ExerciseInfo[];
+    primary: SimpleExercise[];
+    alternatives: SimpleExercise[];
+    antagonists: SimpleExercise[];
   }> {
     await this.initialize();
 
-    const primary: ExerciseInfo[] = [];
-    const alternatives: ExerciseInfo[] = [];
-    const antagonists: ExerciseInfo[] = [];
+    const primary: SimpleExercise[] = [];
+    const alternatives: SimpleExercise[] = [];
+    const antagonists: SimpleExercise[] = [];
 
     // Get primary exercises for each target muscle
     for (const muscleId of targetMuscles) {
-      const exercises = await this.getExercisesForMuscle(muscleId, 'target', {
+      const exercises = await this.getExercisesForMuscle(muscleId, 'high', {
         difficulty: [userLevel],
         equipment: availableEquipment,
         limit: 3
@@ -348,62 +313,24 @@ export class ExerciseService {
   /**
    * Private helper methods
    */
-  private calculateRelevanceScore(exercise: ExerciseInfo, query: ExerciseSearchQuery): number {
-    let score = 0;
 
-    // Muscle match scoring
-    if (query.muscleIds) {
-      const muscleMatches = this.countMuscleMatches(exercise, query.muscleIds);
-      score += muscleMatches * 0.4;
-    }
-
-    // Equipment match scoring
-    if (query.equipment) {
-      const equipmentMatches = exercise.equipment.filter(eq => 
-        query.equipment!.includes(eq)
-      ).length;
-      score += equipmentMatches * 0.2;
-    }
-
-    // Difficulty match scoring
-    if (query.difficulty && query.difficulty.includes(exercise.difficulty)) {
-      score += 0.2;
-    }
-
-    // Training type match scoring
-    if (query.trainingTypes) {
-      const typeMatches = exercise.trainingTypes.filter(type => 
-        query.trainingTypes!.includes(type)
-      ).length;
-      score += typeMatches * 0.1;
-    }
-
-    // Movement pattern match scoring
-    if (query.movementPatterns && query.movementPatterns.includes(exercise.movementPattern)) {
-      score += 0.1;
-    }
-
-    return Math.min(score, 1); // Cap at 1.0
-  }
-
-  private countMuscleMatches(exercise: ExerciseInfo, targetMuscles: number[]): number {
+  private countMuscleMatches(exercise: SimpleExercise, targetMuscles: number[]): number {
     const allExerciseMuscles = [
-      ...exercise.muscleActivation.target,
-      ...exercise.muscleActivation.synergists,
-      ...exercise.muscleActivation.stabilizers
+      ...exercise.primaryMuscles,
+      ...exercise.secondaryMuscles
     ];
 
     return targetMuscles.filter(muscle => allExerciseMuscles.includes(muscle)).length;
   }
 
-  private findMissingEquipment(exercise: ExerciseInfo, availableEquipment: EquipmentType[]): EquipmentType[] {
+  private findMissingEquipment(exercise: SimpleExercise, availableEquipment: EquipmentType[]): EquipmentType[] {
     return exercise.equipment.filter(eq => !availableEquipment.includes(eq));
   }
 
   /**
    * Sort exercises based on user preference and context
    */
-  private sortExercises(exercises: ExerciseInfo[], sortBy: SortType, selectedMuscleId?: number): ExerciseInfo[] {
+  private sortExercises(exercises: SimpleExercise[], sortBy: SortType, selectedMuscleId?: number): SimpleExercise[] {
     switch (sortBy) {
       case 'relevance':
         return exercises.sort((a, b) => {
@@ -416,24 +343,28 @@ export class ExerciseService {
             return bRelevance - aRelevance; // Higher relevance first
           }
           
-          // Secondary sort: compound before isolated
-          if (a.mechanics !== b.mechanics) {
-            return a.mechanics === 'compound' ? -1 : 1;
-          }
+          // Secondary sort: compound before isolated (based on tags)
+          const aIsCompound = a.tags.includes('compound');
+          const bIsCompound = b.tags.includes('compound');
+          
+          if (aIsCompound && !bIsCompound) return -1;
+          if (!aIsCompound && bIsCompound) return 1;
           
           return 0;
         });
       
       case 'type':
         return exercises.sort((a, b) => {
-          // Primary sort: compound vs isolated
-          if (a.mechanics !== b.mechanics) {
-            return a.mechanics === 'compound' ? -1 : 1;
-          }
+          // Sort by compound/isolation based on tags
+          const aIsCompound = a.tags.includes('compound');
+          const bIsCompound = b.tags.includes('compound');
           
-          // Secondary sort: utility (basic vs auxiliary)
-          if (a.utility !== b.utility) {
-            return a.utility === 'basic' ? -1 : 1;
+          if (aIsCompound && !bIsCompound) return -1;
+          if (!aIsCompound && bIsCompound) return 1;
+          
+          // Secondary sort by category
+          if (a.category !== b.category) {
+            return a.category.localeCompare(b.category);
           }
           
           // Tertiary sort: alphabetical
@@ -451,15 +382,22 @@ export class ExerciseService {
   /**
    * Get muscle relevance score for sorting
    */
-  private getMuscleRelevanceScore(exercise: ExerciseInfo, muscleId: number): number {
-    if (exercise.muscleActivation.target.includes(muscleId)) {
-      return 3; // Target muscle = highest relevance
+  private getMuscleRelevanceScore(exercise: SimpleExercise, muscleId: number): number {
+    if (exercise.primaryMuscles.includes(muscleId)) {
+      return 3; // Primary muscle = highest relevance
     }
-    if (exercise.muscleActivation.synergists.includes(muscleId)) {
-      return 2; // Synergist muscle = medium relevance
+    if (exercise.secondaryMuscles.includes(muscleId)) {
+      return 2; // Secondary muscle = medium relevance
     }
-    if (exercise.muscleActivation.stabilizers.includes(muscleId)) {
-      return 1; // Stabilizer muscle = low relevance
+    // Check activation levels for more precise scoring
+    if (exercise.activationLevels[muscleId] === 'high') {
+      return 3;
+    }
+    if (exercise.activationLevels[muscleId] === 'medium') {
+      return 2;
+    }
+    if (exercise.activationLevels[muscleId] === 'low') {
+      return 1;
     }
     return 0; // No involvement = no relevance
   }
@@ -493,9 +431,8 @@ export class ExerciseService {
         equipmentCounts[equipment] = (equipmentCounts[equipment] || 0) + 1;
       }
       
-      exercise.muscleActivation.target.forEach(m => muscleSet.add(m));
-      exercise.muscleActivation.synergists.forEach(m => muscleSet.add(m));
-      exercise.muscleActivation.stabilizers.forEach(m => muscleSet.add(m));
+      exercise.primaryMuscles.forEach(m => muscleSet.add(m));
+      exercise.secondaryMuscles.forEach(m => muscleSet.add(m));
     }
     
     return {

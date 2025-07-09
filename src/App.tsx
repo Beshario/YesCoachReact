@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import YesCoachBodyMap, { MuscleInfo } from './components/BodyMap';
 import { ExerciseList } from './components/ExerciseList';
-import { ExerciseInfo } from './types/ExerciseTypes';
+import { SimpleExercise } from './types/SimpleExerciseTypes';
 
 function App(): React.JSX.Element {
   const [selectedMuscle, setSelectedMuscle] = useState<MuscleInfo | undefined>();
@@ -13,12 +13,12 @@ function App(): React.JSX.Element {
     setShowExercises(true);
   };
 
-  const handleExerciseSelect = (exercise: ExerciseInfo): void => {
+  const handleExerciseSelect = (exercise: SimpleExercise): void => {
     console.log('Selected exercise:', exercise);
     // TODO: Navigate to exercise detail view
   };
 
-  const handleAddToWorkout = (exercise: ExerciseInfo): void => {
+  const handleAddToWorkout = (exercise: SimpleExercise): void => {
     console.log('Added to workout:', exercise);
     // TODO: Add to workout plan
   };

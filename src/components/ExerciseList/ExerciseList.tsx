@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { exerciseService } from '../../services/exerciseService';
 import { preferencesService } from '../../services/preferencesService';
-import { ExerciseInfo, DifficultyLevel, EquipmentType } from '../../types/ExerciseTypes';
+import { SimpleExercise, DifficultyLevel, EquipmentType } from '../../types/SimpleExerciseTypes';
 import { SortType } from '../../types/models';
 import { MuscleInfo } from '../BodyMap/MuscleData';
 import ExerciseCard from './ExerciseCard';
@@ -10,8 +10,8 @@ import styles from './ExerciseList.module.css';
 
 interface ExerciseListProps {
   selectedMuscle?: MuscleInfo;
-  onExerciseSelect?: (exercise: ExerciseInfo) => void;
-  onAddToWorkout?: (exercise: ExerciseInfo) => void;
+  onExerciseSelect?: (exercise: SimpleExercise) => void;
+  onAddToWorkout?: (exercise: SimpleExercise) => void;
 }
 
 const ExerciseList: React.FC<ExerciseListProps> = ({
@@ -19,7 +19,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   onExerciseSelect,
   onAddToWorkout
 }) => {
-  const [exercises, setExercises] = useState<ExerciseInfo[]>([]);
+  const [exercises, setExercises] = useState<SimpleExercise[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   
   // Filter states
   const [difficultyFilter, setDifficultyFilter] = useState<DifficultyLevel[]>([]);
-  const [equipmentFilter, setEquipmentFilter] = useState<EquipmentType[]>([]);
+  const [equipmentFilter, setEquipmentFilter] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<SortType>('relevance');
 
@@ -76,7 +76,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
       // Get exercises for the selected muscle
       const allMuscleExercises = await exerciseService.getExercisesForMuscle(
         selectedMuscle.id,
-        'target',
+        'high',
         {
           difficulty: difficultyFilter.length > 0 ? difficultyFilter : undefined,
           equipment: equipmentFilter.length > 0 ? equipmentFilter : undefined,
@@ -170,7 +170,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   };
 
   // Get exercise alternatives
-  const handleGetAlternatives = async (exercise: ExerciseInfo) => {
+  const handleGetAlternatives = async (exercise: SimpleExercise) => {
     try {
       const alternatives = await exerciseService.getAlternatives(exercise.id);
       if (alternatives.length > 0) {
@@ -185,7 +185,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   const filteredExercises = exercises.filter(exercise =>
     !searchTerm || 
     exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    exercise.searchTags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+    exercise.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (

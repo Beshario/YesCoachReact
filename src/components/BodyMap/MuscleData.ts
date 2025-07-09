@@ -684,10 +684,11 @@ export const muscleData: Record<number, MuscleInfo> = {
     name: "Gluteus Medius",
     templateRef: "gluteus_medius",
     exrxName: "Gluteus Medius",
-    category: "Hips",
+    category: "Hip Abductors",
     commonNames: ["Glute Med", "Side Glutes"],
     anatomicalLocation: "back",
     isClickableOnBodyMap: false,
+    parentId: 220,
     searchTags: ["abduction", "stability", "lateral"],
     fiberType: "slow",
     trainingFocus: "stability",
@@ -698,10 +699,11 @@ export const muscleData: Record<number, MuscleInfo> = {
     name: "Gluteus Minimus",
     templateRef: "gluteus_minimus",
     exrxName: "Gluteus Minimus",
-    category: "Hips",
+    category: "Hip Abductors",
     commonNames: ["Glute Min"],
     anatomicalLocation: "back",
     isClickableOnBodyMap: false,
+    parentId: 220,
     searchTags: ["stability", "deep hip"],
     fiberType: "slow",
     trainingFocus: "stability",
@@ -1333,6 +1335,25 @@ export const muscleData: Record<number, MuscleInfo> = {
     fiberType: "mixed",
     trainingFocus: "stability",
     isDeepMuscle: false
+  },
+
+  // === HIP ABDUCTORS GROUP ===
+  220: {
+    id: 220,
+    name: "Hip Abductors",
+    templateRef: "hip_abductors_group",
+    exrxName: "Hip Abductors",
+    category: "Hip Abductors",
+    commonNames: ["Hip Abductors", "Abductors", "Side Hip"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    children: [182, 183], // Gluteus Medius, Gluteus Minimus
+    searchTags: ["hip abduction", "lateral", "side hip", "stability"],
+    fiberType: "slow",
+    trainingFocus: "stability",
+    isDeepMuscle: false,
+    parentId: 180,
+
   }
 };
 

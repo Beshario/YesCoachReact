@@ -1,7 +1,7 @@
 // src/services/database.ts
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import { Workout, MuscleState, UserProfile } from '../types/models';
-import { ExerciseInfo, ExerciseRelationships, DifficultyLevel, EquipmentType, MovementPattern } from '../types/ExerciseTypes';
+import { SimpleExercise, SimpleExerciseRelations } from '../types/SimpleExerciseTypes';
 
 interface YesCoachDB extends DBSchema {
   workouts: {
@@ -19,52 +19,76 @@ interface YesCoachDB extends DBSchema {
   };
   // Exercise catalog stores
   exercises: {
-    key: number; // exercise ID
-    value: ExerciseInfo;
+    key: string; // exercise ID (now string from converter)
+    value: SimpleExercise;
     indexes: {
-      'by-difficulty': DifficultyLevel;
-      'by-equipment': EquipmentType;
-      'by-movement': MovementPattern;
+      'by-difficulty': string;
+      'by-equipment': string;
+      'by-category': string;
       'by-name': string;
     };
   };
   exerciseRelationships: {
-    key: number; // exercise ID
-    value: ExerciseRelationships;
+    key: string; // exercise ID
+    value: SimpleExerciseRelations;
   };
   // Performance indexes for mobile optimization
   exercisesByMuscle: {
     key: string; // "target_121", "synergist_141", "stabilizer_122"
-    value: { muscleKey: string; exerciseIds: number[] };
+    value: { muscleKey: string; exerciseIds: string[] };
   };
   exercisesByEquipment: {
     key: string; // "barbell", "dumbbell", "bodyweight"
-    value: { equipmentKey: string; exerciseIds: number[] };
+    value: { equipmentKey: string; exerciseIds: string[] };
   };
 }
 
 class DatabaseService {
   private db: IDBPDatabase<YesCoachDB> | null = null;
+  private isInitializing = false;
 
   async init() {
-    this.db = await openDB<YesCoachDB>('yescoach-db', 2, {
-      upgrade(db, oldVersion) {
-        // Version 1 stores
-        if (oldVersion < 1) {
+    if (this.isInitializing) {
+      // Wait for initialization to complete
+      while (this.isInitializing) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      return;
+    }
+    
+    if (this.db) return;
+    
+    this.isInitializing = true;
+    
+    try {
+      this.db = await openDB<YesCoachDB>('yescoach-db', 4, {
+        upgrade(db, oldVersion) {
+          console.log(`Upgrading database from version ${oldVersion} to 4`);
+          
+          // If upgrade fails, we'll delete and recreate everything
+          if (oldVersion > 0 && oldVersion < 4) {
+            // Delete all existing stores to avoid conflicts
+            const storeNames = Array.from(db.objectStoreNames);
+            storeNames.forEach(name => {
+              try {
+                db.deleteObjectStore(name);
+              } catch (e) {
+                console.warn(`Failed to delete store ${name}:`, e);
+              }
+            });
+          }
+          // Create all stores fresh (after clearing existing ones above)
           const workoutStore = db.createObjectStore('workouts', { keyPath: 'id' });
           workoutStore.createIndex('by-date', 'date');
           
           db.createObjectStore('muscleStates', { keyPath: 'muscleId' });
           db.createObjectStore('userProfile', { keyPath: 'id' });
-        }
-
-        // Version 2 stores - Exercise system
-        if (oldVersion < 2) {
+          
           // Exercise catalog
           const exerciseStore = db.createObjectStore('exercises', { keyPath: 'id' });
           exerciseStore.createIndex('by-difficulty', 'difficulty');
           exerciseStore.createIndex('by-equipment', 'equipment', { multiEntry: true });
-          exerciseStore.createIndex('by-movement', 'movementPattern');
+          exerciseStore.createIndex('by-category', 'category');
           exerciseStore.createIndex('by-name', 'name');
 
           // Exercise relationships
@@ -73,9 +97,11 @@ class DatabaseService {
           // Performance indexes
           db.createObjectStore('exercisesByMuscle', { keyPath: 'muscleKey' });
           db.createObjectStore('exercisesByEquipment', { keyPath: 'equipmentKey' });
-        }
-      },
-    });
+        },
+      });
+    } finally {
+      this.isInitializing = false;
+    }
   }
 
   // Workout methods
@@ -108,35 +134,35 @@ class DatabaseService {
   }
 
   // Exercise catalog methods
-  async saveExercise(exercise: ExerciseInfo) {
+  async saveExercise(exercise: SimpleExercise) {
     if (!this.db) await this.init();
     await this.db!.put('exercises', exercise);
   }
 
-  async getExercise(id: number): Promise<ExerciseInfo | undefined> {
+  async getExercise(id: string): Promise<SimpleExercise | undefined> {
     if (!this.db) await this.init();
     return await this.db!.get('exercises', id);
   }
 
-  async getAllExercises(): Promise<ExerciseInfo[]> {
+  async getAllExercises(): Promise<SimpleExercise[]> {
     if (!this.db) await this.init();
     return await this.db!.getAll('exercises');
   }
 
-  async getExercisesByDifficulty(difficulty: DifficultyLevel): Promise<ExerciseInfo[]> {
+  async getExercisesByDifficulty(difficulty: string): Promise<SimpleExercise[]> {
     if (!this.db) await this.init();
     const tx = this.db!.transaction('exercises', 'readonly');
     const index = tx.store.index('by-difficulty');
     return await index.getAll(difficulty);
   }
 
-  async getExercisesByEquipment(equipment: EquipmentType[]): Promise<ExerciseInfo[]> {
+  async getExercisesByEquipment(equipment: string[]): Promise<SimpleExercise[]> {
     if (!this.db) await this.init();
     const tx = this.db!.transaction('exercises', 'readonly');
     const index = tx.store.index('by-equipment');
     
     // Get exercises that match any of the provided equipment
-    const results = new Set<ExerciseInfo>();
+    const results = new Set<SimpleExercise>();
     for (const eq of equipment) {
       const exercises = await index.getAll(eq);
       exercises.forEach(ex => results.add(ex));
@@ -144,49 +170,48 @@ class DatabaseService {
     return Array.from(results);
   }
 
-  async getExercisesByMuscle(muscleId: number, activationType: 'target' | 'synergist' | 'stabilizer' = 'target'): Promise<ExerciseInfo[]> {
+  async getExercisesByMuscle(muscleId: number, activationType: 'high' | 'medium' | 'low' = 'high'): Promise<SimpleExercise[]> {
     if (!this.db) await this.init();
-    const muscleKey = `${activationType}_${muscleId}`;
-    const indexEntry = await this.db!.get('exercisesByMuscle', muscleKey);
+    const allExercises = await this.getAllExercises();
     
-    if (!indexEntry) return [];
-    
-    // Get exercises by specific IDs
-    const exercises: ExerciseInfo[] = [];
-    for (const exerciseId of indexEntry.exerciseIds) {
-      const exercise = await this.db!.get('exercises', exerciseId);
-      if (exercise) exercises.push(exercise);
-    }
-    
-    return exercises;
+    // Filter exercises based on activation level for the muscle
+    return allExercises.filter(exercise => {
+      const activationLevel = exercise.activationLevels[muscleId];
+      if (!activationLevel) return false;
+      
+      // Return exercises with matching or higher activation level
+      if (activationType === 'low') return true;
+      if (activationType === 'medium') return activationLevel === 'medium' || activationLevel === 'high';
+      if (activationType === 'high') return activationLevel === 'high';
+      
+      return false;
+    });
   }
 
-  async saveExerciseRelationships(exerciseId: number, relationships: ExerciseRelationships) {
+  async saveExerciseRelationships(relationships: SimpleExerciseRelations) {
     if (!this.db) await this.init();
-    const relationshipData = { exerciseId, ...relationships };
-    await this.db!.put('exerciseRelationships', relationshipData);
+    await this.db!.put('exerciseRelationships', relationships);
   }
 
-  async getExerciseRelationships(exerciseId: number): Promise<ExerciseRelationships | undefined> {
+  async getExerciseRelationships(exerciseId: string): Promise<SimpleExerciseRelations | undefined> {
     if (!this.db) await this.init();
     return await this.db!.get('exerciseRelationships', exerciseId);
   }
 
   // Performance index methods
-  async saveMuscleIndex(muscleKey: string, exerciseIds: number[]) {
+  async saveMuscleIndex(muscleKey: string, exerciseIds: string[]) {
     if (!this.db) await this.init();
     await this.db!.put('exercisesByMuscle', { muscleKey, exerciseIds });
   }
 
-  async saveEquipmentIndex(equipmentKey: string, exerciseIds: number[]) {
+  async saveEquipmentIndex(equipmentKey: string, exerciseIds: string[]) {
     if (!this.db) await this.init();
     await this.db!.put('exercisesByEquipment', { equipmentKey, exerciseIds });
   }
 
-  async searchExercises(query: string): Promise<ExerciseInfo[]> {
+  async searchExercises(query: string): Promise<SimpleExercise[]> {
     if (!this.db) await this.init();
     const tx = this.db!.transaction('exercises', 'readonly');
-    const index = tx.store.index('by-name');
     
     // Simple text search - can be enhanced with fuzzy matching
     const lowerQuery = query.toLowerCase();
@@ -194,7 +219,7 @@ class DatabaseService {
     
     return allExercises.filter(exercise => 
       exercise.name.toLowerCase().includes(lowerQuery) ||
-      exercise.searchTags.some(tag => tag.toLowerCase().includes(lowerQuery))
+      exercise.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
     );
   }
 

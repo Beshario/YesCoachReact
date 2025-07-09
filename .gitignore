@@ -4,9 +4,7 @@ node_modules/
 # Build output directories
 dist/
 build/
-scraper/
-/exrx-offline
-/ExrUnxipped
+/converter
 # Log files
 logs/
 *.log
