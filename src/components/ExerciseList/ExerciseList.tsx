@@ -34,7 +34,8 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   const [difficultyFilter, setDifficultyFilter] = useState<DifficultyLevel[]>([]);
   const [equipmentFilter, setEquipmentFilter] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<SortType>('relevance');
+  const [sortBy, setSortBy] = useState<SortType>('muscle_recruitment');
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
   // Load user preferences on mount
   useEffect(() => {
@@ -181,6 +182,11 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
     }
   };
 
+  // Handle card expansion toggle
+  const handleToggleExpand = (exerciseId: string) => {
+    setExpandedCardId(prev => prev === exerciseId ? null : exerciseId);
+  };
+
   // Filter exercises by search term (client-side for responsiveness)
   const filteredExercises = exercises.filter(exercise =>
     !searchTerm || 
@@ -220,6 +226,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
             onChange={(e) => handleSortChange(e.target.value as SortType)}
             className={styles.sortSelect}
           >
+            <option value="muscle_recruitment">Muscle Recruitment</option>
             <option value="relevance">Most Relevant</option>
             <option value="type">Exercise Type</option>
             <option value="alphabetical">Alphabetical</option>
@@ -263,6 +270,8 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
             key={exercise.id}
             exercise={exercise}
             selectedMuscle={selectedMuscle}
+            isExpanded={expandedCardId === exercise.id}
+            onToggleExpand={() => handleToggleExpand(exercise.id)}
             onSelect={() => onExerciseSelect?.(exercise)}
             onAddToWorkout={() => onAddToWorkout?.(exercise)}
             onGetAlternatives={() => handleGetAlternatives(exercise)}

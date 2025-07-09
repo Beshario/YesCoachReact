@@ -4,7 +4,7 @@
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
 export type ActivationLevel = 'high' | 'medium' | 'low';
 export type EquipmentType = string; // Dynamic from free-exercise-db
-export type SortType = 'relevance' | 'alphabetical' | 'type';
+export type SortType = 'muscle_recruitment' | 'relevance' | 'alphabetical' | 'type';
 
 export interface SimpleExercise {
   id: string;
@@ -20,6 +20,14 @@ export interface SimpleExercise {
   activationLevels: {
     [muscleId: number]: ActivationLevel;
   };
+  
+  // Enhanced muscle activation with precise percentages (0-1 range)
+  muscleActivation: {
+    [muscleId: number]: number; // 0-1 representing 0-100% activation
+  };
+  
+  // Exercise demonstration images (optional)
+  imageUrls?: string[]; // Full URLs to exercise demonstration images
   
   // Simple categorization for relationships
   tags: string[];  // ['compound', 'push', 'upper', 'strength']

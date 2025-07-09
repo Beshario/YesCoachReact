@@ -19,10 +19,14 @@ export class ExerciseService {
 
     const existingExercises = await db.getAllExercises();
     
-    if (existingExercises.length === 0) {
-      console.log('📚 No exercises found in database, importing...');
+    // Force re-import if exercises don't have imageUrls (old data)
+    const needsReimport = existingExercises.length === 0 || 
+                         !existingExercises.some(ex => ex.imageUrls && ex.imageUrls.length > 0);
+    
+    if (needsReimport) {
+      console.log('📚 Re-importing exercises with image URLs...');
       await simpleExerciseImporter.importFromConverterOutput();
-      console.log('✅ Exercise database initialized');
+      console.log('✅ Exercise database initialized with images');
     } else {
       console.log(`📚 Exercise database already loaded with ${existingExercises.length} exercises`);
     }
@@ -332,6 +336,27 @@ export class ExerciseService {
    */
   private sortExercises(exercises: SimpleExercise[], sortBy: SortType, selectedMuscleId?: number): SimpleExercise[] {
     switch (sortBy) {
+      case 'muscle_recruitment':
+        return exercises.sort((a, b) => {
+          // Count total recruited muscles (primary + secondary + activation levels)
+          const aMuscleCount = this.getTotalMuscleCount(a);
+          const bMuscleCount = this.getTotalMuscleCount(b);
+          
+          if (aMuscleCount !== bMuscleCount) {
+            return bMuscleCount - aMuscleCount; // Higher muscle count first
+          }
+          
+          // Secondary sort: compound before isolated
+          const aIsCompound = a.tags.includes('compound');
+          const bIsCompound = b.tags.includes('compound');
+          
+          if (aIsCompound && !bIsCompound) return -1;
+          if (!aIsCompound && bIsCompound) return 1;
+          
+          // Tertiary sort: alphabetical
+          return a.name.localeCompare(b.name);
+        });
+      
       case 'relevance':
         return exercises.sort((a, b) => {
           if (!selectedMuscleId) return 0;
@@ -377,6 +402,25 @@ export class ExerciseService {
       default:
         return exercises;
     }
+  }
+
+  /**
+   * Get total muscle recruitment count for sorting
+   */
+  private getTotalMuscleCount(exercise: SimpleExercise): number {
+    // Use the new muscleActivation field if available (more accurate)
+    if (exercise.muscleActivation && Object.keys(exercise.muscleActivation).length > 0) {
+      return Object.keys(exercise.muscleActivation).length;
+    }
+    
+    // Fallback to legacy system
+    const allMuscles = new Set([
+      ...exercise.primaryMuscles,
+      ...exercise.secondaryMuscles,
+      ...Object.keys(exercise.activationLevels).map(id => parseInt(id))
+    ]);
+    
+    return allMuscles.size;
   }
 
   /**

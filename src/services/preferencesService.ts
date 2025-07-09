@@ -13,7 +13,7 @@ class PreferencesService {
    */
   private getDefaultPreferences(): UserPreferences {
     return {
-      defaultSortBy: 'relevance',
+      defaultSortBy: 'muscle_recruitment',
       showSynergistExercises: true,
       showStabilizerExercises: false,
       exerciseListView: 'compact',

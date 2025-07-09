@@ -61,12 +61,12 @@ class DatabaseService {
     this.isInitializing = true;
     
     try {
-      this.db = await openDB<YesCoachDB>('yescoach-db', 4, {
+      this.db = await openDB<YesCoachDB>('yescoach-db', 5, {
         upgrade(db, oldVersion) {
-          console.log(`Upgrading database from version ${oldVersion} to 4`);
+          console.log(`Upgrading database from version ${oldVersion} to 5`);
           
           // If upgrade fails, we'll delete and recreate everything
-          if (oldVersion > 0 && oldVersion < 4) {
+          if (oldVersion > 0 && oldVersion < 5) {
             // Delete all existing stores to avoid conflicts
             const storeNames = Array.from(db.objectStoreNames);
             storeNames.forEach(name => {
@@ -176,6 +176,21 @@ class DatabaseService {
     
     // Filter exercises based on activation level for the muscle
     return allExercises.filter(exercise => {
+      // First try the new precise percentage system
+      if (exercise.muscleActivation && exercise.muscleActivation[muscleId]) {
+        const percentage = exercise.muscleActivation[muscleId];
+        
+        // Convert activation type to percentage thresholds
+        const thresholds = {
+          'high': 0.7,    // 70% or higher
+          'medium': 0.3,  // 30% or higher
+          'low': 0.1      // 10% or higher
+        };
+        
+        return percentage >= thresholds[activationType];
+      }
+      
+      // Fallback to legacy categorical system
       const activationLevel = exercise.activationLevels[muscleId];
       if (!activationLevel) return false;
       

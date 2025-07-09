@@ -3,9 +3,45 @@ import { SimpleExercise } from '../../types/SimpleExerciseTypes';
 import { MuscleInfo } from '../BodyMap/MuscleData';
 import styles from './ExerciseCard.module.css';
 
+// Simple image component with click-to-alternate functionality
+const ClickableExerciseImage: React.FC<{ 
+  imageUrls: string[]; 
+  exerciseName: string; 
+  className?: string; 
+}> = ({ imageUrls, exerciseName, className }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  if (!imageUrls || imageUrls.length === 0) {
+    return null;
+  }
+  
+  const handleImageClick = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
+  };
+  
+  return (
+    <div className={`${styles.imageContainer} ${className || ''}`}>
+      <img 
+        src={imageUrls[currentIndex]}
+        alt={`${exerciseName} demonstration ${currentIndex + 1}`}
+        onClick={handleImageClick}
+        className={styles.clickableImage}
+        style={{ cursor: imageUrls.length > 1 ? 'pointer' : 'default' }}
+      />
+      {imageUrls.length > 1 && (
+        <div className={styles.imageIndicator}>
+          {currentIndex + 1} / {imageUrls.length}
+        </div>
+      )}
+    </div>
+  );
+};
+
 interface ExerciseCardProps {
   exercise: SimpleExercise;
   selectedMuscle?: MuscleInfo;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
   onSelect?: () => void;
   onAddToWorkout?: () => void;
   onGetAlternatives?: () => void;
@@ -14,11 +50,12 @@ interface ExerciseCardProps {
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
   exercise,
   selectedMuscle,
+  isExpanded,
+  onToggleExpand,
   onSelect,
   onAddToWorkout,
   onGetAlternatives
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
 
   // Get difficulty color
   const getDifficultyColor = (difficulty: string) => {
@@ -34,6 +71,35 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
   const getMuscleActivation = () => {
     if (!selectedMuscle) return null;
     
+    // Check if we have precise percentage data
+    if (exercise.muscleActivation && exercise.muscleActivation[selectedMuscle.id]) {
+      const percentage = exercise.muscleActivation[selectedMuscle.id];
+      const percentageDisplay = Math.round(percentage * 100);
+      
+      // Determine color based on percentage
+      let color: string;
+      let level: string;
+      
+      if (percentage >= 0.8) {
+        color = '#4CAF50';
+        level = 'Primary';
+      } else if (percentage >= 0.4) {
+        color = '#FF9800';
+        level = 'Secondary';
+      } else {
+        color = '#2196F3';
+        level = 'Stabilizer';
+      }
+      
+      return { 
+        level, 
+        percentage: `${percentageDisplay}%`, 
+        color,
+        numericValue: percentage
+      };
+    }
+    
+    // Fallback to legacy categorical system
     const primaryMuscles = exercise.primaryMuscles;
     const secondaryMuscles = exercise.secondaryMuscles;
     const activationLevel = exercise.activationLevels[selectedMuscle.id];
@@ -80,7 +146,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
   return (
     <div className={`${styles.exerciseCard} ${isExpanded ? styles.expanded : ''}`}>
       {/* Header */}
-      <div className={styles.header} onClick={() => setIsExpanded(!isExpanded)}>
+      <div className={styles.header} onClick={onToggleExpand}>
         <div className={styles.titleSection}>
           <h3 className={styles.exerciseName}>{exercise.name}</h3>
           <div className={styles.metadata}>
@@ -124,6 +190,17 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
       {/* Expanded content */}
       {isExpanded && (
         <div className={styles.content}>
+          {/* Exercise demonstration images */}
+          {exercise.imageUrls && exercise.imageUrls.length > 0 && (
+            <div className={styles.imageSection}>
+              <h4>Demonstration</h4>
+              <ClickableExerciseImage 
+                imageUrls={exercise.imageUrls} 
+                exerciseName={exercise.name}
+              />
+            </div>
+          )}
+
           {/* Exercise classification */}
           <div className={styles.classification}>
             <div className={styles.tag}>
