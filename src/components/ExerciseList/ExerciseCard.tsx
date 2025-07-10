@@ -1,61 +1,40 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SimpleExercise } from '../../types/SimpleExerciseTypes';
 import { MuscleInfo } from '../BodyMap/MuscleData';
+import { useWorkoutStore } from '../../stores/workoutStore';
 import styles from './ExerciseCard.module.css';
-
-// Simple image component with click-to-alternate functionality
-const ClickableExerciseImage: React.FC<{ 
-  imageUrls: string[]; 
-  exerciseName: string; 
-  className?: string; 
-}> = ({ imageUrls, exerciseName, className }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
-  if (!imageUrls || imageUrls.length === 0) {
-    return null;
-  }
-  
-  const handleImageClick = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
-  };
-  
-  return (
-    <div className={`${styles.imageContainer} ${className || ''}`}>
-      <img 
-        src={imageUrls[currentIndex]}
-        alt={`${exerciseName} demonstration ${currentIndex + 1}`}
-        onClick={handleImageClick}
-        className={styles.clickableImage}
-        style={{ cursor: imageUrls.length > 1 ? 'pointer' : 'default' }}
-      />
-      {imageUrls.length > 1 && (
-        <div className={styles.imageIndicator}>
-          {currentIndex + 1} / {imageUrls.length}
-        </div>
-      )}
-    </div>
-  );
-};
 
 interface ExerciseCardProps {
   exercise: SimpleExercise;
   selectedMuscle?: MuscleInfo;
-  isExpanded: boolean;
-  onToggleExpand: () => void;
-  onSelect?: () => void;
+  onClick: () => void;
   onAddToWorkout?: () => void;
-  onGetAlternatives?: () => void;
 }
 
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
   exercise,
   selectedMuscle,
-  isExpanded,
-  onToggleExpand,
-  onSelect,
-  onAddToWorkout,
-  onGetAlternatives
+  onClick,
+  onAddToWorkout
 }) => {
+  const { addExercise, workoutExercises } = useWorkoutStore();
+  
+  // Check if exercise is already in workout
+  const isInWorkout = workoutExercises.some(we => we.exercise.id === exercise.id);
+
+  const handleAddToWorkout = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (isInWorkout) {
+      // If already in workout, don't add again
+      return;
+    }
+    
+    addExercise(exercise);
+    
+    // Call original handler if provided
+    onAddToWorkout?.();
+  };
 
   // Get difficulty color
   const getDifficultyColor = (difficulty: string) => {
@@ -130,23 +109,10 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     return `${equipment[0]} + ${equipment.length - 1} more`;
   };
 
-  // Open Instagram for exercise demo
-  const openInstagramDemo = () => {
-    const query = exercise.name.replace(/\s+/g, '_').toLowerCase();
-    const instagramUrl = `instagram://search?q=${encodeURIComponent(query)}_form`;
-    const webFallback = `https://www.instagram.com/explore/tags/${encodeURIComponent(query.replace(/\s+/g, ''))}/`;
-    
-    // Try Instagram app first, fallback to web
-    window.location.href = instagramUrl;
-    setTimeout(() => {
-      window.open(webFallback, '_blank');
-    }, 500);
-  };
 
   return (
-    <div className={`${styles.exerciseCard} ${isExpanded ? styles.expanded : ''}`}>
-      {/* Header */}
-      <div className={styles.header} onClick={onToggleExpand}>
+    <div className={styles.exerciseCard} onClick={onClick}>
+      <div className={styles.header}>
         <div className={styles.titleSection}>
           <h3 className={styles.exerciseName}>{exercise.name}</h3>
           <div className={styles.metadata}>
@@ -172,107 +138,15 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
         
         <div className={styles.actions}>
           <button 
-            className={styles.addButton}
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddToWorkout?.();
-            }}
-            title="Add to workout"
+            className={`${styles.addButton} ${isInWorkout ? styles.added : ''}`}
+            onClick={handleAddToWorkout}
+            title={isInWorkout ? "Already in workout" : "Add to workout"}
+            disabled={isInWorkout}
           >
-            +
+            {isInWorkout ? '✓' : '+'}
           </button>
-          <span className={styles.expandIcon}>
-            {isExpanded ? '▼' : '▶'}
-          </span>
         </div>
       </div>
-
-      {/* Expanded content */}
-      {isExpanded && (
-        <div className={styles.content}>
-          {/* Exercise demonstration images */}
-          {exercise.imageUrls && exercise.imageUrls.length > 0 && (
-            <div className={styles.imageSection}>
-              <h4>Demonstration</h4>
-              <ClickableExerciseImage 
-                imageUrls={exercise.imageUrls} 
-                exerciseName={exercise.name}
-              />
-            </div>
-          )}
-
-          {/* Exercise classification */}
-          <div className={styles.classification}>
-            <div className={styles.tag}>
-              <strong>Category:</strong> {exercise.category}
-            </div>
-            <div className={styles.tag}>
-              <strong>Tags:</strong> {exercise.tags.join(', ')}
-            </div>
-          </div>
-
-          {/* Instructions */}
-          <div className={styles.instructions}>
-            <div className={styles.instructionSection}>
-              <h4>Instructions</h4>
-              <ol>
-                {exercise.instructions.map((instruction, index) => (
-                  <li key={index}>{instruction}</li>
-                ))}
-              </ol>
-            </div>
-            {exercise.tips && exercise.tips.length > 0 && (
-              <div className={styles.instructionSection}>
-                <h4>Tips</h4>
-                <ul>
-                  {exercise.tips.map((tip, index) => (
-                    <li key={index}>{tip}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* Action buttons */}
-          <div className={styles.actionButtons}>            
-            <button 
-              className={styles.alternativesButton}
-              onClick={(e) => {
-                e.stopPropagation();
-                onGetAlternatives?.();
-              }}
-            >
-              ⚡ Alternatives
-            </button>
-            
-            <button 
-              className={styles.detailsButton}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect?.();
-              }}
-            >
-              📊 Details
-            </button>
-          </div>
-
-          {/* Muscle breakdown */}
-          <div className={styles.muscleBreakdown}>
-            <h4>Muscle Activation</h4>
-            <div className={styles.muscleList}>
-              <div className={styles.muscleGroup}>
-                <strong>Primary:</strong> {exercise.primaryMuscles.length} muscles
-              </div>
-              <div className={styles.muscleGroup}>
-                <strong>Secondary:</strong> {exercise.secondaryMuscles.length} muscles  
-              </div>
-              <div className={styles.muscleGroup}>
-                <strong>Total:</strong> {Object.keys(exercise.activationLevels).length} muscles
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

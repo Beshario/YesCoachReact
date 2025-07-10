@@ -5,6 +5,7 @@ import { SimpleExercise, DifficultyLevel, EquipmentType } from '../../types/Simp
 import { SortType } from '../../types/models';
 import { MuscleInfo } from '../BodyMap/MuscleData';
 import ExerciseCard from './ExerciseCard';
+import ExerciseDetailModal from './ExerciseDetailModal';
 import FilterPanel from './FilterPanel';
 import styles from './ExerciseList.module.css';
 
@@ -35,7 +36,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   const [equipmentFilter, setEquipmentFilter] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<SortType>('muscle_recruitment');
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const [selectedExercise, setSelectedExercise] = useState<SimpleExercise | null>(null);
 
   // Load user preferences on mount
   useEffect(() => {
@@ -170,21 +171,14 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
     }
   };
 
-  // Get exercise alternatives
-  const handleGetAlternatives = async (exercise: SimpleExercise) => {
-    try {
-      const alternatives = await exerciseService.getAlternatives(exercise.id);
-      if (alternatives.length > 0) {
-        setExercises(alternatives);
-      }
-    } catch (err) {
-      console.error('Failed to get alternatives:', err);
-    }
+  // Handle exercise click
+  const handleExerciseClick = (exercise: SimpleExercise) => {
+    setSelectedExercise(exercise);
   };
 
-  // Handle card expansion toggle
-  const handleToggleExpand = (exerciseId: string) => {
-    setExpandedCardId(prev => prev === exerciseId ? null : exerciseId);
+  // Handle modal close
+  const handleModalClose = () => {
+    setSelectedExercise(null);
   };
 
   // Filter exercises by search term (client-side for responsiveness)
@@ -270,11 +264,8 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
             key={exercise.id}
             exercise={exercise}
             selectedMuscle={selectedMuscle}
-            isExpanded={expandedCardId === exercise.id}
-            onToggleExpand={() => handleToggleExpand(exercise.id)}
-            onSelect={() => onExerciseSelect?.(exercise)}
+            onClick={() => handleExerciseClick(exercise)}
             onAddToWorkout={() => onAddToWorkout?.(exercise)}
-            onGetAlternatives={() => handleGetAlternatives(exercise)}
           />
         ))}
         
@@ -295,6 +286,12 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
           </div>
         )}
       </div>
+
+      {/* Exercise Detail Modal */}
+      <ExerciseDetailModal
+        exercise={selectedExercise}
+        onClose={handleModalClose}
+      />
     </div>
   );
 };

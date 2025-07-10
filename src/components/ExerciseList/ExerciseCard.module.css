@@ -8,41 +8,7 @@
   border: 1px solid #eee;
   flex-shrink: 0;
   min-height: 100px;
-}
-
-/* Image styles */
-.imageSection {
-  margin-bottom: 1rem;
-}
-
-.imageSection h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.imageContainer {
-  position: relative;
-  max-width: 100%;
-}
-
-.clickableImage {
-  width: 100%;
-  max-height: 180px;
-  object-fit: contain;
-  border-radius: 6px;
-  border: 1px solid #eee;
-}
-
-.imageIndicator {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  cursor: pointer;
 }
 
 .exerciseCard:hover {
@@ -50,16 +16,11 @@
   transform: translateY(-1px);
 }
 
-.expanded {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  cursor: pointer;
   user-select: none;
 }
 
@@ -137,121 +98,14 @@
   transform: scale(1.1);
 }
 
-.expandIcon {
-  color: #7f8c8d;
-  font-size: 0.9rem;
-  transition: transform 0.2s ease;
+.addButton.added {
+  background: #6c757d;
+  cursor: default;
 }
 
-.expanded .expandIcon {
-  transform: rotate(90deg);
-}
-
-.content {
-  padding: 0 1rem 1rem 1rem;
-  border-top: 1px solid #eee;
-  background: #fafbfc;
-}
-
-.classification {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  padding-top: 1rem;
-}
-
-.tag {
-  background: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  border: 1px solid #ddd;
-  color: #555;
-}
-
-.instructions {
-  margin-bottom: 1rem;
-}
-
-.instructionSection {
-  margin-bottom: 1rem;
-}
-
-.instructionSection h4 {
-  margin: 0 0 0.5rem 0;
-  color: #2c3e50;
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.instructionSection p {
-  margin: 0;
-  color: #555;
-  line-height: 1.5;
-  font-size: 0.9rem;
-}
-
-.actionButtons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.demoButton,
-.alternativesButton,
-.detailsButton {
-  background: white;
-  border: 1px solid #ddd;
-  padding: 0.6rem 0.8rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
-  text-align: center;
-}
-
-.demoButton:hover {
-  background: #3498db;
-  color: white;
-  border-color: #3498db;
-}
-
-.alternativesButton:hover {
-  background: #f39c12;
-  color: white;
-  border-color: #f39c12;
-}
-
-.detailsButton:hover {
-  background: #9b59b6;
-  color: white;
-  border-color: #9b59b6;
-}
-
-.muscleBreakdown {
-  background: white;
-  padding: 0.8rem;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-}
-
-.muscleBreakdown h4 {
-  margin: 0 0 0.5rem 0;
-  color: #2c3e50;
-  font-size: 0.9rem;
-}
-
-.muscleList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.muscleGroup {
-  font-size: 0.85rem;
-  color: #555;
+.addButton.added:hover {
+  background: #6c757d;
+  transform: none;
 }
 
 /* Mobile responsiveness */
@@ -275,19 +129,13 @@
     padding: 0.1rem 0.4rem;
   }
   
-  .actionButtons {
-    grid-template-columns: 1fr;
-    gap: 0.4rem;
+  .actions {
+    gap: 0.3rem;
   }
   
-  .demoButton,
-  .alternativesButton,
-  .detailsButton {
-    padding: 0.8rem;
-    font-size: 0.9rem;
-  }
-  
-  .clickableImage {
-    max-height: 150px;
+  .addButton {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
   }
 }
