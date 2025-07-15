@@ -20,7 +20,7 @@
     "tailwindcss": "^4.1.10",
     "typescript": "^5.8.3",
     "vite": "^6.0.7",
-    "vite-plugin-pwa": "^0.21.3"
+    "vite-plugin-pwa": "^0.20.5"
   },
   "dependencies": {
     "@capacitor/cli": "^7.4.0",
