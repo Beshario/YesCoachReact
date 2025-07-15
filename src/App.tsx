@@ -7,6 +7,8 @@ import WorkoutBuilder from './components/WorkoutBuilder/WorkoutBuilder';
 import { useWorkoutStore } from './stores/workoutStore';
 import { SimpleExercise } from './types/SimpleExerciseTypes';
 import { CalendarPage } from './components/Calendar/CalendarPage';
+import { AccountPage } from './components/Account/AccountPage';
+import { BottomNavigation } from './components/Navigation/BottomNavigation';
 
 // Error Boundary Component for Navigation
 class NavigationErrorBoundary extends React.Component<
@@ -131,97 +133,112 @@ const BodyMapPage: React.FC = () => {
   );
 };
 
-// Header component with navigation
+// Header content interface
+interface HeaderContent {
+  title: string;
+  hint: string;
+  stats?: string;
+}
+
+// Header component with contextual hints
 const AppHeader: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { workoutExercises } = useWorkoutStore();
   
-  const getViewTitle = useCallback((): string => {
-    if (location.pathname === '/') return 'YesCoach';
-    if (location.pathname === '/workout') return 'Workout Builder';
-    if (location.pathname === '/calendar') return 'Workout Calendar';
-    if (location.pathname.startsWith('/exercises/')) {
-      const muscleName = location.pathname.split('/')[2];
-      return `${muscleName.charAt(0).toUpperCase() + muscleName.slice(1)} Exercises`;
+  const getHeaderContent = useCallback((): HeaderContent => {
+    const pathname = location.pathname;
+    
+    // Browse Tab (Body Map and Exercises)
+    if (pathname === '/') {
+      return {
+        title: 'Browse Exercises',
+        hint: 'Click on any muscle to see exercises'
+      };
     }
-    return 'YesCoach';
-  }, [location.pathname]);
+    
+    if (pathname.startsWith('/exercises/')) {
+      const muscleName = pathname.split('/')[2];
+      const capitalizedMuscle = muscleName.charAt(0).toUpperCase() + muscleName.slice(1);
+      return {
+        title: `${capitalizedMuscle} Exercises`,
+        hint: 'Tap any exercise to add to your workout'
+      };
+    }
+    
+    // Plan Tab (Workout Builder)
+    if (pathname === '/workout') {
+      if (workoutExercises.length === 0) {
+        return {
+          title: 'Plan Workout',
+          hint: 'Add exercises to get started'
+        };
+      }
+      return {
+        title: 'Plan Workout',
+        hint: 'Build your perfect workout routine',
+        stats: `${workoutExercises.length} exercise${workoutExercises.length !== 1 ? 's' : ''} added`
+      };
+    }
+    
+    // Track Tab (Calendar)
+    if (pathname === '/calendar') {
+      return {
+        title: 'Track Progress',
+        hint: 'View your workout history'
+      };
+    }
+    
+    // Account Tab
+    if (pathname === '/account') {
+      return {
+        title: 'Account',
+        hint: 'Manage your preferences'
+      };
+    }
+    
+    // Default
+    return {
+      title: 'YesCoach',
+      hint: 'Your personal fitness companion'
+    };
+  }, [location.pathname, workoutExercises.length]);
 
-  const navigateToCalendar = useCallback(() => {
-    navigate('/calendar');
-  }, [navigate]);
-
-  const navigateToWorkout = useCallback(() => {
-    navigate('/workout');
-  }, [navigate]);
-
-  const navigateToHome = useCallback(() => {
-    navigate('/');
-  }, [navigate]);
+  const headerContent = getHeaderContent();
 
   return (
     <header style={{ 
       background: '#2c3e50', 
       color: 'white', 
-      padding: '1rem',
+      padding: '1rem 1.5rem',
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between'
+      flexDirection: 'column',
+      gap: '0.25rem'
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <h1 style={{ margin: 0, fontSize: '1.5rem' }}>{getViewTitle()}</h1>
-      </div>
-
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
-        {/* Calendar button */}
-        <button 
-          onClick={navigateToCalendar}
-          style={{
-            background: location.pathname === '/calendar' ? '#e74c3c' : '#9b59b6',
-            color: 'white',
-            border: 'none',
-            padding: '0.5rem 1rem',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: location.pathname === '/calendar' ? 'bold' : 'normal'
-          }}
-        >
-          📅 Calendar
-        </button>
-        
-        {/* Always show Workout button */}
-        <button 
-          onClick={navigateToWorkout}
-          style={{
-            background: location.pathname === '/workout' ? '#e74c3c' : '#28a745',
-            color: 'white',
-            border: 'none',
-            padding: '0.5rem 1rem',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: location.pathname === '/workout' ? 'bold' : 'normal'
-          }}
-        >
-          Workout {workoutExercises.length > 0 ? `(${workoutExercises.length})` : ''}
-        </button>
-        
-        {location.pathname !== '/' && (
-          <button 
-            onClick={navigateToHome}
-            style={{
-              background: '#3498db',
-              color: 'white',
-              border: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            ← Body Map
-          </button>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 'bold' }}>
+          {headerContent.title}
+        </h1>
+        {headerContent.stats && (
+          <span style={{ 
+            fontSize: '0.875rem', 
+            color: '#e74c3c', 
+            fontWeight: '600',
+            background: 'rgba(231, 76, 60, 0.1)',
+            padding: '0.25rem 0.5rem',
+            borderRadius: '12px'
+          }}>
+            {headerContent.stats}
+          </span>
         )}
       </div>
+      <p style={{ 
+        margin: 0, 
+        fontSize: '0.875rem', 
+        color: '#bdc3c7',
+        opacity: 0.9
+      }}>
+        {headerContent.hint}
+      </p>
     </header>
   );
 };
@@ -267,16 +284,20 @@ function AppContent(): React.JSX.Element {
       )}
       
       {/* Main content */}
-      <main style={{ flex: 1, display: 'flex', minHeight: 0 }}>
+      <main style={{ flex: 1, display: 'flex', minHeight: 0 }} className="main-content-with-nav">
         <NavigationErrorBoundary>
           <Routes key={location.pathname}>
             <Route path="/" element={<BodyMapPage key="body-map" />} />
             <Route path="/exercises/:muscleName" element={<ExercisesPage key={location.pathname} />} />
             <Route path="/workout" element={<WorkoutBuilder key="workout-builder" />} />
             <Route path="/calendar" element={<CalendarPage key="calendar" />} />
+            <Route path="/account" element={<AccountPage key="account" />} />
           </Routes>
         </NavigationErrorBoundary>
       </main>
+      
+      {/* Bottom Navigation */}
+      <BottomNavigation />
     </div>
   );
 }

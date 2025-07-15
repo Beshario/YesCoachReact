@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useWorkoutStore, WorkoutExercise } from '../../stores/workoutStore';
 import ExerciseReplacementModal from './ExerciseReplacementModal';
 import SetLoggingModal from './SetLoggingModal';
+import ExerciseDetailModal from '../Exercise/ExerciseDetailModal';
 import styles from './WorkoutExerciseCard.module.css';
 
 interface WorkoutExerciseCardProps {
@@ -16,6 +17,7 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
   const { removeExercise } = useWorkoutStore();
   const [showReplaceModal, setShowReplaceModal] = useState(false);
   const [showSetLoggingModal, setShowSetLoggingModal] = useState(false);
+  const [showExerciseDetail, setShowExerciseDetail] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   
   const { exercise } = workoutExercise;
@@ -30,6 +32,10 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
 
   const handleLogSets = () => {
     setShowSetLoggingModal(true);
+  };
+
+  const handleExerciseClick = () => {
+    setShowExerciseDetail(true);
   };
 
   const handleDragStart = (e: React.DragEvent) => {
@@ -86,7 +92,18 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
 
         {/* Exercise Info */}
         <div className={styles.exerciseInfo}>
-          <h3 className={styles.exerciseName}>{exercise.name}</h3>
+          <h3 
+            className={styles.exerciseName}
+            onClick={handleExerciseClick}
+            style={{ 
+              cursor: 'pointer',
+              transition: 'color 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.color = '#e74c3c'}
+            onMouseLeave={(e) => e.currentTarget.style.color = ''}
+          >
+            {exercise.name}
+          </h3>
           <div className={styles.metadata}>
             <span className={styles.category}>{exercise.category}</span>
             <span className={styles.equipment}>
@@ -150,6 +167,12 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
           onClose={() => setShowSetLoggingModal(false)}
         />
       )}
+
+      {/* Exercise Detail Modal */}
+      <ExerciseDetailModal
+        exercise={showExerciseDetail ? exercise : null}
+        onClose={() => setShowExerciseDetail(false)}
+      />
     </>
   );
 };

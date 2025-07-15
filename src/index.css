@@ -1,3 +1,124 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Bottom Navigation Styles */
+.bottom-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.bottom-navigation-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 70px;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 8px;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 48px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+  color: #7f8c8d;
+  padding: 6px 4px;
+  border-radius: 8px;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab-item:hover {
+  background: rgba(231, 76, 60, 0.05);
+}
+
+.tab-item.active {
+  color: #e74c3c;
+  transform: translateY(-1px);
+}
+
+.tab-icon-container {
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.tab-label {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  transition: color 0.15s ease-out;
+}
+
+.tab-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #e74c3c;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  animation: scaleIn 0.2s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Animation for tab transitions */
+.tab-item:active {
+  transform: translateY(0);
+}
+
+/* Add bottom padding to main content to account for navigation */
+.main-content-with-nav {
+  padding-bottom: calc(70px + env(safe-area-inset-bottom));
+}
+
+/* Responsive adjustments */
+@media (max-width: 320px) {
+  .tab-label {
+    font-size: 10px;
+  }
+  
+  .bottom-navigation-container {
+    height: 65px;
+    padding: 0 4px;
+  }
+}
+
+@media (min-width: 768px) {
+  .bottom-navigation {
+    max-width: 500px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 16px 16px 0 0;
+  }
+}

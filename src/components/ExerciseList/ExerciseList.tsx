@@ -5,7 +5,7 @@ import { SimpleExercise, DifficultyLevel, EquipmentType } from '../../types/Simp
 import { SortType } from '../../types/models';
 import { MuscleInfo } from '../BodyMap/MuscleData';
 import ExerciseCard from './ExerciseCard';
-import ExerciseDetailModal from './ExerciseDetailModal';
+import ExerciseDetailModal from '../Exercise/ExerciseDetailModal';
 import FilterPanel from './FilterPanel';
 import styles from './ExerciseList.module.css';
 

@@ -166,9 +166,15 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({ exercise, onC
           <div className={styles.instructionsSection}>
             <h3>Instructions</h3>
             <ol className={styles.instructionsList}>
-              {exercise.instructions.map((instruction, index) => (
-                <li key={index}>{instruction}</li>
-              ))}
+              {exercise.instructions && Array.isArray(exercise.instructions) ? (
+                exercise.instructions.map((instruction, index) => (
+                  <li key={index}>{instruction}</li>
+                ))
+              ) : exercise.instructions ? (
+                <li>{exercise.instructions}</li>
+              ) : (
+                <li>No instructions available</li>
+              )}
             </ol>
           </div>
 
@@ -177,15 +183,19 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({ exercise, onC
             <div className={styles.tipsSection}>
               <h3>Tips</h3>
               <ul className={styles.tipsList}>
-                {exercise.tips.map((tip, index) => (
-                  <li key={index}>{tip}</li>
-                ))}
+                {Array.isArray(exercise.tips) ? (
+                  exercise.tips.map((tip, index) => (
+                    <li key={index}>{tip}</li>
+                  ))
+                ) : (
+                  <li>{exercise.tips}</li>
+                )}
               </ul>
             </div>
           )}
 
           {/* Tags */}
-          {exercise.tags.length > 0 && (
+          {exercise.tags && exercise.tags.length > 0 && (
             <div className={styles.tagsSection}>
               <h3>Tags</h3>
               <div className={styles.tagsList}>
