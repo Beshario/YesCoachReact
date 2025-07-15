@@ -11,7 +11,7 @@ logs/
 
 # Environment variable files
 .env
-
+*.md
 # Operating system files
 .DS_Store
 Thumbs.db
