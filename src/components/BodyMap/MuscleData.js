@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAdvancedMuscles = exports.getBrowseMuscles = exports.getBodyMapMuscles = exports.getCategories = exports.getMusclesByTrainingFocus = exports.getChildMuscles = exports.getParentMuscles = exports.getDeepMuscles = exports.getSearchableMuscles = exports.getClickableMuscles = exports.getMusclesByCategory = exports.searchMuscles = exports.getMuscleById = exports.muscleData = void 0;
 // Complete ExRx muscle database - 55 muscles for professional precision
-exports.muscleData = {
+export const muscleData = {
     // === NECK REGION (100-109) ===
     100: {
         id: 100,
@@ -1285,61 +1282,48 @@ exports.muscleData = {
     }
 };
 // Professional utility functions for muscle database
-const getMuscleById = (id) => {
-    return exports.muscleData[id];
+export const getMuscleById = (id) => {
+    return muscleData[id];
 };
-exports.getMuscleById = getMuscleById;
-const searchMuscles = (query) => {
+export const searchMuscles = (query) => {
     const lowerQuery = query.toLowerCase();
-    return Object.values(exports.muscleData).filter(muscle => muscle.name.toLowerCase().includes(lowerQuery) ||
+    return Object.values(muscleData).filter(muscle => muscle.name.toLowerCase().includes(lowerQuery) ||
         muscle.exrxName.toLowerCase().includes(lowerQuery) ||
         muscle.commonNames.some(name => name.toLowerCase().includes(lowerQuery)) ||
         muscle.searchTags.some(tag => tag.toLowerCase().includes(lowerQuery)));
 };
-exports.searchMuscles = searchMuscles;
-const getMusclesByCategory = (category) => {
-    return Object.values(exports.muscleData).filter(muscle => muscle.category === category);
+export const getMusclesByCategory = (category) => {
+    return Object.values(muscleData).filter(muscle => muscle.category === category);
 };
-exports.getMusclesByCategory = getMusclesByCategory;
-const getClickableMuscles = () => {
-    return Object.values(exports.muscleData).filter(muscle => muscle.isClickableOnBodyMap);
+export const getClickableMuscles = () => {
+    return Object.values(muscleData).filter(muscle => muscle.isClickableOnBodyMap);
 };
-exports.getClickableMuscles = getClickableMuscles;
-const getSearchableMuscles = () => {
-    return Object.values(exports.muscleData).filter(muscle => !muscle.isDeepMuscle || muscle.isClickableOnBodyMap);
+export const getSearchableMuscles = () => {
+    return Object.values(muscleData).filter(muscle => !muscle.isDeepMuscle || muscle.isClickableOnBodyMap);
 };
-exports.getSearchableMuscles = getSearchableMuscles;
-const getDeepMuscles = () => {
-    return Object.values(exports.muscleData).filter(muscle => muscle.isDeepMuscle);
+export const getDeepMuscles = () => {
+    return Object.values(muscleData).filter(muscle => muscle.isDeepMuscle);
 };
-exports.getDeepMuscles = getDeepMuscles;
-const getParentMuscles = () => {
-    return Object.values(exports.muscleData).filter(muscle => muscle.children && muscle.children.length > 0);
+export const getParentMuscles = () => {
+    return Object.values(muscleData).filter(muscle => muscle.children && muscle.children.length > 0);
 };
-exports.getParentMuscles = getParentMuscles;
-const getChildMuscles = (parentId) => {
-    return Object.values(exports.muscleData).filter(muscle => muscle.parentId === parentId);
+export const getChildMuscles = (parentId) => {
+    return Object.values(muscleData).filter(muscle => muscle.parentId === parentId);
 };
-exports.getChildMuscles = getChildMuscles;
-const getMusclesByTrainingFocus = (focus) => {
-    return Object.values(exports.muscleData).filter(muscle => muscle.trainingFocus === focus);
+export const getMusclesByTrainingFocus = (focus) => {
+    return Object.values(muscleData).filter(muscle => muscle.trainingFocus === focus);
 };
-exports.getMusclesByTrainingFocus = getMusclesByTrainingFocus;
-const getCategories = () => {
-    return Array.from(new Set(Object.values(exports.muscleData).map(muscle => muscle.category)));
+export const getCategories = () => {
+    return Array.from(new Set(Object.values(muscleData).map(muscle => muscle.category)));
 };
-exports.getCategories = getCategories;
 // Get muscles appropriate for different UI contexts
-const getBodyMapMuscles = () => {
-    return (0, exports.getClickableMuscles)(); // ~20 major regions for SVG
+export const getBodyMapMuscles = () => {
+    return getClickableMuscles(); // ~20 major regions for SVG
 };
-exports.getBodyMapMuscles = getBodyMapMuscles;
-const getBrowseMuscles = () => {
-    return (0, exports.getSearchableMuscles)(); // ~45 muscles for search/browse
+export const getBrowseMuscles = () => {
+    return getSearchableMuscles(); // ~45 muscles for search/browse
 };
-exports.getBrowseMuscles = getBrowseMuscles;
-const getAdvancedMuscles = () => {
-    return Object.values(exports.muscleData); // All 55+ muscles for pro users
+export const getAdvancedMuscles = () => {
+    return Object.values(muscleData); // All 55+ muscles for pro users
 };
-exports.getAdvancedMuscles = getAdvancedMuscles;
 //# sourceMappingURL=MuscleData.js.map

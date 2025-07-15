@@ -18,10 +18,9 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": false,
-    "noUnusedPrivates": false,
-    
+    "noUnusedParameters": false,
+
     /* Compatibility */
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

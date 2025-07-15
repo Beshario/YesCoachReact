@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useDrag } from '@use-gesture/react';
 import { FrontView } from './FrontView';
 import { BackView } from './BackView';
-import { MuscleInfo, getMuscleById } from './MuscleData';
+import { MuscleInfo, getMuscleById } from './MuscleData.ts';
 import styles from './BodyMapViewer.module.css';
 
 export type DisplayMode = 'fatigue' | 'activation' | 'selection' | 'custom';
