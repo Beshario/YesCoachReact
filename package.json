@@ -2,22 +2,25 @@
   "name": "yescoach",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "tsc --noEmit"
   },
   "devDependencies": {
-    "@craco/craco": "^7.1.0",
     "@types/node": "^24.0.3",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.10",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^6.0.7",
+    "vite-plugin-pwa": "^0.21.3"
   },
   "dependencies": {
     "@capacitor/cli": "^7.4.0",
@@ -27,8 +30,6 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.3",
-    "react-scripts": "^5.0.1",
-    "workbox-webpack-plugin": "^7.3.0",
     "zustand": "^5.0.6"
   },
   "browserslist": {
