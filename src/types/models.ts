@@ -24,9 +24,9 @@ export interface Exercise {
   name: string;
   type: ExerciseType;
   equipment: string[];
-  primaryMuscles: MuscleGroup[];
-  secondaryMuscles: MuscleGroup[];
-  stabilizers?: MuscleGroup[];
+  primaryMuscles: number[]; // Using muscle ID numbers from body map
+  secondaryMuscles: number[];
+  stabilizers?: number[];
   mechanics: 'compound' | 'isolation';
   force: 'push' | 'pull' | 'static';
   // Training specifics
@@ -39,15 +39,17 @@ export interface Exercise {
 }
 
 export interface MuscleState {
-  muscleId: MuscleGroup;
-  volume: number; // Weekly volume count
-  lastWorked: Date;
-  fatigue: number; // 0-100
-  fiberActivation: {
-    slow: number; // 0-100
-    fast: number; // 0-100
-  };
-  flexibility: number; // 0-100
+  muscleId: number; // Using muscle ID numbers from body map
+  currentFatigue: number; // 0-100
+  lastUpdated: Date;
+  lastWorkoutRole?: 'primary' | 'secondary';
+  // Future fields for expansion:
+  // volume?: number; // Weekly volume count
+  // fiberActivation?: {
+  //   slow: number; // 0-100
+  //   fast: number; // 0-100
+  // };
+  // flexibility?: number; // 0-100
 }
 
 export interface WorkoutSet {

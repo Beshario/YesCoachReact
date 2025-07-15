@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { SimpleExercise } from '../../types/SimpleExerciseTypes';
+import { BodyMapViewer } from '../BodyMap';
+import { muscleStateService } from '../../services/muscleStateService';
 import styles from './ExerciseDetailModal.module.css';
 
 interface ExerciseDetailModalProps {
@@ -43,6 +45,20 @@ const ClickableExerciseImage: React.FC<{
 
 const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({ exercise, onClose }) => {
   const [isClosing, setIsClosing] = useState(false);
+
+  // Get muscle activation display states
+  const muscleStates = useMemo(() => {
+    if (!exercise) return new Map();
+    
+    // Get primary and secondary muscles from exercise
+    const primaryMuscles = exercise.primaryMuscles || [];
+    const secondaryMuscles = exercise.secondaryMuscles || [];
+    
+    return muscleStateService.getMuscleActivationDisplay(
+      primaryMuscles,
+      secondaryMuscles
+    );
+  }, [exercise]);
 
   useEffect(() => {
     if (exercise) {
@@ -130,6 +146,21 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({ exercise, onC
             </div>
           </div>
 
+          {/* Muscle Map */}
+          <div className={styles.muscleMapSection}>
+            <h3>Muscles Targeted</h3>
+            <div className={styles.muscleMapContainer}>
+              <BodyMapViewer
+                muscleStates={muscleStates}
+                displayMode="activation"
+                interactive={false}
+                size="small"
+                viewMode="side-by-side"
+                showControls={false}
+                showLabels={true}
+              />
+            </div>
+          </div>
 
           {/* Instructions */}
           <div className={styles.instructionsSection}>

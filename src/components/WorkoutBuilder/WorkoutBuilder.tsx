@@ -10,18 +10,15 @@ const WorkoutBuilder: React.FC = () => {
     submitWorkout 
   } = useWorkoutStore();
 
+  const totalCompletedSets = workoutExercises.reduce(
+    (total, we) => total + we.sets.filter(s => s.completed).length, 
+    0
+  );
+
   const handleSubmitWorkout = () => {
-    const totalCompletedSets = workoutExercises.reduce(
-      (total, we) => total + we.sets.filter(s => s.completed).length, 
-      0
-    );
+    if (totalCompletedSets === 0) return;
     
-    if (totalCompletedSets === 0) {
-      alert('Log some sets before submitting your workout!');
-      return;
-    }
-    
-    if (window.confirm(`Submit workout with ${totalCompletedSets} completed sets?`)) {
+    if (window.confirm(`Submit workout? (${totalCompletedSets} sets)`)) {
       submitWorkout();
     }
   };
@@ -34,7 +31,6 @@ const WorkoutBuilder: React.FC = () => {
 
   // Calculate workout stats
   const totalSets = workoutExercises.reduce((total, we) => total + we.sets.length, 0);
-  const completedSets = workoutExercises.reduce((total, we) => total + we.sets.filter(s => s.completed).length, 0);
 
   return (
     <div className={styles.workoutBuilder}>
@@ -45,7 +41,7 @@ const WorkoutBuilder: React.FC = () => {
           {workoutExercises.length > 0 && (
             <>
               <div className={styles.workoutStats}>
-                <span>Sets: {completedSets}/{totalSets}</span>
+                <span>Sets: {totalCompletedSets}/{totalSets}</span>
               </div>
               <button 
                 className={styles.clearButton}
@@ -53,10 +49,12 @@ const WorkoutBuilder: React.FC = () => {
               >
                 Clear All
               </button>
-              {completedSets > 0 && (
+              {totalCompletedSets > 0 && (
                 <button 
                   className={styles.submitButton}
                   onClick={handleSubmitWorkout}
+                  disabled={totalCompletedSets === 0}
+                  title={totalCompletedSets === 0 ? 'Complete some sets first' : `Submit ${totalCompletedSets} sets`}
                 >
                   Submit Workout
                 </button>
@@ -100,13 +98,15 @@ const WorkoutBuilder: React.FC = () => {
       </div>
 
       {/* Footer Actions */}
-      {workoutExercises.length > 0 && completedSets > 0 && (
+      {workoutExercises.length > 0 && totalCompletedSets > 0 && (
         <div className={styles.footer}>
           <button 
             className={styles.submitButtonLarge}
             onClick={handleSubmitWorkout}
+            disabled={totalCompletedSets === 0}
+            title={totalCompletedSets === 0 ? 'Complete some sets first' : `Submit ${totalCompletedSets} sets`}
           >
-            Submit Workout ({completedSets} sets)
+            Submit Workout ({totalCompletedSets} sets)
           </button>
         </div>
       )}

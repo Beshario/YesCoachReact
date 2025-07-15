@@ -3,9 +3,16 @@ import React from 'react';
 interface BackViewProps {
   onMuscleClick: (muscleId: number) => void;
   selectedMuscleId?: number;
+  muscleStyles?: (muscleId: number) => React.CSSProperties;
+  onMuscleHover?: (muscleId: number | undefined) => void;
 }
 
-export const BackView: React.FC<BackViewProps> = ({ onMuscleClick, selectedMuscleId }) => {
+export const BackView: React.FC<BackViewProps> = ({ 
+  onMuscleClick, 
+  selectedMuscleId,
+  muscleStyles = () => ({}),
+  onMuscleHover
+}) => {
   return (
     <svg 
       version="1.1" 

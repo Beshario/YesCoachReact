@@ -1,0 +1,226 @@
+/* CSS Variables */
+:root {
+  --hover-color: #f04141;
+  --dark-color: #222428;
+  --light-color: #f4f5f8;
+  --medium-color: #92949c;
+  --primary-color: #3880ff;
+  --success-color: #2dd36f;
+  --warning-color: #ffc409;
+  --danger-color: #eb445a;
+}
+
+/* Main container */
+.bodyMapViewer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Size variants */
+.small {
+  width: 200px;
+  height: 250px;
+}
+
+.medium {
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  max-height: 500px;
+}
+
+.large {
+  width: 100%;
+  height: 100%;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  background: white;
+  border-bottom: 1px solid var(--light-color);
+  z-index: 10;
+}
+
+.small .controls {
+  padding: 0.25rem;
+  gap: 0.5rem;
+}
+
+.toggleButton {
+  padding: 0.5rem 1rem;
+  background: var(--dark-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.small .toggleButton {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.toggleButton:hover {
+  background: var(--hover-color);
+  transform: translateY(-1px);
+}
+
+.muscleLabel {
+  padding: 0.25rem 0.75rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 4px;
+  animation: fadeIn 0.2s ease;
+}
+
+/* SVG Container */
+.svgContainer {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.svgWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SVG Styles */
+.svgContainer svg {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Label overlay */
+.labelOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.label {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.2s ease;
+}
+
+/* Muscle section styles - these will be applied via JavaScript */
+.svgContainer :global(.muscleSection) {
+  transition: all 0.2s ease;
+}
+
+.svgContainer :global(.muscleSection path),
+.svgContainer :global(.muscleSection g) {
+  transition: fill 0.2s ease, fill-opacity 0.2s ease;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Side by side view */
+.sideBySide {
+  display: flex;
+  flex-direction: column;
+}
+
+.controlsTop {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+  background: white;
+  border-bottom: 1px solid var(--light-color);
+}
+
+.viewsContainer {
+  display: flex;
+  gap: 0.5rem;
+  height: 100%;
+  align-items: stretch;
+}
+
+.viewWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.viewLabel {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  padding: 0.25rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px 4px 0 0;
+}
+
+.small .viewLabel {
+  font-size: 0.65rem;
+  padding: 0.15rem;
+}
+
+.sideBySide .svgContainer {
+  flex: 1;
+  border-radius: 0 0 4px 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .controls {
+    padding: 0.5rem;
+  }
+  
+  .toggleButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .muscleLabel {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+  }
+}

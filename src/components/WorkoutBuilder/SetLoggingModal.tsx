@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useWorkoutStore, WorkoutExercise } from '../../stores/workoutStore';
+import { useWorkoutStore, WorkoutExercise, WorkoutSet } from '../../stores/workoutStore';
 import styles from './SetLoggingModal.module.css';
 
 interface SetLoggingModalProps {
@@ -11,10 +11,11 @@ const SetLoggingModal: React.FC<SetLoggingModalProps> = ({
   workoutExercise, 
   onClose 
 }) => {
-  const { addSet, completeSet, deleteSet } = useWorkoutStore();
+  const { addSet, updateSet, completeSet, deleteSet } = useWorkoutStore();
   const [newSetReps, setNewSetReps] = useState('');
   const [newSetWeight, setNewSetWeight] = useState('');
   const [newSetTime, setNewSetTime] = useState('');
+  const [editingSetId, setEditingSetId] = useState<string | null>(null);
 
   // Auto-populate with previous set values when modal opens
   React.useEffect(() => {
@@ -35,7 +36,35 @@ const SetLoggingModal: React.FC<SetLoggingModalProps> = ({
 
   const { exercise, sets } = workoutExercise;
 
-  const handleAddSet = () => {
+  const clearForm = () => {
+    // If we have previous sets, populate with last set values
+    if (sets.length > 0 && !editingSetId) {
+      const lastSet = sets[sets.length - 1];
+      setNewSetReps(lastSet.reps?.toString() || '');
+      setNewSetWeight(lastSet.weight?.toString() || '');
+      setNewSetTime(lastSet.time?.toString() || '');
+    } else {
+      setNewSetReps('');
+      setNewSetWeight('');
+      setNewSetTime('');
+    }
+  };
+
+  const handleRowClick = (set: WorkoutSet) => {
+    if (editingSetId === set.id) {
+      // Clicking same row - cancel edit
+      setEditingSetId(null);
+      clearForm();
+    } else {
+      // Clicking different row - switch to editing that row
+      setEditingSetId(set.id);
+      setNewSetReps(set.reps?.toString() || '');
+      setNewSetWeight(set.weight?.toString() || '');
+      setNewSetTime(set.time?.toString() || '');
+    }
+  };
+
+  const handleAddOrUpdateSet = () => {
     const reps = parseInt(newSetReps);
     const weight = newSetWeight ? parseFloat(newSetWeight) : undefined;
     const time = newSetTime ? parseInt(newSetTime) : undefined;
@@ -45,16 +74,26 @@ const SetLoggingModal: React.FC<SetLoggingModalProps> = ({
       return;
     }
 
-    addSet(exercise.id, {
-      reps: reps || 0,
-      weight,
-      time
-    });
+    if (editingSetId) {
+      // Update existing set
+      updateSet(exercise.id, editingSetId, {
+        reps: reps || 0,
+        weight,
+        time,
+        completed: true
+      });
+      setEditingSetId(null);
+    } else {
+      // Add new set
+      addSet(exercise.id, {
+        reps: reps || 0,
+        weight,
+        time
+      });
+    }
 
-    // Clear inputs
-    setNewSetReps('');
-    setNewSetWeight('');
-    setNewSetTime('');
+    // Clear form after add/update
+    clearForm();
   };
 
   const handleCompleteSet = (setId: string) => {
@@ -62,8 +101,11 @@ const SetLoggingModal: React.FC<SetLoggingModalProps> = ({
   };
 
   const handleDeleteSet = (setId: string) => {
-    if (window.confirm('Delete this set?')) {
-      deleteSet(exercise.id, setId);
+    deleteSet(exercise.id, setId);
+    // Clear editing state if we're deleting the set being edited
+    if (editingSetId === setId) {
+      setEditingSetId(null);
+      clearForm();
     }
   };
 
@@ -114,7 +156,12 @@ const SetLoggingModal: React.FC<SetLoggingModalProps> = ({
             </thead>
             <tbody>
               {sets.map((set, index) => (
-                <tr key={set.id} className={set.completed ? styles.completedRow : ''}>
+                <tr 
+                  key={set.id} 
+                  className={`${set.completed ? styles.completedRow : ''} ${editingSetId === set.id ? styles.editingRow : ''}`}
+                  onClick={() => handleRowClick(set)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>{index + 1}</td>
                   {!isCardioExercise ? (
                     <>
@@ -139,7 +186,10 @@ const SetLoggingModal: React.FC<SetLoggingModalProps> = ({
                       {!set.completed && (
                         <button 
                           className={styles.completeButton}
-                          onClick={() => handleCompleteSet(set.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCompleteSet(set.id);
+                          }}
                           title="Mark as completed"
                         >
                           ✓
@@ -147,7 +197,10 @@ const SetLoggingModal: React.FC<SetLoggingModalProps> = ({
                       )}
                       <button 
                         className={styles.deleteButton}
-                        onClick={() => handleDeleteSet(set.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteSet(set.id);
+                        }}
                         title="Delete set"
                       >
                         ×
@@ -162,7 +215,7 @@ const SetLoggingModal: React.FC<SetLoggingModalProps> = ({
 
         {/* Add New Set Form */}
         <div className={styles.addSetForm}>
-          <h3>Add New Set</h3>
+          <h3>{editingSetId ? 'Edit Set' : 'Add New Set'}</h3>
           <div className={styles.formInputs}>
             {!isCardioExercise ? (
               <>
@@ -202,10 +255,10 @@ const SetLoggingModal: React.FC<SetLoggingModalProps> = ({
             )}
             <button 
               className={styles.addButton}
-              onClick={handleAddSet}
+              onClick={handleAddOrUpdateSet}
               disabled={(!newSetReps && !newSetTime)}
             >
-              Add Set
+              {editingSetId ? 'Update Set' : 'Add Set'}
             </button>
           </div>
         </div>

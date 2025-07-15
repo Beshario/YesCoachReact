@@ -6,6 +6,7 @@ import { ExerciseList } from './components/ExerciseList';
 import WorkoutBuilder from './components/WorkoutBuilder/WorkoutBuilder';
 import { useWorkoutStore } from './stores/workoutStore';
 import { SimpleExercise } from './types/SimpleExerciseTypes';
+import { Calendar } from './components/Calendar/Calendar';
 
 // Component for handling muscle exercises with URL params
 const ExercisesPage: React.FC = () => {
@@ -68,6 +69,7 @@ const AppHeader: React.FC = () => {
   const getViewTitle = (): string => {
     if (location.pathname === '/') return 'YesCoach';
     if (location.pathname === '/workout') return 'Workout Builder';
+    if (location.pathname === '/calendar') return 'Workout Calendar';
     if (location.pathname.startsWith('/exercises/')) {
       const muscleName = location.pathname.split('/')[2];
       return `${muscleName.charAt(0).toUpperCase() + muscleName.slice(1)} Exercises`;
@@ -89,6 +91,22 @@ const AppHeader: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', gap: '0.5rem' }}>
+        {/* Calendar button */}
+        <button 
+          onClick={() => navigate('/calendar')}
+          style={{
+            background: location.pathname === '/calendar' ? '#e74c3c' : '#9b59b6',
+            color: 'white',
+            border: 'none',
+            padding: '0.5rem 1rem',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: location.pathname === '/calendar' ? 'bold' : 'normal'
+          }}
+        >
+          📅 Calendar
+        </button>
+        
         {/* Always show Workout button */}
         <button 
           onClick={() => navigate('/workout')}
@@ -138,6 +156,7 @@ function AppContent(): React.JSX.Element {
           <Route path="/" element={<BodyMapPage />} />
           <Route path="/exercises/:muscleName" element={<ExercisesPage />} />
           <Route path="/workout" element={<WorkoutBuilder />} />
+          <Route path="/calendar" element={<Calendar />} />
         </Routes>
       </main>
     </div>

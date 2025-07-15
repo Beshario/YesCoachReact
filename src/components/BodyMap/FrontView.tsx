@@ -3,9 +3,16 @@ import React from 'react';
 interface FrontViewProps {
   onMuscleClick: (muscleId: number) => void;
   selectedMuscleId?: number;
+  muscleStyles?: (muscleId: number) => React.CSSProperties;
+  onMuscleHover?: (muscleId: number | undefined) => void;
 }
 
-export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMuscleId }) => {
+export const FrontView: React.FC<FrontViewProps> = ({ 
+  onMuscleClick, 
+  selectedMuscleId,
+  muscleStyles = () => ({}),
+  onMuscleHover
+}) => {
   return (
     <svg 
       id="Front_View"
@@ -18,8 +25,13 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
       xmlSpace="preserve"
     >
       {/* Chest */}
-      <g className={`muscleSection ${selectedMuscleId === 160 ? 'selected' : ''}`} id="160">
-        <g id="Chest">
+      <g 
+        className={`muscleSection ${selectedMuscleId === 160 ? 'selected' : ''}`} 
+        id="160"
+        onMouseEnter={() => onMuscleHover?.(160)}
+        onMouseLeave={() => onMuscleHover?.(undefined)}
+      >
+        <g id="Chest" style={muscleStyles(160)}>
          	<g id="sternal">
          		<path d="M586.7,485.8c-0.1-0.4-0.1-0.7-0.2-1.1c-3.4-12.5-21.9-54-23.8-62.1c-5.9-24.7,2.7-46.6,20-50.5
          			c36-5.1,121.7,63.1,144.9,88.3c9.7,11.6,12.5,18,0.1,30.1c-21.1,22.4-68.7,39.1-99,43.4c-9.9,1.4-30.4-21.3-38.8-38
@@ -43,8 +55,13 @@ export const FrontView: React.FC<FrontViewProps> = ({ onMuscleClick, selectedMus
       </g>
 
       {/* Shoulders */}
-      <g className={`muscleSection ${selectedMuscleId === 110 ? 'selected' : ''}`} id="110">
-        <g id="Shoulders">
+      <g 
+        className={`muscleSection ${selectedMuscleId === 110 ? 'selected' : ''}`} 
+        id="110"
+        onMouseEnter={() => onMuscleHover?.(110)}
+        onMouseLeave={() => onMuscleHover?.(undefined)}
+      >
+        <g id="Shoulders" style={muscleStyles(110)}>
           <g>
             <path d="M714.3,346.8c27.6-3.2,49.1,28.6,63.2,46.7c7.3,9.5,53.8,77.5,44.4,88.2c-17.9,20.4-77.7-45.3-84.8-55.9C724.9,408.1,676.4,346.8,714.3,346.8z"/>
             <path d="M360.8,426.2c-7.1,10.6-66.7,76.4-84.7,56.1c-9.4-10.7,36.9-78.8,44.2-88.3c14.1-18.1,35.5-50,63.1-46.8C421.4,347.1,373,408.5,360.8,426.2z"/>

@@ -21,9 +21,7 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
   const { exercise } = workoutExercise;
 
   const handleRemove = () => {
-    if (window.confirm(`Remove ${exercise.name} from workout?`)) {
-      removeExercise(exercise.id);
-    }
+    removeExercise(exercise.id);
   };
 
   const handleReplace = () => {

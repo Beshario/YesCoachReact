@@ -1,0 +1,220 @@
+/* Calendar container */
+.calendar {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.monthYear {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.monthYear h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #2c3e50;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #3498db;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navButton:hover {
+  background: #f0f4f8;
+  color: #2980b9;
+}
+
+.todayButton {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.todayButton:hover {
+  background: #2980b9;
+  transform: translateY(-1px);
+}
+
+/* Weekdays */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #7f8c8d;
+  padding: 0.5rem 0;
+}
+
+/* Calendar grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #ecf0f1;
+  border: 1px solid #ecf0f1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cell {
+  background: white;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 60px;
+}
+
+.cell:hover:not(.empty) {
+  background: #f8f9fa;
+  transform: scale(1.02);
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.empty {
+  cursor: default;
+  background: #fafafa;
+}
+
+.empty:hover {
+  background: #fafafa;
+  transform: none;
+  box-shadow: none;
+}
+
+.today {
+  background: #e3f2fd;
+  font-weight: 600;
+}
+
+.today .dayNumber {
+  color: #1976d2;
+}
+
+.hasWorkout {
+  background: #e8f5e9;
+}
+
+.hasWorkout:hover {
+  background: #c8e6c9;
+}
+
+/* Day content */
+.dayNumber {
+  font-size: 1rem;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.workoutIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  position: absolute;
+  bottom: 0.25rem;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #4caf50;
+  border-radius: 50%;
+}
+
+.exerciseCount {
+  font-size: 0.7rem;
+  color: #4caf50;
+  font-weight: 600;
+}
+
+/* Loading state */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #7f8c8d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .calendar {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .monthYear h2 {
+    font-size: 1.2rem;
+  }
+  
+  .todayButton {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .weekday {
+    font-size: 0.75rem;
+    padding: 0.4rem 0;
+  }
+  
+  .cell {
+    min-height: 50px;
+  }
+  
+  .dayNumber {
+    font-size: 0.9rem;
+  }
+  
+  .workoutIndicator {
+    bottom: 0.15rem;
+  }
+  
+  .dot {
+    width: 5px;
+    height: 5px;
+  }
+  
+  .exerciseCount {
+    font-size: 0.65rem;
+  }
+}

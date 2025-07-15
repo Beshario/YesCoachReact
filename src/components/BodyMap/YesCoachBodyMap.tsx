@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { useDrag } from '@use-gesture/react';
-import { FrontView } from './FrontView';
-import { BackView } from './BackView';
+import React, { useState, useCallback, useEffect } from 'react';
+import { BodyMapViewer, MuscleDisplayState } from './BodyMapViewer';
 import { MuscleInfo, getMuscleById } from './MuscleData';
+import { muscleStateService } from '../../services/muscleStateService';
 import styles from './styles.module.css';
 
 interface YesCoachBodyMapProps {
@@ -14,74 +13,53 @@ export const YesCoachBodyMap: React.FC<YesCoachBodyMapProps> = ({
   onMuscleSelected,
   className = ''
 }) => {
-  const [isFrontView, setIsFrontView] = useState(true);
-  const [selectedMuscle, setSelectedMuscle] = useState<MuscleInfo | null>(null);
-  const svgContainerRef = useRef<HTMLDivElement>(null);
+  const [muscleStates, setMuscleStates] = useState<Map<number, MuscleDisplayState>>(new Map());
+  const [loading, setLoading] = useState(true);
 
-  const handleMuscleClick = useCallback((muscleId: number) => {
-    const muscle = getMuscleById(muscleId);
-    if (muscle) {
-      setSelectedMuscle(muscle);
-      onMuscleSelected?.(muscle);
-      console.log('Selected muscle:', muscle);
-    }
-  }, [onMuscleSelected]);
+  // Load muscle fatigue states
+  useEffect(() => {
+    const loadMuscleStates = async () => {
+      try {
+        setLoading(true);
+        const states = await muscleStateService.getMuscleDisplayStates();
+        setMuscleStates(states);
+      } catch (error) {
+        console.error('Failed to load muscle states:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    loadMuscleStates();
 
-
-  const handleViewToggle = useCallback(() => {
-    setIsFrontView(prev => !prev);
+    // Refresh muscle states every 30 seconds
+    const interval = setInterval(loadMuscleStates, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
-  // Set up swipe gesture detection
-  const bind = useDrag((state) => {
-    const { swipe: [swipeX] } = state;
-    
-    // If there's a horizontal swipe, toggle the view
-    if (swipeX !== 0) {
-      setIsFrontView(prev => !prev);
-    }
-  }, {
-    filterTaps: true, // This ensures taps/clicks are not detected as swipes
-  });
+  const handleMuscleClick = useCallback((muscleId: number, muscle: MuscleInfo) => {
+    onMuscleSelected?.(muscle);
+    console.log('Selected muscle:', muscle);
+  }, [onMuscleSelected]);
 
   return (
     <div className={`${styles.bodyMapContainer} ${className}`}>
-      <div className={styles.controls}>
-        {selectedMuscle && (
-          <div className={styles.selectedMuscleHeader}>
-            Selected: {selectedMuscle.name}
-          </div>
-        )}
-        <button 
-          className={styles.toggleButton}
-          onClick={handleViewToggle}
-          aria-label={`Switch to ${isFrontView ? 'back' : 'front'} view`}
-        >
-          {isFrontView ? 'Back View' : 'Front View'}
-        </button>
-      </div>
-
-      <div 
-        ref={svgContainerRef}
-        className={styles.svgContainer}
-        {...bind()}
-        style={{
-          touchAction: 'pan-y' // Allow vertical scrolling but handle horizontal swipes
-        }}
-      >
-        {isFrontView ? (
-          <FrontView 
-            onMuscleClick={handleMuscleClick} 
-            selectedMuscleId={selectedMuscle?.id}
-          />
-        ) : (
-          <BackView 
-            onMuscleClick={handleMuscleClick} 
-            selectedMuscleId={selectedMuscle?.id}
-          />
-        )}
-      </div>
+      {loading && (
+        <div className={styles.loadingOverlay}>
+          Loading muscle states...
+        </div>
+      )}
+      <BodyMapViewer
+        muscleStates={muscleStates}
+        displayMode="fatigue"
+        interactive={true}
+        size="large"
+        showControls={true}
+        showLabels={false}
+        onMuscleClick={handleMuscleClick}
+        className={styles.mainBodyMap}
+      />
     </div>
   );
 };

@@ -125,12 +125,16 @@ class DatabaseService {
   // Muscle state methods
   async updateMuscleState(state: MuscleState) {
     if (!this.db) await this.init();
-    await this.db!.put('muscleStates', state);
+    await this.db!.put('muscleStates', state, state.muscleId.toString());
   }
 
   async getMuscleStates(): Promise<MuscleState[]> {
     if (!this.db) await this.init();
     return await this.db!.getAll('muscleStates');
+  }
+
+  async getAllMuscleStates(): Promise<MuscleState[]> {
+    return this.getMuscleStates();
   }
 
   // Exercise catalog methods

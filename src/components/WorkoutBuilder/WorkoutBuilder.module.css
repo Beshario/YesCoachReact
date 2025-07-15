@@ -84,6 +84,16 @@
   background: #0b5ed7;
 }
 
+.submitButton:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.submitButton:disabled:hover {
+  background: #6c757d;
+}
+
 /* Exercise List */
 .exerciseList {
   margin-bottom: 2rem;
@@ -178,6 +188,16 @@
 
 .submitButtonLarge:hover {
   background: #0b5ed7;
+}
+
+.submitButtonLarge:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.submitButtonLarge:disabled:hover {
+  background: #6c757d;
 }
 
 /* Mobile Responsive */

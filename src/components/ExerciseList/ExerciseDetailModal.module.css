@@ -259,6 +259,30 @@
   margin-bottom: 0.5rem;
 }
 
+/* Muscle Map Section */
+.muscleMapSection {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.muscleMapSection h3 {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.muscleMapContainer {
+  display: flex;
+  justify-content: center;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 300px;
+}
+
 /* Tags section */
 .tagsSection {
   margin-bottom: 2rem;

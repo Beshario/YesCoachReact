@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { SimpleExercise } from '../types/SimpleExerciseTypes';
+import { db as database } from '../services/database';
+import { muscleStateService } from '../services/muscleStateService';
+import { Workout, WorkoutSet as DBWorkoutSet, Exercise } from '../types/models';
 
 // Types for workout management
 export interface WorkoutSet {
@@ -31,6 +34,7 @@ interface WorkoutStore {
   
   // Set Actions
   addSet: (exerciseId: string, set: Omit<WorkoutSet, 'id' | 'completed'>) => void;
+  updateSet: (exerciseId: string, setId: string, setData: Partial<Omit<WorkoutSet, 'id'>>) => void;
   completeSet: (exerciseId: string, setId: string) => void;
   deleteSet: (exerciseId: string, setId: string) => void;
   
@@ -115,7 +119,7 @@ export const useWorkoutStore = create<WorkoutStore>()(
       const newSet: WorkoutSet = {
         id: `set-${Date.now()}-${Math.random()}`,
         ...setData,
-        completed: false
+        completed: true // Changed to true - sets are completed when added
       };
       
       const updatedExercises = workoutExercises.map(we =>
@@ -144,6 +148,23 @@ export const useWorkoutStore = create<WorkoutStore>()(
       set({ workoutExercises: updatedExercises });
     },
     
+    updateSet: (exerciseId, setId, setData) => {
+      const { workoutExercises } = get();
+      
+      const updatedExercises = workoutExercises.map(we =>
+        we.exercise.id === exerciseId
+          ? {
+              ...we,
+              sets: we.sets.map(set =>
+                set.id === setId ? { ...set, ...setData } : set
+              )
+            }
+          : we
+      );
+      
+      set({ workoutExercises: updatedExercises });
+    },
+    
     deleteSet: (exerciseId, setId) => {
       const { workoutExercises } = get();
       
@@ -157,28 +178,97 @@ export const useWorkoutStore = create<WorkoutStore>()(
     },
     
     // Workout Completion
-    submitWorkout: () => {
+    submitWorkout: async () => {
       const { workoutExercises } = get();
       
-      // Create workout summary
-      const workoutSummary = {
-        id: `workout-${Date.now()}`,
-        exercises: workoutExercises.map(we => ({
+      // Filter to only completed sets
+      const exercisesWithCompletedSets = workoutExercises
+        .map(we => ({
+          exerciseId: we.exercise.id,
           exercise: we.exercise,
           sets: we.sets.filter(set => set.completed)
-        })),
-        completedAt: new Date(),
-        totalSets: workoutExercises.reduce((total, we) => total + we.sets.filter(s => s.completed).length, 0)
+        }))
+        .filter(e => e.sets.length > 0);
+      
+      if (exercisesWithCompletedSets.length === 0) {
+        alert('No completed sets to save!');
+        return;
+      }
+      
+      // Create workout for database
+      const workout: Workout = {
+        id: `workout-${Date.now()}`,
+        date: new Date(),
+        goal: 'strength', // Default for now
+        exercises: exercisesWithCompletedSets.map(e => ({
+          exerciseId: e.exerciseId,
+          sets: e.sets.map(set => ({
+            exerciseId: e.exerciseId,
+            reps: set.reps,
+            weight: set.weight,
+            rpe: 7, // Default RPE
+            rest: 60 // Default rest
+          } as DBWorkoutSet))
+        }))
       };
       
-      // TODO: Save workout to database
-      console.log('Workout submitted:', workoutSummary);
-      
-      // Clear workout after submission
-      set({ workoutExercises: [] });
-      
-      // Show success message
-      alert(`Workout completed! ${workoutSummary.totalSets} sets logged.`);
+      try {
+        // Save workout to database
+        await database.saveWorkout(workout);
+        
+        // Convert SimpleExercise to Exercise format for muscle state calculation
+        const exercisesForMuscleCalc = exercisesWithCompletedSets.map(e => ({
+          exercise: {
+            id: e.exercise.id,
+            name: e.exercise.name,
+            type: 'strength' as const,
+            equipment: e.exercise.equipment,
+            primaryMuscles: e.exercise.primaryMuscles || [],
+            secondaryMuscles: e.exercise.secondaryMuscles || [],
+            mechanics: 'compound' as const, // default value
+            force: 'push' as const, // default value
+            fiberBias: 'mixed' as const, // default value
+            recommendedGoals: ['strength'] // default value
+          } as Exercise,
+          sets: e.sets.map(set => ({
+            exerciseId: e.exerciseId,
+            reps: set.reps,
+            weight: set.weight,
+            rpe: 7,
+            rest: 60
+          } as DBWorkoutSet))
+        }));
+        
+        // Calculate muscle impact
+        const muscleImpacts = await muscleStateService.calculateWorkoutImpact(
+          exercisesForMuscleCalc
+        );
+        
+        // Update muscle states
+        await muscleStateService.updateMuscleStates(muscleImpacts);
+        
+        // Clear workout after submission
+        set({ workoutExercises: [] });
+        
+        // Clear localStorage
+        localStorage.removeItem('yescoach-workout');
+        
+        // Success - workout saved
+        console.log('Workout saved successfully:', {
+          totalSets: exercisesWithCompletedSets.reduce((total, e) => total + e.sets.length, 0),
+          exercises: exercisesWithCompletedSets.length
+        });
+        
+      } catch (error) {
+        console.error('Failed to save workout - Full error:', error);
+        console.error('Error details:', {
+          message: error instanceof Error ? error.message : 'Unknown error',
+          stack: error instanceof Error ? error.stack : undefined,
+          workout,
+          exercisesWithCompletedSets
+        });
+        alert('Failed to save workout. Please try again. Check console for details.');
+      }
     }
   }))
 );
