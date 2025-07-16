@@ -6,7 +6,6 @@ import { SortType } from '../../types/models';
 import { MuscleInfo } from '../BodyMap/MuscleData';
 import ExerciseCard from './ExerciseCard';
 import ExerciseDetailModal from '../Exercise/ExerciseDetailModal';
-import FilterPanel from './FilterPanel';
 import styles from './ExerciseList.module.css';
 
 interface ExerciseListProps {
@@ -31,28 +30,26 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   const [hasMore, setHasMore] = useState(true);
   const exercisesPerPage = 20;
   
-  // Filter states
-  const [difficultyFilter, setDifficultyFilter] = useState<DifficultyLevel[]>([]);
-  const [equipmentFilter, setEquipmentFilter] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<SortType>('muscle_recruitment');
+  // Remove filter/search states - will use preferences instead
   const [selectedExercise, setSelectedExercise] = useState<SimpleExercise | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [visibleTabs, setVisibleTabs] = useState<string[]>(['strength', 'plyometrics', 'stretching', 'all']);
 
-  // Load user preferences on mount
+  // Load user's tab preferences on mount
   useEffect(() => {
-    const loadUserPreferences = async () => {
+    const loadTabPreferences = async () => {
       try {
-        const userPrefs = await preferencesService.getUserPreferences();
-        setSortBy(userPrefs.defaultSortBy);
+        const preferences = await preferencesService.getUserPreferences();
+        setVisibleTabs(preferences.visibleExerciseTabs);
+        setSelectedCategory(preferences.selectedExerciseTab);
       } catch (error) {
-        console.error('Failed to load user preferences:', error);
+        console.error('Failed to load tab preferences:', error);
       }
     };
-    
-    loadUserPreferences();
+    loadTabPreferences();
   }, []);
 
-  // Load exercises when muscle selection or filters change
+  // Load exercises when muscle selection or category changes
   useEffect(() => {
     if (selectedMuscle) {
       setCurrentPage(1);
@@ -60,10 +57,13 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
       setHasMore(true);
       loadExercisesForMuscle(1, true);
     }
-  }, [selectedMuscle, difficultyFilter, equipmentFilter, sortBy]);
+  }, [selectedMuscle, selectedCategory]);
 
   const loadExercisesForMuscle = async (page: number = currentPage, replace: boolean = false) => {
     if (!selectedMuscle) return;
+    
+    // Performance monitoring
+    const startTime = performance.now();
     
     if (page === 1) {
       setLoading(true);
@@ -75,14 +75,20 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
     try {
       await exerciseService.initialize();
       
+      // Load user preferences
+      const preferences = await preferencesService.getUserPreferences();
+      
       // Get exercises for the selected muscle
       const allMuscleExercises = await exerciseService.getExercisesForMuscle(
         selectedMuscle.id,
         'high',
         {
-          difficulty: difficultyFilter.length > 0 ? difficultyFilter : undefined,
-          equipment: equipmentFilter.length > 0 ? equipmentFilter : undefined,
-          sortBy: sortBy
+          difficulty: preferences.autoFilterByDifficulty && preferences.defaultDifficultyFilter.length > 0 
+            ? preferences.defaultDifficultyFilter as DifficultyLevel[] : undefined,
+          equipment: preferences.autoFilterByEquipment && preferences.availableEquipment.length > 0 
+            ? preferences.availableEquipment : undefined,
+          sortBy: preferences.defaultSortBy,
+          category: selectedCategory
         }
       );
       
@@ -103,6 +109,11 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
       
       // Set total count
       setTotalExercises(allMuscleExercises.length);
+      
+      // Performance monitoring
+      const endTime = performance.now();
+      const loadTime = endTime - startTime;
+      console.log(`Exercise loading time: ${loadTime.toFixed(2)}ms for ${allMuscleExercises.length} exercises`);
       
     } catch (err) {
       console.error('Failed to load exercises:', err);
@@ -126,48 +137,9 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
     
     // Load more when user is within 200px of bottom
     if (scrollHeight - scrollTop <= clientHeight + 200) {
-      if (!loadingMore && hasMore && !searchTerm) {
+      if (!loadingMore && hasMore) {
         loadMoreExercises();
       }
-    }
-  };
-
-  // Search functionality
-  const handleSearch = async (term: string) => {
-    setSearchTerm(term);
-    
-    if (!term.trim()) {
-      if (selectedMuscle) {
-        setCurrentPage(1);
-        setExercises([]);
-        setHasMore(true);
-        loadExercisesForMuscle(1, true);
-      }
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      const searchResults = await exerciseService.quickSearch(term, 50);
-      setExercises(searchResults);
-      setHasMore(false); // Search results don't have pagination yet
-    } catch (err) {
-      console.error('Search failed:', err);
-      setError('Search failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle sort change
-  const handleSortChange = async (newSortBy: SortType) => {
-    setSortBy(newSortBy);
-    
-    // Save user's preference
-    try {
-      await preferencesService.setSortPreference(newSortBy);
-    } catch (error) {
-      console.error('Failed to save sort preference:', error);
     }
   };
 
@@ -181,12 +153,26 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
     setSelectedExercise(null);
   };
 
-  // Filter exercises by search term (client-side for responsiveness)
-  const filteredExercises = exercises.filter(exercise =>
-    !searchTerm || 
-    exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    exercise.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Handle category tab change
+  const handleCategoryChange = async (category: string) => {
+    setSelectedCategory(category);
+    
+    // Save the selected tab to preferences
+    try {
+      await preferencesService.updatePreferences({ selectedExerciseTab: category });
+    } catch (error) {
+      console.error('Failed to save selected tab:', error);
+    }
+  };
+
+  // Tab configuration
+  const availableTabs = [
+    { id: 'strength', label: 'Strength', icon: '💪' },
+    { id: 'plyometrics', label: 'Plyometrics', icon: '⚡' },
+    { id: 'stretching', label: 'Stretching', icon: '🧘' },
+    { id: 'all', label: 'All', icon: '📋' }
+  ];
+
 
   return (
     <div className={styles.exerciseList}>
@@ -200,40 +186,26 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
         </div>
       )}
 
-      {/* Search and filters */}
-      <div className={styles.controls}>
-        <div className={styles.searchContainer}>
-          <input
-            type="text"
-            placeholder="Search exercises..."
-            value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
-            className={styles.searchInput}
-          />
+      {/* Category Tabs */}
+      {visibleTabs.length > 1 && (
+        <div className={styles.categoryTabs}>
+          {availableTabs
+            .filter(tab => visibleTabs.includes(tab.id))
+            .map(tab => (
+              <button
+                key={tab.id}
+                className={`${styles.categoryTab} ${selectedCategory === tab.id ? styles.active : ''}`}
+                onClick={() => handleCategoryChange(tab.id)}
+                disabled={loading}
+              >
+                <span className={styles.tabIcon}>{tab.icon}</span>
+                <span className={styles.tabLabel}>{tab.label}</span>
+              </button>
+            ))
+          }
         </div>
-        
-        <div className={styles.sortContainer}>
-          <label htmlFor="sort-select" className={styles.sortLabel}>Sort by:</label>
-          <select
-            id="sort-select"
-            value={sortBy}
-            onChange={(e) => handleSortChange(e.target.value as SortType)}
-            className={styles.sortSelect}
-          >
-            <option value="muscle_recruitment">Muscle Recruitment</option>
-            <option value="relevance">Most Relevant</option>
-            <option value="type">Exercise Type</option>
-            <option value="alphabetical">Alphabetical</option>
-          </select>
-        </div>
-        
-        <FilterPanel
-          difficultyFilter={difficultyFilter}
-          equipmentFilter={equipmentFilter}
-          onDifficultyChange={setDifficultyFilter}
-          onEquipmentChange={setEquipmentFilter}
-        />
-      </div>
+      )}
+
 
       {/* Exercise count */}
       <div className={styles.resultInfo}>
@@ -241,7 +213,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
           <span>Loading exercises...</span>
         ) : (
           <span>
-            {filteredExercises.length} exercise{filteredExercises.length !== 1 ? 's' : ''} found
+            {exercises.length} exercise{exercises.length !== 1 ? 's' : ''} found
             {selectedMuscle && ` for ${selectedMuscle.name}`}
           </span>
         )}
@@ -259,7 +231,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
 
       {/* Exercise list */}
       <div className={styles.exercises} onScroll={handleScroll}>
-        {filteredExercises.map(exercise => (
+        {exercises.map(exercise => (
           <ExerciseCard
             key={exercise.id}
             exercise={exercise}
@@ -276,10 +248,10 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
           </div>
         )}
         
-        {!loading && filteredExercises.length === 0 && !error && (
+        {!loading && exercises.length === 0 && !error && (
           <div className={styles.emptyState}>
             {selectedMuscle ? (
-              <p>No exercises found for {selectedMuscle.name} with current filters.</p>
+              <p>No exercises found for {selectedMuscle.name} with your preferences.</p>
             ) : (
               <p>Select a muscle from the body map to view exercises.</p>
             )}

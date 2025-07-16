@@ -1,25 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useWorkoutStore } from '../../stores/workoutStore';
 import WorkoutExerciseCard from './WorkoutExerciseCard';
 import styles from './WorkoutBuilder.module.css';
 
 const WorkoutBuilder: React.FC = () => {
+  const { date: dateParam, sessionId } = useParams<{ date?: string; sessionId?: string }>();
+  const navigate = useNavigate();
   const { 
     workoutExercises, 
+    selectedDate,
+    sessionName,
     clearWorkout,
-    submitWorkout 
+    submitWorkout,
+    setWorkoutDate,
+    setSessionId,
+    setSessionName
   } = useWorkoutStore();
+
+  // Initialize workout context from URL parameters
+  useEffect(() => {
+    if (dateParam) {
+      const date = new Date(dateParam);
+      setWorkoutDate(date);
+    }
+    if (sessionId) {
+      setSessionId(sessionId);
+    }
+  }, [dateParam, sessionId, setWorkoutDate, setSessionId]);
 
   const totalCompletedSets = workoutExercises.reduce(
     (total, we) => total + we.sets.filter(s => s.completed).length, 
     0
   );
 
-  const handleSubmitWorkout = () => {
+  const handleSubmitWorkout = async () => {
     if (totalCompletedSets === 0) return;
     
-    if (window.confirm(`Submit workout? (${totalCompletedSets} sets)`)) {
-      submitWorkout();
+    const sessionText = sessionName || 'workout session';
+    if (window.confirm(`Submit ${sessionText}? (${totalCompletedSets} sets)`)) {
+      await submitWorkout();
+      
+      // Navigate back to day view or calendar after submission
+      if (dateParam) {
+        navigate(`/calendar/${dateParam}`);
+      } else {
+        navigate('/calendar');
+      }
     }
   };
 
@@ -32,11 +59,43 @@ const WorkoutBuilder: React.FC = () => {
   // Calculate workout stats
   const totalSets = workoutExercises.reduce((total, we) => total + we.sets.length, 0);
 
+  // Format date for display
+  const formatDateForHeader = (date: Date) => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return 'Yesterday';
+    } else if (date.toDateString() === tomorrow.toDateString()) {
+      return 'Tomorrow';
+    } else {
+      return new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+      }).format(date);
+    }
+  };
+
   return (
     <div className={styles.workoutBuilder}>
       {/* Header */}
       <div className={styles.header}>
-        <h2>Workout Builder</h2>
+        <div className={styles.headerInfo}>
+          {selectedDate ? (
+            <>
+              <h2>Building workout for {formatDateForHeader(selectedDate)}</h2>
+              {sessionId && <p className={styles.sessionInfo}>Editing session</p>}
+            </>
+          ) : (
+            <h2>Workout Builder</h2>
+          )}
+        </div>
         <div className={styles.headerActions}>
           {workoutExercises.length > 0 && (
             <>
@@ -63,6 +122,19 @@ const WorkoutBuilder: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Session Name Input */}
+      {workoutExercises.length > 0 && (
+        <div className={styles.sessionNameSection}>
+          <input
+            type="text"
+            placeholder="Session name (optional)"
+            value={sessionName}
+            onChange={(e) => setSessionName(e.target.value)}
+            className={styles.sessionNameInput}
+          />
+        </div>
+      )}
 
       {/* Exercise List */}
       <div className={styles.exerciseList}>

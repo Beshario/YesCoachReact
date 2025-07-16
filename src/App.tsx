@@ -7,6 +7,7 @@ import WorkoutBuilder from './components/WorkoutBuilder/WorkoutBuilder';
 import { useWorkoutStore } from './stores/workoutStore';
 import { SimpleExercise } from './types/SimpleExerciseTypes';
 import { CalendarPage } from './components/Calendar/CalendarPage';
+import { DayView } from './components/Calendar/DayView';
 import { AccountPage } from './components/Account/AccountPage';
 import { BottomNavigation } from './components/Navigation/BottomNavigation';
 
@@ -75,14 +76,17 @@ const ExercisesPage: React.FC = () => {
   // Find muscle info based on URL param
   React.useEffect(() => {
     if (muscleName) {
+      // Decode URL-encoded muscle name (e.g., "Upper%20Trapezius" -> "Upper Trapezius")
+      const decodedMuscleName = decodeURIComponent(muscleName);
+      
       // Search for the actual muscle in the database
-      const foundMuscles = searchMuscles(muscleName);
+      const foundMuscles = searchMuscles(decodedMuscleName);
       if (foundMuscles.length > 0) {
         // Use the first matching muscle
         setSelectedMuscle(foundMuscles[0]);
       } else {
         // Fallback: try searching by category
-        const categoryMuscles = searchMuscles(muscleName.charAt(0).toUpperCase() + muscleName.slice(1));
+        const categoryMuscles = searchMuscles(decodedMuscleName.charAt(0).toUpperCase() + decodedMuscleName.slice(1));
         if (categoryMuscles.length > 0) {
           setSelectedMuscle(categoryMuscles[0]);
         } else {
@@ -186,6 +190,41 @@ const AppHeader: React.FC = () => {
         title: 'Track Progress',
         hint: 'View your workout history'
       };
+    }
+
+    // Day View
+    if (pathname.startsWith('/calendar/') && !pathname.includes('/workout')) {
+      const dateParam = pathname.split('/')[2];
+      if (dateParam) {
+        const date = new Date(dateParam);
+        const dateStr = new Intl.DateTimeFormat('en-US', {
+          weekday: 'short',
+          month: 'short', 
+          day: 'numeric'
+        }).format(date);
+        return {
+          title: dateStr,
+          hint: 'Plan or review workouts for this day'
+        };
+      }
+    }
+
+    // Workout Builder with Date Context
+    if (pathname.includes('/calendar/') && pathname.includes('/workout')) {
+      const dateParam = pathname.split('/')[2];
+      if (dateParam) {
+        const date = new Date(dateParam);
+        const dateStr = new Intl.DateTimeFormat('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric'
+        }).format(date);
+        return {
+          title: `Plan Workout`,
+          hint: `Building workout for ${dateStr}`,
+          stats: `${workoutExercises.length} exercise${workoutExercises.length !== 1 ? 's' : ''} added`
+        };
+      }
     }
     
     // Account Tab
@@ -291,6 +330,8 @@ function AppContent(): React.JSX.Element {
             <Route path="/exercises/:muscleName" element={<ExercisesPage key={location.pathname} />} />
             <Route path="/workout" element={<WorkoutBuilder key="workout-builder" />} />
             <Route path="/calendar" element={<CalendarPage key="calendar" />} />
+            <Route path="/calendar/:date" element={<DayView key={location.pathname} />} />
+            <Route path="/calendar/:date/workout/:sessionId?" element={<WorkoutBuilder key={location.pathname} />} />
             <Route path="/account" element={<AccountPage key="account" />} />
           </Routes>
         </NavigationErrorBoundary>

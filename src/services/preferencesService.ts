@@ -3,6 +3,7 @@
 
 import { db } from './database';
 import { UserProfile, UserPreferences, SortType, ExerciseListView } from '../types/models';
+import { exerciseService } from './exerciseService';
 
 class PreferencesService {
   private cachedProfile: UserProfile | null = null;
@@ -13,11 +14,22 @@ class PreferencesService {
    */
   private getDefaultPreferences(): UserPreferences {
     return {
+      // Exercise display preferences
       defaultSortBy: 'muscle_recruitment',
       showSynergistExercises: true,
       showStabilizerExercises: false,
       exerciseListView: 'compact',
-      autoExpandChildMuscles: true
+      autoExpandChildMuscles: true,
+      
+      // Equipment and filtering preferences
+      availableEquipment: ['bodyweight'], // Start with bodyweight only
+      defaultDifficultyFilter: [], // No difficulty filter by default (show all)
+      autoFilterByEquipment: true, // Auto-filter by available equipment
+      autoFilterByDifficulty: false, // Don't auto-filter by difficulty by default
+      
+      // Category tab preferences
+      visibleExerciseTabs: ['strength', 'plyometrics', 'stretching', 'all'], // Show all tabs by default
+      selectedExerciseTab: 'all' // Default to showing all exercises
     };
   }
 
@@ -27,7 +39,6 @@ class PreferencesService {
   private getDefaultProfile(): UserProfile {
     return {
       id: this.DEFAULT_USER_ID,
-      availableEquipment: ['bodyweight'],
       goals: ['hypertrophy'],
       experienceLevel: 'beginner',
       injuries: [],
@@ -91,6 +102,9 @@ class PreferencesService {
 
       await this.saveUserProfile(updatedProfile);
       this.cachedProfile = updatedProfile;
+      
+      // Clear exercise cache when preferences change
+      exerciseService.clearCache();
     } catch (error) {
       console.error('Failed to update preferences:', error);
       throw error;

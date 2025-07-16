@@ -1,47 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar } from './Calendar';
-import { WorkoutDetail } from './WorkoutDetail';
 import { Workout } from '../../types/models';
 import styles from './CalendarPage.module.css';
 
 export const CalendarPage: React.FC = () => {
-  const [selectedWorkout, setSelectedWorkout] = useState<{
-    workout: Workout;
-    date: Date;
-  } | null>(null);
+  const navigate = useNavigate();
 
   const handleDateClick = (date: Date, workout?: Workout) => {
-    if (workout) {
-      setSelectedWorkout({ workout, date });
-    } else {
-      // Handle empty date click - could open "Create Workout" modal
-      console.log('No workout on', date.toDateString());
-    }
-  };
-
-  const handleCloseWorkoutDetail = () => {
-    setSelectedWorkout(null);
+    // Navigate to day view for any date click (with or without workouts)
+    const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+    navigate(`/calendar/${dateString}`);
   };
 
   return (
     <div className={styles.calendarPage}>
       <div className={styles.header}>
         <h1>Workout Calendar</h1>
-        <p>Click on any date with a workout to view details</p>
+        <p>Click on any date to view or plan workouts</p>
       </div>
       
       <Calendar 
         onDateClick={handleDateClick}
         className={styles.calendar}
       />
-      
-      {selectedWorkout && (
-        <WorkoutDetail
-          workout={selectedWorkout.workout}
-          date={selectedWorkout.date}
-          onClose={handleCloseWorkoutDetail}
-        />
-      )}
     </div>
   );
 };

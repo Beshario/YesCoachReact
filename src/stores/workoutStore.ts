@@ -24,6 +24,9 @@ export interface WorkoutExercise {
 interface WorkoutStore {
   // Workout State
   workoutExercises: WorkoutExercise[];
+  selectedDate: Date | null;           // Date for the workout being built
+  sessionId: string | null;            // Session ID being edited (null for new session)
+  sessionName: string;                 // Optional session name
   
   // Actions
   addExercise: (exercise: SimpleExercise) => void;
@@ -32,6 +35,12 @@ interface WorkoutStore {
   reorderExercises: (fromIndex: number, toIndex: number) => void;
   clearWorkout: () => void;
   
+  // Session Management
+  setWorkoutDate: (date: Date) => void;
+  setSessionId: (sessionId: string | null) => void;
+  setSessionName: (name: string) => void;
+  loadWorkoutSession: (workout: Workout) => void;
+  
   // Set Actions
   addSet: (exerciseId: string, set: Omit<WorkoutSet, 'id' | 'completed'>) => void;
   updateSet: (exerciseId: string, setId: string, setData: Partial<Omit<WorkoutSet, 'id'>>) => void;
@@ -39,13 +48,16 @@ interface WorkoutStore {
   deleteSet: (exerciseId: string, setId: string) => void;
   
   // Workout Completion
-  submitWorkout: () => void;
+  submitWorkout: () => Promise<void>;
 }
 
 export const useWorkoutStore = create<WorkoutStore>()(
   subscribeWithSelector((set, get) => ({
     // Initial State
     workoutExercises: [],
+    selectedDate: null,
+    sessionId: null,
+    sessionName: '',
     
     // Builder Actions
     addExercise: (exercise) => {
@@ -109,7 +121,47 @@ export const useWorkoutStore = create<WorkoutStore>()(
     },
     
     clearWorkout: () => {
-      set({ workoutExercises: [] });
+      set({ 
+        workoutExercises: [],
+        sessionId: null,
+        sessionName: ''
+      });
+    },
+
+    // Session Management
+    setWorkoutDate: (date) => {
+      set({ selectedDate: date });
+    },
+
+    setSessionId: (sessionId) => {
+      set({ sessionId });
+    },
+
+    setSessionName: (name) => {
+      set({ sessionName: name });
+    },
+
+    loadWorkoutSession: (workout) => {
+      // Convert workout back to WorkoutExercise format
+      const workoutExercises: WorkoutExercise[] = workout.exercises.map((exercise, index) => ({
+        id: `workout-exercise-${index}`,
+        exercise: exercise as any, // Will need to load exercise details separately
+        order: index,
+        sets: exercise.sets.map((set, setIndex) => ({
+          id: `set-${setIndex}`,
+          reps: set.reps,
+          weight: set.weight,
+          time: set.duration,
+          completed: true
+        }))
+      }));
+
+      set({
+        workoutExercises,
+        sessionId: workout.id,
+        sessionName: workout.sessionName || '',
+        selectedDate: workout.date
+      });
     },
     
     // Set Actions
@@ -179,7 +231,7 @@ export const useWorkoutStore = create<WorkoutStore>()(
     
     // Workout Completion
     submitWorkout: async () => {
-      const { workoutExercises } = get();
+      const { workoutExercises, selectedDate, sessionId, sessionName } = get();
       
       // Filter to only completed sets
       const exercisesWithCompletedSets = workoutExercises
@@ -194,12 +246,20 @@ export const useWorkoutStore = create<WorkoutStore>()(
         alert('No completed sets to save!');
         return;
       }
+
+      // Use selectedDate or default to today
+      const workoutDate = selectedDate || new Date();
+      
+      // Generate session ID if we don't have one (new workout)
+      let finalSessionId = sessionId;
+      if (!finalSessionId) {
+        finalSessionId = await database.generateSessionId(workoutDate);
+      }
       
       // Create workout for database
       const workout: Workout = {
-        id: `workout-${Date.now()}`,
-        date: new Date(),
-        goal: 'strength', // Default for now
+        id: finalSessionId,
+        date: workoutDate,
         exercises: exercisesWithCompletedSets.map(e => ({
           exerciseId: e.exerciseId,
           sets: e.sets.map(set => ({
@@ -209,7 +269,9 @@ export const useWorkoutStore = create<WorkoutStore>()(
             rpe: 7, // Default RPE
             rest: 60 // Default rest
           } as DBWorkoutSet))
-        }))
+        })),
+        sessionName: sessionName || undefined,
+        goal: 'strength' // Default for now
       };
       
       try {
@@ -248,7 +310,12 @@ export const useWorkoutStore = create<WorkoutStore>()(
         await muscleStateService.updateMuscleStates(muscleImpacts);
         
         // Clear workout after submission
-        set({ workoutExercises: [] });
+        set({ 
+          workoutExercises: [],
+          sessionId: null,
+          sessionName: '',
+          selectedDate: null
+        });
         
         // Clear localStorage
         localStorage.removeItem('yescoach-workout');

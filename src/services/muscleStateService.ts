@@ -294,7 +294,7 @@ export class MuscleStateService {
     const displayStates = new Map<number, MuscleDisplayState>();
 
     muscleStates.forEach((state, muscleId) => {
-      const { color, label } = this.getFatigueDisplay(state.currentFatigue);
+      const { color, label } = this.getFatigueDisplay(state.currentFatigue, muscleId);
       
       displayStates.set(muscleId, {
         color,
@@ -309,7 +309,12 @@ export class MuscleStateService {
   /**
    * Get color and label based on fatigue level
    */
-  private getFatigueDisplay(fatigue: number): { color: string; label: string } {
+  private getFatigueDisplay(fatigue: number, muscleId?: number): { color: string; label: string } {
+    // Special case: Heart muscle should always be red
+    if (muscleId === 210) {
+      return { color: '#e74c3c', label: 'Heart' };
+    }
+    
     if (fatigue >= 75) {
       return { color: '#dc2626', label: 'Very Fatigued' }; // Red
     } else if (fatigue >= 50) {
@@ -319,7 +324,7 @@ export class MuscleStateService {
     } else if (fatigue > 0) {
       return { color: '#22c55e', label: 'Nearly Recovered' }; // Green
     }
-    return { color: 'transparent', label: 'Fresh' };
+    return { color: '#92949c', label: 'Fresh' }; // Default muscle color (was 'transparent')
   }
 
   /**

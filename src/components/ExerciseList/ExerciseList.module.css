@@ -30,6 +30,70 @@
   font-size: 0.9rem;
 }
 
+/* Category Tabs */
+.categoryTabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.categoryTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.categoryTab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6c757d;
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
+.categoryTab:hover {
+  background: #f8f9fa;
+  border-color: #dee2e6;
+  transform: translateY(-1px);
+}
+
+.categoryTab:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.categoryTab.active {
+  background: #3498db;
+  border-color: #3498db;
+  color: white;
+}
+
+.categoryTab.active:hover {
+  background: #2980b9;
+  border-color: #2980b9;
+}
+
+.tabIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.tabLabel {
+  font-weight: 500;
+}
+
 .controls {
   display: flex;
   flex-direction: column;

@@ -10,6 +10,8 @@ import { getMuscleById, getChildMuscles } from '../components/BodyMap/MuscleData
 
 export class ExerciseService {
   private isInitialized = false;
+  private muscleExerciseCache = new Map<string, { exercises: SimpleExercise[], timestamp: number }>();
+  private cacheTimeout = 5 * 60 * 1000; // 5 minutes
 
   /**
    * Initialize the exercise database (import data if needed)
@@ -55,12 +57,20 @@ export class ExerciseService {
       equipment?: string[];
       limit?: number;
       sortBy?: SortType;
+      category?: string;
     }
   ): Promise<SimpleExercise[]> {
     await this.initialize();
     
-    // Get user preferences
+    // Create cache key including all parameters that affect results
     const userPrefs = await preferencesService.getUserPreferences();
+    const cacheKey = this.createCacheKey(muscleId, activationType, options, userPrefs);
+    
+    // Check cache first
+    const cached = this.muscleExerciseCache.get(cacheKey);
+    if (cached && (Date.now() - cached.timestamp) < this.cacheTimeout) {
+      return cached.exercises;
+    }
     
     // Collect all muscle IDs to query
     const muscleIds = [muscleId];
@@ -85,7 +95,13 @@ export class ExerciseService {
       });
     }
     
+    
     let exercises = Array.from(allExercises.values());
+
+    // Apply category filter if specified (but not for heart muscle - it should show cardio regardless of tab)
+    if (options?.category && options.category !== 'all' && muscleId !== 210) {
+      exercises = exercises.filter(ex => ex.category === options.category);
+    }
 
     // Apply filters
     if (options?.difficulty) {
@@ -106,6 +122,12 @@ export class ExerciseService {
     if (options?.limit) {
       exercises = exercises.slice(0, options.limit);
     }
+
+    // Cache the results
+    this.muscleExerciseCache.set(cacheKey, {
+      exercises,
+      timestamp: Date.now()
+    });
 
     return exercises;
   }
@@ -312,6 +334,39 @@ export class ExerciseService {
     }
 
     return { primary, alternatives, antagonists };
+  }
+
+  /**
+   * Clear exercise cache - call when preferences change
+   */
+  clearCache(): void {
+    this.muscleExerciseCache.clear();
+  }
+
+  /**
+   * Create cache key for muscle exercise queries
+   */
+  private createCacheKey(
+    muscleId: number, 
+    activationType: ActivationLevel, 
+    options: any, 
+    userPrefs: any
+  ): string {
+    const key = JSON.stringify({
+      muscleId,
+      activationType,
+      category: options?.category,
+      difficulty: options?.difficulty?.sort(),
+      equipment: options?.equipment?.sort(),
+      limit: options?.limit,
+      sortBy: options?.sortBy || userPrefs.defaultSortBy,
+      autoExpandChildMuscles: userPrefs.autoExpandChildMuscles,
+      autoFilterByEquipment: userPrefs.autoFilterByEquipment,
+      autoFilterByDifficulty: userPrefs.autoFilterByDifficulty,
+      availableEquipment: userPrefs.availableEquipment?.sort(),
+      defaultDifficultyFilter: userPrefs.defaultDifficultyFilter?.sort()
+    });
+    return key;
   }
 
   /**

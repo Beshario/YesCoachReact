@@ -19,6 +19,9 @@ export class SimpleExerciseImporter {
       // Import relationships
       await this.importRelationships();
       
+      // Build performance indexes
+      await this.buildMuscleIndexes();
+      
       console.log('✅ MVP exercise data import completed');
       
     } catch (error) {
@@ -133,6 +136,85 @@ export class SimpleExerciseImporter {
       // await db.clearRelationships(); // Uncomment if this method exists
     } catch (error) {
       console.warn('⚠️ Could not clear existing relationships:', error);
+    }
+  }
+
+  /**
+   * Build muscle indexes for fast exercise lookup
+   */
+  private async buildMuscleIndexes(): Promise<void> {
+    try {
+      console.log('🏗️ Building muscle indexes for performance...');
+      
+      // Get all exercises
+      const exercises = await db.getAllExercises();
+      
+      // Create muscle-to-exercises mapping
+      const muscleIndexes = new Map<string, string[]>();
+      
+      for (const exercise of exercises) {
+        // Index by muscle activation levels
+        for (const [muscleIdStr, activationLevel] of Object.entries(exercise.activationLevels)) {
+          const muscleId = parseInt(muscleIdStr);
+          
+          // Create index keys for different activation levels
+          const indexKeys = [
+            `muscle_${muscleId}_${activationLevel}`, // specific level
+            `muscle_${muscleId}_all` // all levels for this muscle
+          ];
+          
+          // Also include lower activation levels in higher level queries
+          if (activationLevel === 'high') {
+            indexKeys.push(`muscle_${muscleId}_medium`, `muscle_${muscleId}_low`);
+          } else if (activationLevel === 'medium') {
+            indexKeys.push(`muscle_${muscleId}_low`);
+          }
+          
+          for (const key of indexKeys) {
+            if (!muscleIndexes.has(key)) {
+              muscleIndexes.set(key, []);
+            }
+            const exerciseList = muscleIndexes.get(key)!;
+            if (!exerciseList.includes(exercise.id)) {
+              exerciseList.push(exercise.id);
+            }
+          }
+        }
+        
+        // Also index by primary and secondary muscles for fallback
+        for (const muscleId of exercise.primaryMuscles) {
+          const key = `muscle_${muscleId}_primary`;
+          if (!muscleIndexes.has(key)) {
+            muscleIndexes.set(key, []);
+          }
+          const exerciseList = muscleIndexes.get(key)!;
+          if (!exerciseList.includes(exercise.id)) {
+            exerciseList.push(exercise.id);
+          }
+        }
+        
+        for (const muscleId of exercise.secondaryMuscles) {
+          const key = `muscle_${muscleId}_secondary`;
+          if (!muscleIndexes.has(key)) {
+            muscleIndexes.set(key, []);
+          }
+          const exerciseList = muscleIndexes.get(key)!;
+          if (!exerciseList.includes(exercise.id)) {
+            exerciseList.push(exercise.id);
+          }
+        }
+      }
+      
+      // Save indexes to database
+      for (const [muscleKey, exerciseIds] of muscleIndexes.entries()) {
+        await db.saveMuscleIndex(muscleKey, exerciseIds);
+      }
+      
+      console.log(`✅ Built ${muscleIndexes.size} muscle indexes`);
+      
+    } catch (error) {
+      console.error('❌ Failed to build muscle indexes:', error);
+      throw error;
     }
   }
 }

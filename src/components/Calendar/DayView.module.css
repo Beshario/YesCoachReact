@@ -1,0 +1,314 @@
+/* Day View Container */
+.dayView {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f8f9fa;
+  overflow-y: auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: center;
+  flex: 1;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  color: #3498db;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.backButton:hover {
+  background: #f0f4f8;
+  color: #2980b9;
+}
+
+.spacer {
+  width: 80px; /* Same width as back button for centering */
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  font-size: 1.1rem;
+  color: #7f8c8d;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.emptyState h3 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+}
+
+.emptyState p {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+/* Workout Sessions */
+.workoutSessions {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.workoutCard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+}
+
+.workoutHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.workoutHeader h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #2c3e50;
+}
+
+.workoutActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editButton {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.editButton:hover {
+  background: #2980b9;
+}
+
+.deleteButton {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  line-height: 1;
+}
+
+.deleteButton:hover {
+  background: #c0392b;
+}
+
+/* Workout Stats */
+.workoutStats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: #7f8c8d;
+  margin-top: 0.25rem;
+}
+
+/* Exercise List */
+.exerciseList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.exerciseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.exerciseItem:last-child {
+  border-bottom: none;
+}
+
+.exerciseName {
+  font-size: 0.95rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.exerciseSets {
+  font-size: 0.875rem;
+  color: #7f8c8d;
+}
+
+/* Add Workout Section */
+.addWorkoutSection {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.addWorkoutButton {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.2);
+}
+
+.addWorkoutButton:hover {
+  background: #219a52;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+/* Body Map Section */
+.bodyMapSection {
+  margin: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+}
+
+.bodyMapSection h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.bodyMapContainer {
+  display: flex;
+  justify-content: center;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  height: 300px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+  }
+  
+  .header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .workoutSessions {
+    padding: 0.75rem;
+  }
+  
+  .workoutCard {
+    padding: 1rem;
+  }
+  
+  .workoutStats {
+    gap: 1rem;
+  }
+  
+  .statValue {
+    font-size: 1.25rem;
+  }
+  
+  .spacer {
+    width: 60px;
+  }
+  
+  .bodyMapContainer {
+    height: 250px;
+  }
+}
+
+/* Desktop Enhancements */
+@media (min-width: 769px) {
+  .dayView {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .workoutSessions {
+    padding: 2rem;
+  }
+}

@@ -64,14 +64,17 @@ export interface WorkoutSet {
 }
 
 export interface Workout {
-  id: string;
-  date: Date;
-  goal: TrainingGoal;
-  exercises: {
+  id: string;        // Format: "YYYY-MM-DD-N" (e.g., "2025-01-15-1", "2025-01-15-2")
+  date: Date;        // The workout date
+  exercises: {       // The actual workout data
     exerciseId: string;
     sets: WorkoutSet[];
   }[];
-  notes?: string;
+  
+  // Everything else optional
+  sessionName?: string;  // "Morning", "Evening" (user can add if they want)
+  notes?: string;        // Optional notes
+  goal?: TrainingGoal;   // Optional goal
 }
 
 // For calculating training effect
@@ -90,16 +93,26 @@ export interface TrainingEffect {
 export type ExerciseListView = 'compact' | 'detailed';
 
 export interface UserPreferences {
+  // Exercise display preferences
   defaultSortBy: SortType;
   showSynergistExercises: boolean;
   showStabilizerExercises: boolean;
   exerciseListView: ExerciseListView;
   autoExpandChildMuscles: boolean;
+  
+  // Equipment and filtering preferences
+  availableEquipment: string[];  // User's available equipment
+  defaultDifficultyFilter: string[];  // Default difficulty levels to show
+  autoFilterByEquipment: boolean;  // Automatically filter exercises by available equipment
+  autoFilterByDifficulty: boolean;  // Automatically filter exercises by preferred difficulty
+  
+  // Category tab preferences
+  visibleExerciseTabs: string[];  // Which category tabs to show ['strength', 'plyometrics', 'stretching', 'all']
+  selectedExerciseTab: string;    // Currently selected category tab
 }
 
 export interface UserProfile {
   id: string;
-  availableEquipment: string[];
   goals: TrainingGoal[];
   experienceLevel: 'beginner' | 'intermediate' | 'advanced';
   injuries?: MuscleGroup[];

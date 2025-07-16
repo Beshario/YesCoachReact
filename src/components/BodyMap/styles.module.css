@@ -152,8 +152,10 @@
   opacity: 0.6;
 }
 
-.svgContainer :global(#Heart) {
-  fill: var(--hover-color);
+.svgContainer :global(#Heart),
+.svgContainer :global(#Heart g),
+.svgContainer :global(#Heart path:not(#surround)) {
+  fill: var(--hover-color) !important;
 }
 
 /* No scroll utility */

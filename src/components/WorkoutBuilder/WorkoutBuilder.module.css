@@ -16,10 +16,16 @@
   border-bottom: 2px solid #e9ecef;
 }
 
-.header h2 {
+.headerInfo h2 {
   margin: 0;
   color: #2c3e50;
   font-size: 1.5rem;
+}
+
+.sessionInfo {
+  margin: 0.25rem 0 0 0;
+  color: #7f8c8d;
+  font-size: 0.875rem;
 }
 
 .headerActions {
@@ -92,6 +98,33 @@
 
 .submitButton:disabled:hover {
   background: #6c757d;
+}
+
+/* Session Name Section */
+.sessionNameSection {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sessionNameInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.sessionNameInput:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.sessionNameInput::placeholder {
+  color: #7f8c8d;
 }
 
 /* Exercise List */

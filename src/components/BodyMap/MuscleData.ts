@@ -325,7 +325,7 @@ export const muscleData: Record<number, MuscleInfo> = {
     commonNames: ["Back", "Lats", "Traps"],
     anatomicalLocation: "back",
     isClickableOnBodyMap: true,
-    children: [141, 142, 143, 144, 145, 146, 147, 148, 149, 150],
+    children: [141, 142, 148, 149, 150],
     searchTags: ["back", "pulling", "rows"],
     fiberType: "mixed",
     trainingFocus: "strength",
@@ -479,6 +479,22 @@ export const muscleData: Record<number, MuscleInfo> = {
     fiberType: "slow",
     trainingFocus: "stability",
     isDeepMuscle: true
+  },
+  151:
+  {
+    id: 151,
+    name: "Trapezius",
+    templateRef: "trapezius",
+    exrxName: "Trapezius",
+    category: "Back",
+    commonNames: ["Traps"],
+    anatomicalLocation: "back",
+    isClickableOnBodyMap: true,
+    searchTags: ["trapezium", "shoulder stability", "upper back"],
+    fiberType: "mixed",
+    trainingFocus: "strength",
+    isDeepMuscle: false,
+    children: [143, 144, 145, 146, 147]
   },
 
   // === CHEST REGION (160-169) ===

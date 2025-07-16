@@ -122,6 +122,27 @@ class DatabaseService {
     return await index.getAll(range);
   }
 
+  // Get all workouts for a specific date
+  async getWorkoutsForDate(date: Date): Promise<Workout[]> {
+    if (!this.db) await this.init();
+    const dateString = this.formatDateForId(date);
+    
+    const allWorkouts = await this.db!.getAll('workouts');
+    return allWorkouts.filter(workout => workout.id.startsWith(dateString));
+  }
+
+  // Generate next session ID for a date
+  async generateSessionId(date: Date): Promise<string> {
+    const existingWorkouts = await this.getWorkoutsForDate(date);
+    const sessionNumber = existingWorkouts.length + 1;
+    return `${this.formatDateForId(date)}-${sessionNumber}`;
+  }
+
+  // Helper to format date for ID
+  private formatDateForId(date: Date): string {
+    return date.toISOString().split('T')[0]; // Returns "YYYY-MM-DD"
+  }
+
   // Muscle state methods
   async updateMuscleState(state: MuscleState) {
     if (!this.db) await this.init();
@@ -176,6 +197,35 @@ class DatabaseService {
 
   async getExercisesByMuscle(muscleId: number, activationType: 'high' | 'medium' | 'low' = 'high'): Promise<SimpleExercise[]> {
     if (!this.db) await this.init();
+    
+    // Special case: Heart muscle (210) returns all cardio exercises
+    if (muscleId === 210) {
+      console.log('Heart muscle requested - returning cardio exercises');
+      return await this.getExercisesByCategory('cardio');
+    }
+    
+    // Try to use muscle index for fast lookup
+    const indexKey = `muscle_${muscleId}_${activationType}`;
+    const indexResult = await this.db!.get('exercisesByMuscle', indexKey);
+    
+    if (indexResult && indexResult.exerciseIds.length > 0) {
+      // Fast path: batch get exercises by IDs from index
+      const exercises: SimpleExercise[] = [];
+      const tx = this.db!.transaction('exercises', 'readonly');
+      
+      // Batch retrieve exercises for better performance
+      const promises = indexResult.exerciseIds.map(id => tx.store.get(id));
+      const results = await Promise.all(promises);
+      
+      for (const exercise of results) {
+        if (exercise) exercises.push(exercise);
+      }
+      
+      return exercises;
+    }
+    
+    // Fallback to old method if index doesn't exist
+    console.warn(`No muscle index found for muscle ${muscleId}, falling back to full scan`);
     const allExercises = await this.getAllExercises();
     
     // Filter exercises based on activation level for the muscle
@@ -226,6 +276,21 @@ class DatabaseService {
   async saveEquipmentIndex(equipmentKey: string, exerciseIds: string[]) {
     if (!this.db) await this.init();
     await this.db!.put('exercisesByEquipment', { equipmentKey, exerciseIds });
+  }
+
+  async getExercisesByCategory(category: string): Promise<SimpleExercise[]> {
+    if (!this.db) await this.init();
+    
+    if (category === 'all') {
+      return await this.getAllExercises();
+    }
+    
+    // Use category index for fast lookup
+    const tx = this.db!.transaction('exercises', 'readonly');
+    const index = tx.store.index('by-category');
+    const results = await index.getAll(category);
+    console.log(`Database found ${results.length} exercises for category: ${category}`);
+    return results;
   }
 
   async searchExercises(query: string): Promise<SimpleExercise[]> {
