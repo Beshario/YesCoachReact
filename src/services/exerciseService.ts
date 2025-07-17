@@ -98,8 +98,8 @@ export class ExerciseService {
     
     let exercises = Array.from(allExercises.values());
 
-    // Apply category filter if specified (but not for heart muscle - it should show cardio regardless of tab)
-    if (options?.category && options.category !== 'all' && muscleId !== 210) {
+    // Apply category filter if specified
+    if (options?.category && options.category !== 'all') {
       exercises = exercises.filter(ex => ex.category === options.category);
     }
 

@@ -198,12 +198,6 @@ class DatabaseService {
   async getExercisesByMuscle(muscleId: number, activationType: 'high' | 'medium' | 'low' = 'high'): Promise<SimpleExercise[]> {
     if (!this.db) await this.init();
     
-    // Special case: Heart muscle (210) returns all cardio exercises
-    if (muscleId === 210) {
-      console.log('Heart muscle requested - returning cardio exercises');
-      return await this.getExercisesByCategory('cardio');
-    }
-    
     // Try to use muscle index for fast lookup
     const indexKey = `muscle_${muscleId}_${activationType}`;
     const indexResult = await this.db!.get('exercisesByMuscle', indexKey);

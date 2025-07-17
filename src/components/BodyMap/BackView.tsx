@@ -3,14 +3,14 @@ import React from 'react';
 interface BackViewProps {
   onMuscleClick: (muscleId: number) => void;
   selectedMuscleId?: number;
-  muscleStyles?: (muscleId: number) => React.CSSProperties;
+  muscleStyleProps?: (muscleId: number) => React.CSSProperties;
   onMuscleHover?: (muscleId: number | undefined) => void;
 }
 
 export const BackView: React.FC<BackViewProps> = ({ 
   onMuscleClick, 
   selectedMuscleId,
-  muscleStyles = () => ({}),
+  muscleStyleProps = () => ({}),
   onMuscleHover
 }) => {
   return (
@@ -33,7 +33,7 @@ export const BackView: React.FC<BackViewProps> = ({
         <path d="M451.8,143.1c-0.5,3.2,1.3,25.7,8.6,25.9C490.4,170.1,451.8,74.1,451.8,143.1z"/>
         <path className="st2" d="M505.6,53.8c-2.7,0.9-4.9,2.9-6.7,5.4c-4.8,6.6-1.7,18.1,5,18.5c10,0.7,24,1.1,32.6-1c0.9-0.2,1.7-0.2,2.6,0c8.6,2.1,22.6,1.7,32.6,1c6.7-0.4,9.8-11.9,5-18.5c-1.7-2.5-3.9-4.5-6.5-5.4c-5.4-1.8-25.4-1.5-31.2-0.4"/>
       </g>
- <g id="Hands"  >
+    <g id="Hands"  >
 
          	<path   d="M1033.4,1121c-0.2,5.9-5.9,9.6-11.3,7.2c-6.2-2.7-7.6-12.7-9.6-18.3c-3.1-8.8-6.4-17.6-10-26.2
          		c-1.8-4.5-7.6-14.9-6.4-20.2c0.9-4,6.3-7.3,10.6-6.7c7.2,1,7.5,10.6,9.4,16.4c2.8,8.4,6.1,16.5,9.3,24.8
@@ -71,7 +71,7 @@ export const BackView: React.FC<BackViewProps> = ({
          	<path   d="M116.8,996.1c-4.1,4.8-27.5,43.7-12.7,43.9C113.9,1040.1,118.5,1003.5,116.8,996.1z"/>
          </g>
       {/* Triceps */}
-      <g className={`muscleSection ${selectedMuscleId === 121 ? 'selected' : ''}`} id="121">
+      <g className={`muscleSection ${selectedMuscleId === 121 ? 'selected' : ''}`} id="121" style={muscleStyleProps(121)} onMouseEnter={() => onMuscleHover?.(121)} onMouseLeave={() => onMuscleHover?.(undefined)}>
         <g id="Triceps">
           
           <g id="Long_Head">
@@ -98,7 +98,7 @@ export const BackView: React.FC<BackViewProps> = ({
       </g>
 
       {/* Forearms */}
-      <g className={`muscleSection ${selectedMuscleId === 130 ? 'selected' : ''}`} id="130">
+      <g className={`muscleSection ${selectedMuscleId === 130 ? 'selected' : ''}`} id="130" style={muscleStyleProps(130)} onMouseEnter={() => onMuscleHover?.(130)} onMouseLeave={() => onMuscleHover?.(undefined)}>
         <g id="Forearms">
           <g id="Brachioradialis">
      		<path d="M172.5,847.8c-12.5,19.8-24.8,39.7-37.5,59.4c-5.8,9.2-11,19.7-17.4,28.3c-1.9,2.5-9.4,9.1-13.2,7
@@ -150,7 +150,7 @@ export const BackView: React.FC<BackViewProps> = ({
       </g>
 
       {/* Glutes */}
-      <g className={`muscleSection ${selectedMuscleId === 181 ? 'selected' : ''}`} id="181">
+      <g className={`muscleSection ${selectedMuscleId === 180 ? 'selected' : ''}`} id="180" style={muscleStyleProps(180)} onMouseEnter={() => onMuscleHover?.(180)} onMouseLeave={() => onMuscleHover?.(undefined)}>
         <g id="Glutes">
     
           <g id="Gluteus_Maximus">
@@ -164,14 +164,14 @@ export const BackView: React.FC<BackViewProps> = ({
           <path 
             id="surround"
             style={{ fill: 'transparent', cursor: 'pointer' }}
-            onClick={() => onMuscleClick(181)}
+            onClick={() => onMuscleClick(180)}
             d="M356.8,838.8c20.8-8.7,44.7-9.6,66.1-2.4c5,1.7,10,3.9,14,7.3c5,4.2,8.3,9.9,11.8,15.3c12.3,18.5,28.6,34,44.7,49.4c3,2.8,6,5.7,9.8,7.2c3.6,1.5,7.6,1.6,11.6,1.6c21,0,42.3-2.5,61.7-10.7c19.3-8.2,36.6-22.6,45.1-41.9c1.6-3.6,2.9-7.5,5.3-10.6c3.1-4.2,7.8-6.9,12.5-9.1c32.1-15,41.4-18,75.4-8c25.4,7.5,31.2,15.1,48.5,35.2c21,24.5,20.7,73.1,22.7,105.3c3.1,50.3,11.8,84.8-10.1,130.2c-12,25.1-2.4,52.3-30.2,51.8c-16.5-0.3-25.3-2.9-39-12.1c-16.7-11.2-30.3-18.3-47-29.5c-30.3-20.3-65.1-41.5-100.7-33.6c-15.2,3.4-28.8,11.9-43.8,15.9c-28.2,7.4-58.6-1.7-87.2,4.3c-17.8,3.8-34.4,13.6-46.2,27.5c-7.4,8.7-13.2,19-22.5,25.5c-10.8,7.4-12.5-2.4-25.6-1.7c-15.5,0.9-7.7-9.7-21.5-16.8c-20.1-10.4-29.4-33.8-34.9-55.7c-14.3-57.6-22.2-98.9,5-151.7C304,889.2,321.6,870.6,356.8,838.8"
           />
         </g>
       </g>
 
       {/* Lower Back */}
-      <g id="Lower Back" className={`muscleSection ${selectedMuscleId === 175 ? 'selected' : ''}`}>
+      <g id="Lower Back" className={`muscleSection ${selectedMuscleId === 175 ? 'selected' : ''}`} style={muscleStyleProps(175)} onMouseEnter={() => onMuscleHover?.(175)} onMouseLeave={() => onMuscleHover?.(undefined)}>
          <g id="175" onClick={() => onMuscleClick(175)  }>
           <path id="Erector_Spinae" d="M544,702.5c-1.2-4.7-7.9-4.7-9.1,0c-10,38.3-34.8,197.1-31.2,202.8c4.6,7.2,8.3,12,28.3,12h10.8
           	c19.9,0,23.7-4.8,28.3-12C574.6,899.7,553.9,740.8,544,702.5z"/>
@@ -179,7 +179,7 @@ export const BackView: React.FC<BackViewProps> = ({
       </g>
 
       {/* Latissimus Dorsi */}
-      <g className={`muscleSection ${selectedMuscleId === 141 ? 'selected' : ''}`} id="141">
+      <g className={`muscleSection ${selectedMuscleId === 141 ? 'selected' : ''}`} id="141" style={muscleStyleProps(141)} onMouseEnter={() => onMuscleHover?.(141)} onMouseLeave={() => onMuscleHover?.(undefined)}>
       <g id="Latissimus Dorsi">
        
         <g id="Latissim">
@@ -196,7 +196,7 @@ export const BackView: React.FC<BackViewProps> = ({
       </g>
 
       {/* Posterior Deltoid */}
-      <g className={`muscleSection ${selectedMuscleId === 113 ? 'selected' : ''}`} id="113">
+      <g className={`muscleSection ${selectedMuscleId === 113 ? 'selected' : ''}`} id="113" style={muscleStyleProps(113)} onMouseEnter={() => onMuscleHover?.(113)} onMouseLeave={() => onMuscleHover?.(undefined)}>
         <g id="Posterior Deltoid" onClick={() => onMuscleClick(113)}>
    
          	<path d="M832.6,448.2c-0.4-4.1-4.9,53.1-11,44.7c-17-24.2-41.2-44-59.6-67.4c-5.6-7.1-48.2-50.5-47.2-55.9
@@ -206,7 +206,7 @@ export const BackView: React.FC<BackViewProps> = ({
       </g>
 
       {/* Trapezius */}
-      <g className={`muscleSection ${selectedMuscleId === 143 ? 'selected' : ''}`} id="143">
+      <g className={`muscleSection ${selectedMuscleId === 143 ? 'selected' : ''}`} id="143" style={muscleStyleProps(143)} onMouseEnter={() => onMuscleHover?.(143)} onMouseLeave={() => onMuscleHover?.(undefined)}>
         <g id="Trapezius">
           
           <g id="Upper_Traps">
@@ -227,8 +227,8 @@ export const BackView: React.FC<BackViewProps> = ({
       </g>
 
       {/* Teres */}
-      <g className={`muscleSection ${selectedMuscleId === 142 ? 'selected' : ''}`} id="142">
-      <g id="Teres" className={`muscleSection ${selectedMuscleId === 142 ? 'selected' : ''}`} onClick={() => onMuscleClick(142)}>
+      <g className={`muscleSection ${selectedMuscleId === 142 ? 'selected' : ''}`} id="142" style={muscleStyleProps(142)} onMouseEnter={() => onMuscleHover?.(142)} onMouseLeave={() => onMuscleHover?.(undefined)}>
+      <g id="Teres">
         <path d="M661.9,491.3c-4.5,1.1-8.9,0.7-13.1-1.2c-4.5-6.2,24.8-68.3,29.1-74.9c24.6-37.2,43.1-17.7,63.5,15.6
          		c8.1,13.2,22.6,33,10.9,45.1C743.2,485.2,673.3,490.8,661.9,491.3z"/>
          	<path d="M411.7,489.3c4.5,1.1,8.9,0.7,13.1-1.2c4.5-6.2-24.8-68.3-29.1-74.9c-24.6-37.2-43.1-17.7-63.5,15.6
@@ -236,14 +236,14 @@ export const BackView: React.FC<BackViewProps> = ({
         <path 
           id="surround"
           style={{ fill: 'transparent', cursor: 'pointer' }}
-          
+          onClick={() => onMuscleClick(142)}
           d="M661.9,491.3c-4.5,1.1-8.9,0.7-13.1-1.2c-4.5-6.2,24.8-68.3,29.1-74.9c24.6-37.2,43.1-17.7,63.5,15.6c8.1,13.2,22.6,33,10.9,45.1C743.2,485.2,673.3,490.8,661.9,491.3z"
         />
         </g>
       </g>
 
       {/* Calves */}
-      <g className={`muscleSection ${selectedMuscleId === 201 ? 'selected' : ''}`} id="201">
+      <g className={`muscleSection ${selectedMuscleId === 201 ? 'selected' : ''}`} id="201" style={muscleStyleProps(201)} onMouseEnter={() => onMuscleHover?.(201)} onMouseLeave={() => onMuscleHover?.(undefined)}>
         <g id="Calves">
          
           <g id="Gastrocnemius">
@@ -269,7 +269,7 @@ export const BackView: React.FC<BackViewProps> = ({
       </g>
 
       {/* Hamstrings */}
-      <g className={`muscleSection ${selectedMuscleId === 192 ? 'selected' : ''}`} id="192">
+      <g className={`muscleSection ${selectedMuscleId === 192 ? 'selected' : ''}`} id="192" style={muscleStyleProps(192)} onMouseEnter={() => onMuscleHover?.(192)} onMouseLeave={() => onMuscleHover?.(undefined)}>
         <g id="Hamstrings">
           <g id="Sartorius">
       		<path d="M580.8,1308.1c11.6,20.8,17.6,38.6,18.8,74.6c0.8,23.3-12.6,108.6-12.6,135.6c-13.6-31.6,4.8-98.4-2.9-137.7

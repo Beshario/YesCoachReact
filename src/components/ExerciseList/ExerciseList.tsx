@@ -186,8 +186,8 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
         </div>
       )}
 
-      {/* Category Tabs */}
-      {visibleTabs.length > 1 && (
+      {/* Category Tabs, not for heart muscle (210 ID) */}
+      {visibleTabs.length > 1 && selectedMuscle?.id !== 210 && (
         <div className={styles.categoryTabs}>
           {availableTabs
             .filter(tab => visibleTabs.includes(tab.id))

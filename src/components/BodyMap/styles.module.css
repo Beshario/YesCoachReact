@@ -93,68 +93,68 @@
 }
 
 /* SVG Element Styles */
-.svgContainer :global(.st0) {
+.svgContainer .st0 {
   fill: var(--medium-color);
   stroke: var(--dark-color);
   stroke-width: 0.5;
 }
 
-.svgContainer :global(#surround) {
+.svgContainer #surround {
   fill: transparent;
   cursor: pointer;
 }
 
-.svgContainer :global(.st1) {
+.svgContainer .st1 {
   fill: var(--dark-color);
 }
 
-.svgContainer :global(.st2) {
+.svgContainer .st2 {
   fill: var(--medium-color);
 }
 
-.svgContainer :global(.st3) {
+.svgContainer .st3 {
   fill: var(--hover-color);
 }
 
-.svgContainer :global(.st4) {
+.svgContainer .st4 {
   fill: var(--light-color);
 }
 
-.svgContainer :global(.st5) {
+.svgContainer .st5 {
   fill: var(--light-color);
   opacity: 0.7;
 }
 
 /* Muscle section styles */
-.svgContainer :global(.muscleSection) {
+.svgContainer .muscleSection {
   transition: all 0.2s ease;
 }
 
-.svgContainer :global(.muscleSection:hover) {
+.svgContainer .muscleSection:hover {
   filter: drop-shadow(0 2px 4px rgba(240, 65, 65, 0.3));
 }
 
-.svgContainer :global(.muscleSection g:not(#surround)) {
+.svgContainer .muscleSection g:not(#surround) {
   fill: var(--medium-color);
   stroke: var(--dark-color);
   stroke-width: 0.3;
   transition: all 0.2s ease;
 }
 
-.svgContainer :global(.muscleSection:hover g:not(#surround)) {
+.svgContainer .muscleSection:hover g:not(#surround) {
   fill: var(--hover-color);
   stroke: var(--dark-color);
   stroke-width: 0.5;
 }
 
-.svgContainer :global(#arteries) {
+.svgContainer #arteries {
   fill: var(--light-color);
   opacity: 0.6;
 }
 
-.svgContainer :global(#Heart),
-.svgContainer :global(#Heart g),
-.svgContainer :global(#Heart path:not(#surround)) {
+.svgContainer #Heart,
+.svgContainer #Heart g,
+.svgContainer #Heart path:not(#surround) {
   fill: var(--hover-color) !important;
 }
 

@@ -73,16 +73,15 @@ export const BodyMapViewer: React.FC<BodyMapViewerProps> = ({
     filterTaps: true,
   });
 
-  // Get muscle display properties
-  const getMuscleStyles = (muscleId: number) => {
+  // Get muscle display properties as CSS custom properties
+  const getMuscleStyleProps = (muscleId: number) => {
     const state = muscleStates.get(muscleId);
-    if (!state) return {};
-
+    
     return {
-      fill: state.color,
-      fillOpacity: state.intensity,
-      cursor: interactive ? 'pointer' : 'default'
-    };
+      '--muscle-color': state?.color || 'var(--medium-color)',
+      '--muscle-opacity': state?.intensity?.toString() || '1',
+      '--muscle-cursor': interactive ? 'pointer' : 'default'
+    } as React.CSSProperties;
   };
 
   // Render side-by-side view
@@ -105,7 +104,7 @@ export const BodyMapViewer: React.FC<BodyMapViewerProps> = ({
               <FrontView 
                 onMuscleClick={handleMuscleClick}
                 selectedMuscleId={hoveredMuscle}
-                muscleStyles={getMuscleStyles}
+                muscleStyleProps={getMuscleStyleProps}
                 onMuscleHover={handleMuscleHover}
               />
             </div>
@@ -118,7 +117,7 @@ export const BodyMapViewer: React.FC<BodyMapViewerProps> = ({
               <BackView 
                 onMuscleClick={handleMuscleClick}
                 selectedMuscleId={hoveredMuscle}
-                muscleStyles={getMuscleStyles}
+                muscleStyleProps={getMuscleStyleProps}
                 onMuscleHover={handleMuscleHover}
               />
             </div>
@@ -160,14 +159,14 @@ export const BodyMapViewer: React.FC<BodyMapViewerProps> = ({
             <FrontView 
               onMuscleClick={handleMuscleClick}
               selectedMuscleId={hoveredMuscle}
-              muscleStyles={getMuscleStyles}
+              muscleStyleProps={getMuscleStyleProps}
               onMuscleHover={handleMuscleHover}
             />
           ) : (
             <BackView 
               onMuscleClick={handleMuscleClick}
               selectedMuscleId={hoveredMuscle}
-              muscleStyles={getMuscleStyles}
+              muscleStyleProps={getMuscleStyleProps}
               onMuscleHover={handleMuscleHover}
             />
           )}

@@ -138,14 +138,38 @@
   animation: fadeIn 0.2s ease;
 }
 
-/* Muscle section styles - these will be applied via JavaScript */
-.svgContainer :global(.muscleSection) {
+/* Muscle section styles - using CSS custom properties */
+.svgContainer .muscleSection {
   transition: all 0.2s ease;
 }
 
-.svgContainer :global(.muscleSection path),
-.svgContainer :global(.muscleSection g) {
-  transition: fill 0.2s ease, fill-opacity 0.2s ease;
+.svgContainer .muscleSection path,
+.svgContainer .muscleSection g {
+  fill: var(--muscle-color, var(--medium-color));
+  fill-opacity: var(--muscle-opacity, 1);
+  cursor: var(--muscle-cursor, pointer);
+  transition: fill 0.2s ease, fill-opacity 0.2s ease, filter 0.2s ease;
+}
+
+.svgContainer .muscleSection:hover {
+  filter: drop-shadow(0 2px 4px rgba(240, 65, 65, 0.3));
+}
+
+.svgContainer .muscleSection:hover path,
+.svgContainer .muscleSection:hover g {
+  fill: var(--hover-color);
+}
+
+.svgContainer .muscleSection.selected path,
+.svgContainer .muscleSection.selected g {
+  stroke: var(--hover-color);
+  stroke-width: 2px;
+}
+
+/* Special handling for surround paths (transparent click areas) */
+.svgContainer .muscleSection path[id="surround"] {
+  fill: transparent !important;
+  cursor: pointer;
 }
 
 /* Animation */

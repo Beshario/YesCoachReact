@@ -5,11 +5,11 @@ import { UserPreferences, SortType, ExerciseListView } from '../../types/models'
 import { DifficultyLevel } from '../../types/SimpleExerciseTypes';
 
 export const AccountPage: React.FC = () => {
-  const appVersion = '1.0.0';
+  const appVersion = '0.0.1';
   
   const [preferences, setPreferences] = useState<UserPreferences>({
     defaultSortBy: 'muscle_recruitment',
-    showSynergistExercises: true,
+    showSynergistExercises: false,
     showStabilizerExercises: false,
     exerciseListView: 'compact',
     autoExpandChildMuscles: true,
