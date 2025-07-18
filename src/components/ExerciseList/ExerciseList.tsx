@@ -263,6 +263,15 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
       <ExerciseDetailModal
         exercise={selectedExercise}
         onClose={handleModalClose}
+        onExerciseSelect={(newExercise) => {
+          if (onAddToWorkout) {
+            // In workout building context - add to workout
+            onAddToWorkout(newExercise);
+          } else {
+            // In browsing context - navigate to exercise details
+            setSelectedExercise(newExercise);
+          }
+        }}
       />
     </div>
   );

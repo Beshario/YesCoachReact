@@ -285,7 +285,7 @@
 
 /* Tags section */
 .tagsSection {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .tagsSection h3 {
@@ -307,6 +307,45 @@
   border-radius: 4px;
   font-size: 0.85rem;
   color: #555;
+}
+
+/* Related Exercises section */
+.relatedExercisesSection {
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.relatedExercisesButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.relatedExercisesButton:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.buttonArrow {
+  font-size: 1.2rem;
+  color: #6c757d;
+  transition: transform 0.2s ease;
+}
+
+.relatedExercisesButton:hover .buttonArrow {
+  transform: translateX(4px);
 }
 
 /* Animations */

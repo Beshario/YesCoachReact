@@ -3,11 +3,13 @@ import ReactDOM from 'react-dom';
 import { SimpleExercise } from '../../types/SimpleExerciseTypes';
 import { BodyMapViewer } from '../BodyMap';
 import { muscleStateService } from '../../services/muscleStateService';
+import ExerciseRelationshipsModal from './ExerciseRelationshipsModal';
 import styles from './ExerciseDetailModal.module.css';
 
 interface ExerciseDetailModalProps {
   exercise: SimpleExercise | null;
   onClose: () => void;
+  onExerciseSelect?: (exercise: SimpleExercise) => void;
 }
 
 // Image component with click-to-alternate functionality
@@ -43,8 +45,9 @@ const ClickableExerciseImage: React.FC<{
   );
 };
 
-const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({ exercise, onClose }) => {
+const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({ exercise, onClose, onExerciseSelect }) => {
   const [isClosing, setIsClosing] = useState(false);
+  const [showRelationships, setShowRelationships] = useState(false);
 
   // Get muscle activation display states
   const muscleStates = useMemo(() => {
@@ -205,13 +208,42 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({ exercise, onC
               </div>
             </div>
           )}
+
+          {/* Related Exercises Button */}
+          <div className={styles.relatedExercisesSection}>
+            <button 
+              className={styles.relatedExercisesButton}
+              onClick={() => setShowRelationships(true)}
+            >
+              View Related Exercises
+              <span className={styles.buttonArrow}>→</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 
+  const handleRelatedExerciseSelect = (selectedExercise: SimpleExercise) => {
+    setShowRelationships(false);
+    if (onExerciseSelect) {
+      onExerciseSelect(selectedExercise);
+    }
+  };
+
   // Render modal using React Portal
-  return ReactDOM.createPortal(modalContent, document.body);
+  return (
+    <>
+      {ReactDOM.createPortal(modalContent, document.body)}
+      {showRelationships && exercise && (
+        <ExerciseRelationshipsModal
+          exercise={exercise}
+          onClose={() => setShowRelationships(false)}
+          onExerciseSelect={handleRelatedExerciseSelect}
+        />
+      )}
+    </>
+  );
 };
 
 export default ExerciseDetailModal;

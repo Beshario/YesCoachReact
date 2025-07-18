@@ -133,6 +133,27 @@ export class ExerciseService {
   }
 
   /**
+   * Get similar exercises (same movement pattern, different equipment/setup)
+   */
+  async getSimilar(exerciseId: string): Promise<SimpleExercise[]> {
+    await this.initialize();
+    
+    const relationships = await db.getExerciseRelationships(exerciseId);
+    if (!relationships) return [];
+
+    const similarIds = relationships.similar || [];
+
+    // Get exercise details
+    const similar: SimpleExercise[] = [];
+    for (const id of similarIds) {
+      const exercise = await db.getExercise(id);
+      if (exercise) similar.push(exercise);
+    }
+
+    return similar;
+  }
+
+  /**
    * Get alternative exercises for equipment substitution
    */
   async getAlternatives(
@@ -144,7 +165,7 @@ export class ExerciseService {
     const relationships = await db.getExerciseRelationships(exerciseId);
     if (!relationships) return [];
 
-    const alternativeIds = relationships.similar || [];
+    const alternativeIds = relationships.alternatives || [];
 
     // Get exercise details
     const alternatives: SimpleExercise[] = [];

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useWorkoutStore, WorkoutExercise } from '../../stores/workoutStore';
-import ExerciseReplacementModal from './ExerciseReplacementModal';
+import ExerciseRelationshipsModal from '../Exercise/ExerciseRelationshipsModal';
 import SetLoggingModal from './SetLoggingModal';
 import ExerciseDetailModal from '../Exercise/ExerciseDetailModal';
 import styles from './WorkoutExerciseCard.module.css';
@@ -37,6 +37,7 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
   const handleExerciseClick = () => {
     setShowExerciseDetail(true);
   };
+
 
   const handleDragStart = (e: React.DragEvent) => {
     setIsDragging(true);
@@ -150,9 +151,9 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
 
       {/* Replacement Modal */}
       {showReplaceModal && (
-        <ExerciseReplacementModal
-          currentExercise={exercise}
-          onReplace={(newExercise) => {
+        <ExerciseRelationshipsModal
+          exercise={exercise}
+          onExerciseSelect={(newExercise) => {
             useWorkoutStore.getState().replaceExercise(exercise.id, newExercise);
             setShowReplaceModal(false);
           }}
@@ -172,6 +173,10 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
       <ExerciseDetailModal
         exercise={showExerciseDetail ? exercise : null}
         onClose={() => setShowExerciseDetail(false)}
+        onExerciseSelect={(newExercise) => {
+          setShowExerciseDetail(false);
+          useWorkoutStore.getState().addExercise(newExercise);
+        }}
       />
     </>
   );
